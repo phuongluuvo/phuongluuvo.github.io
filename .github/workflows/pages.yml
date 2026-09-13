@@ -1,0 +1,64 @@
+name: Build and deploy the website
+
+# This workflow rebuilds every .html page from the .jemdoc sources in www/
+# and publishes the result to GitHub Pages. It runs on every push to main, and
+# can also be started by hand from the "Actions" tab.
+#
+# One-time setup:  Settings -> Pages -> Build and deployment -> Source:
+#                  "GitHub Actions"
+# See GUIDE.md for the step-by-step instructions and for the alternative
+# (branch-based) deployment method.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Only one deployment at a time; newer pushes cancel older builds.
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build the site
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Generate the HTML from the .jemdoc sources
+        run: python build.py --out _site
+
+      - name: Show what was built
+        run: ls -la _site
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload the built site as the Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4

@@ -1,0 +1,26 @@
+# Conda environment for building and testing this website.
+#
+#   conda env create -f environment.yml
+#   conda activate vtlp
+#   python build.py
+#
+# Python 3.9+ is enough for build.py (it only uses the standard library).
+# The extra packages below exist so that the test-suite can parse and validate
+# the generated HTML.
+name: vtlp
+
+channels:
+  - conda-forge
+
+dependencies:
+  - python=3.11
+  - beautifulsoup4      # parse the generated HTML in tests/
+  - lxml                # fast parser backend for beautifulsoup4
+  - html5lib            # strict HTML5 parser, catches malformed nesting
+  - pytest              # test runner
+  - requests            # used by the optional link/preview checks
+  - pyyaml              # validates .github/workflows/*.yml in the tests
+
+  - pip
+  - pip:
+      - pytest-html

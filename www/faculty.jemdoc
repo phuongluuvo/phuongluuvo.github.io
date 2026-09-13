@@ -1,0 +1,35 @@
+# jemdoc: menu{menu.jemdoc}{faculty.html}, notime
+= Faculty
+The academic staff of the Wireless Networks and Optimization Group
+
+The group is led by Assoc. Prof. Phuong Luu Vo and includes the following faculty members.
+We supervise PhD, Master, and undergraduate students jointly, so feel free to contact the
+person whose interests best match yours.
+
+~~~
+{Faculty members}{table}{faculty}
+*Name* | *Position* | *Research area* | *Contact* ||
+Phuong Luu Vo | Associate Professor (group leader) | Resource allocation, stochastic optimization, learning-based network control | [phuong.luuvo@example.edu] ||
+Le Minh Duc | Senior Lecturer | Network economics, energy-efficient communications | [duc.le@example.edu] ||
+Pham Thu Ha | Lecturer | Signal processing for large antenna arrays, RIS | [ha.pham@example.edu] ||
+Hoang Quoc Bao | Lecturer | Queueing theory, performance analysis of 5G/6G systems | [bao.hoang@example.edu] ||
+~~~
+
+== Visiting and adjunct faculty
+
+- *Prof. Example Name* \M Example Institute.\n
+  Visiting professor during the 2026 spring semester; research on stochastic network
+  optimization.
+
+== Group alumni
+
+- *Dr. Example Alumnus* \M Ph.D. 2024, now at Example Company. Thesis on distributed resource
+  allocation in dense networks.
+
+# ---------------------------------------------------------------------------
+# TEMPLATE -- copy one line into the table above (keep the DOUBLE pipes at the
+# end of the row), or add a bullet under "Group alumni".
+#
+# New Person | Lecturer | Research area | [new.person@example.edu] ||
+# - *New Person* \M Former position and where they are now.
+#

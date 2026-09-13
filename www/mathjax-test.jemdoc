@@ -1,0 +1,38 @@
+# jemdoc: menu{menu.jemdoc}{mathjax-test.html}, notime
+= MathJax test page
+Confirms that equations are rendered in your browser
+
+This page exists so that you can check, with one click, that the mathematical typesetting of
+the site works. If the three expressions below look like properly typeset mathematics, then
+everything is fine. If you see raw dollar signs and backslashes instead, MathJax did not load
+in your browser.
+
+== 1. One inline equation
+
+The received signal-to-noise ratio of user $k$ is $\gamma_k = p_k h_k / \sigma^2$, where
+$p_k$ is the transmit power allocated to user $k$, $h_k$ is its channel gain, and $\sigma^2$
+is the noise power.
+
+== 2. One display equation
+
+\(
+\gamma_k = \frac{p_k\, h_k}{\sigma^2}, \qquad k = 1, 2, \ldots, K .
+\)
+
+== 3. Something slightly harder
+
+\(
+\begin{array}{ll}
+\mbox{maximize} & \displaystyle \sum_{k=1}^{K} \log_2\!\left(1 + \gamma_k\right) \\
+\mbox{subject to} & \displaystyle \sum_{k=1}^{K} p_k \le P_{\max}, \qquad p_k \ge 0 .
+\end{array}
+\)
+
+== 4. If the equations do not appear
+
+- MathJax is loaded from a public CDN, so a machine without internet access will show the raw
+  LaTeX source. This is expected and harmless.
+- Check that +www/mysite.conf+ still contains the +MathJax-script+ line.
+- Check the browser console for a failed request to the MathJax URL.
+- Remember that equations only work inside .jemdoc source files; they are rendered in the
+  visitor's browser, not at build time.

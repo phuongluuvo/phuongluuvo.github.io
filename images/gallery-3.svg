@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 300" width="480" height="300" role="img" aria-label="Group photo placeholder 3">
+  <rect width="480" height="300" fill="#e7edf5"/>
+  <circle cx="250" cy="76" r="34" fill="#f4dcae"/>
+  <path d="M0 245 L90 165 L200 245 Z" fill="#cbd8e5"/>
+  <path d="M170 245 L300 140 L440 245 Z" fill="#aec2d6"/>
+  <path d="M330 245 L430 175 L480 245 Z" fill="#cbd8e5"/>
+  <rect y="245" width="480" height="55" fill="#d3dce7"/>
+  <text x="240" y="38" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="17" fill="#71829a">Group photo 3</text>
+  <text x="240" y="284" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="12" fill="#74849b">Replace www/images/gallery-3.svg</text>
+</svg>

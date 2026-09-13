@@ -1,0 +1,26 @@
+# ---------------------------------------------------------------------------
+# SHARED NAVIGATION MENU  (www/menu.jemdoc)
+#
+# This ONE file controls the menu on EVERY page.
+#   * A line WITHOUT brackets is a grey section heading (e.g. "Research Group").
+#   * A line with brackets is a link:   Visible text [target-file.html]
+#   * Put the text of a long label inside {{double braces}} if you do not want
+#     it to be forced onto one line, e.g.   {{PhD / Master students}} [x.html]
+#   * Menu order = order in this file. Keep it in sync with the pages.
+# ---------------------------------------------------------------------------
+Home
+ Biography [biography.html]
+ News [news.html]
+ About me [about.html]
+Research Group
+ Faculty [faculty.html]
+ {{PhD / Master students}} [students.html]
+ Honors students [honors.html]
+ Interns [interns.html]
+ {{Prospective Students}} [prospective.html]
+ Gallery [gallery.html]
+Research
+ Publications [publications.html]
+ Awards & Grants [awards.html]
+Teaching
+ Courses [courses.html]

@@ -1,0 +1,33 @@
+# jemdoc: menu{menu.jemdoc}{honors.html}, notime
+= Honors students
+Undergraduate students doing an honors thesis with the group
+
+Honors students usually join in their third year, do a prethesis in the first semester, and
+continue with a full thesis. See the [prospective.html Prospective Students] page if you are
+interested in joining.
+
+== Current honors students
+
+- *Example Honors One* \M B.Eng., since 2025.\n
+  Thesis: energy-efficient scheduling for delay-sensitive traffic.\n
+  Email: [honors.one@example.edu]
+- *Example Honors Two* \M B.Eng., since 2025.\n
+  Thesis: beamforming with limited feedback.\n
+  Email: [honors.two@example.edu]
+
+== Completed honors theses
+
+- *Example Honors Three* (2025). "Resource allocation for integrated sensing and
+  communication." Now a PhD student in the group.
+- *Example Honors Four* (2024). "Learning-based handover in dense networks." Best thesis
+  award, Example University.
+
+# ---------------------------------------------------------------------------
+# TEMPLATE -- to ADD an honors student, copy the three lines below under
+# "== Current honors students". To MOVE a student to the finished list, paste
+# them under "== Completed honors theses" and rewrite as a single sentence.
+#
+# - *Full Name* \M B.Eng., since 2026.\n
+#   Thesis: one-line topic.\n
+#   Email: [name@example.edu]
+#

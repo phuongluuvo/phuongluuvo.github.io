@@ -1,0 +1,31 @@
+# jemdoc: menu{menu.jemdoc}{gallery.html}, notime
+= Gallery
+Photos of the group
+
+We try to take a group photo at least once a year. To add a photo, put the image file into the
++images+ folder of +www+ and copy one of the +figure+ blocks below (there is a ready-to-use
+template at the bottom of this file).
+
+~~~
+{}{raw}
+<div class="gallery">
+<figure><img src="images/gallery-1.svg" alt="Group photo 1" /><figcaption>Group retreat, summer 2026.</figcaption></figure>
+<figure><img src="images/gallery-2.svg" alt="Group photo 2" /><figcaption>Lab open day, spring 2026.</figcaption></figure>
+<figure><img src="images/gallery-3.svg" alt="Group photo 3" /><figcaption>Poster session at EICC 2025.</figcaption></figure>
+<figure><img src="images/gallery-4.svg" alt="Group photo 4" /><figcaption>End-of-semester group lunch, 2025.</figcaption></figure>
+</div>
+~~~
+
+== Videos and talks
+
+- Group seminar recordings (link to be added).
+- Recorded conference talks (link to be added).
+
+# ---------------------------------------------------------------------------
+# TEMPLATE -- to ADD a photo: (1) copy the image into www/images/,
+# (2) copy the line below inside the <div class="gallery"> ... </div> block
+# above, and (3) change the file name and the caption.
+# Leave a blank line before this comment block.
+#
+# <figure><img src="images/my-photo.jpg" alt="Description" /><figcaption>Caption text.</figcaption></figure>
+#

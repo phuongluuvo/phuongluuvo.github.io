@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%231b3a63'/%3E%3Ctext x='32' y='44' font-family='Georgia,serif' font-size='30' fill='%23ffffff' text-anchor='middle'%3EPV%3C/text%3E%3C/svg%3E" />
+<script>
+window.MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']],
+    processEscapes: true
+  },
+  options: {
+    skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+  },
+  chtml: { scale: 1.05 }
+};
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<link rel="stylesheet" href="css/site.css" type="text/css" />
+<title>Prospective Students &middot; Phuong Luu Vo</title>
+</head>
+<body>
+<table summary="Table for page layout." id="tlayout">
+<tr valign="top">
+<td id="layout-menu">
+<div class="menu-category">Home</div>
+<div class="menu-item"><a href="biography.html">Biography</a></div>
+<div class="menu-item"><a href="news.html">News</a></div>
+<div class="menu-item"><a href="about.html">About&nbsp;me</a></div>
+<div class="menu-category">Research Group</div>
+<div class="menu-item"><a href="faculty.html">Faculty</a></div>
+<div class="menu-item"><a href="students.html">PhD / Master students</a></div>
+<div class="menu-item"><a href="honors.html">Honors&nbsp;students</a></div>
+<div class="menu-item"><a href="interns.html">Interns</a></div>
+<div class="menu-item"><a href="prospective.html" class="current">Prospective Students</a></div>
+<div class="menu-item"><a href="gallery.html">Gallery</a></div>
+<div class="menu-category">Research</div>
+<div class="menu-item"><a href="publications.html">Publications</a></div>
+<div class="menu-item"><a href="awards.html">Awards&nbsp;&amp;&nbsp;Grants</a></div>
+<div class="menu-category">Teaching</div>
+<div class="menu-item"><a href="courses.html">Courses</a></div>
+</td>
+<td id="layout-content">
+<div id="toptitle">
+<h1><a href="index.html">Prospective Students</a></h1>
+<div id="subtitle">Prethesis, thesis, and internship projects &ndash; how to work with me
+</div>
+</div>
+<div class="infoblock">
+<div class="blocktitle">Please read this page before emailing me</div>
+<div class="blockcontent">
+<p>I receive many more requests than I have places. Emails that follow the checklist on this page
+get a reply; one-line emails asking &ldquo;please give me a topic&rdquo; usually do not. This is not
+personal &ndash; it is simply that I cannot evaluate a request without knowing who you are and what
+you want to work on.
+</p>
+</div></div>
+<h2>1. What I look for</h2>
+<ul>
+<li><p><b>Curiosity and persistence.</b> You should enjoy finding out why something does not work.
+</p>
+</li>
+<li><p><b>Comfort with mathematics.</b> Linear algebra, probability, and basic optimization. You do not
+need to be an expert &ndash; you need to be willing to become one.
+</p>
+</li>
+<li><p><b>Programming.</b> Python (NumPy/SciPy) or MATLAB for simulations. Git for version control.
+</p>
+</li>
+<li><p><b>Reading.</b> You will read research papers, and you will write summaries of them.
+</p>
+</li>
+<li><p><b>Reliability.</b> Attending meetings, meeting agreed deadlines, and telling me early when
+something is stuck.
+</p>
+</li>
+</ul>
+<h2>2. The prethesis / thesis process</h2>
+<ul>
+<li><p><b>Step 1 &ndash; Choose a topic.</b> Pick one of the topics in
+section 3 below, or propose your own related to the group's work.
+</p>
+</li>
+<li><p><b>Step 2 &ndash; Talk to me.</b> Send the email described in section 4. If we agree, we fix the
+scope in writing (one page: goal, deliverables, timeline).
+</p>
+</li>
+<li><p><b>Step 3 &ndash; Prethesis (one semester).</b> Literature review, a concrete formulation, and a
+first simulation or proof-of-concept. Deliverable: a short technical report.
+</p>
+</li>
+<li><p><b>Step 4 &ndash; Thesis (one to two semesters).</b> Full development, experiments, and a written
+thesis. Deliverable: thesis document and, if the results allow, a conference or journal
+paper.
+</p>
+</li>
+<li><p><b>Step 5 &ndash; Presentation and defence.</b> A group seminar before submission, then the formal
+defence.
+</p>
+</li>
+</ul>
+<h2>3. Currently available topics</h2>
+<p>The list below is updated every semester. Topics marked <b>(open)</b> are available now.
+</p>
+<h3>T1. Learning-based power control for interference-limited networks (open)</h3>
+<p><b>Question:</b> can a learned policy approach the performance of iterative optimization while
+running in real time?<br />
+<b>Scope:</b> reproduce a baseline weighted-MMSE scheme, then train a graph neural network policy on
+random network instances and compare sum-rate and runtime.<br />
+<b>Prerequisites:</b> Python, PyTorch (or willingness to learn), basic probability.<br />
+<b>Good outcome:</b> a reproducible simulation study, and a comparison that is honest about where
+learning wins and where it does not.
+</p>
+<h3>T2. Reconfigurable intelligent surfaces with imperfect channel knowledge (open)</h3>
+<p><b>Question:</b> how much of the theoretical gain of an RIS survives when the channel is only known
+approximately?<br />
+<b>Scope:</b> formulate a robust beamforming problem, derive a tractable approximation, and quantify
+the performance loss as a function of channel estimation error.<br />
+<b>Prerequisites:</b> convex optimization basics, MATLAB or Python.<br />
+<b>Good outcome:</b> a clear robustness/performance trade-off curve plus a short write-up.
+</p>
+<h3>T3. Energy efficiency and delay in dense small-cell networks (open)</h3>
+<p><b>Question:</b> what is the price, in energy, of guaranteeing a delay constraint?<br />
+<b>Scope:</b> build on queueing models, derive a scheduling policy, and evaluate the energy-delay
+trade-off by simulation.<br />
+<b>Prerequisites:</b> queueing basics, simulation experience.<br />
+<b>Good outcome:</b> a policy with a provable guarantee plus simulations.
+</p>
+<h3>T4. Propose your own topic (open)</h3>
+<p>If you have read a paper that excited you, write a one-page proposal: the problem, why it
+matters, what you would do, and what you would deliver. I am happy to discuss it.
+</p>
+<h2>4. How to apply</h2>
+<p>Send one email to <a href="mailto:phuong.luuvo@example.edu" target="blank">phuong.luuvo@example.edu</a>. Start the subject line with the kind of project
+you are applying for &ndash; <b>Prethesis</b>, <b>Thesis</b>, or <b>Internship</b> &ndash; followed by your full name,
+for example <b>Prethesis - Nguyen Van A</b>.
+</p>
+<p>and include:
+</p>
+<ul>
+<li><p>Your CV (one page is enough).
+</p>
+</li>
+<li><p>Your transcript (an unofficial PDF is fine).
+</p>
+</li>
+<li><p>The topic number you are interested in (for example <b>T2</b>), or your own one-page proposal.
+</p>
+</li>
+<li><p>Two or three sentences on why this topic interests <b>you</b> specifically.
+</p>
+</li>
+<li><p>Your availability: which semester, and how many hours per week.
+</p>
+</li>
+</ul>
+<h2>5. Frequently asked questions</h2>
+<div class="infoblock">
+<div class="blocktitle">Frequently asked questions</div>
+<div class="blockcontent">
+<p><b>Do I need to have published anything?</b> No. Enthusiasm plus solid fundamentals is enough.
+</p>
+<p><b>Do I need to be in the top of my class?</b> Not necessarily &ndash; but you must be able to handle
+the mathematics in the papers you will read.
+</p>
+<p><b>Can I work remotely?</b> Partly, but the initial meetings should be in person.
+</p>
+<p><b>How long until I get a reply?</b> Usually within one or two weeks during term time. If you have
+not heard back after two weeks, a short reminder is welcome.
+</p>
+<p><b>Can you write me a recommendation letter?</b> Yes, if we have worked together for at least one
+semester &ndash; I can only write about what I have seen.
+</p>
+</div></div>
+<div id="footer">
+<div id="footer-text">
+<p>&copy; Assoc. Prof. Phuong Luu Vo &middot; Last updated: 2026-09-13 &middot; Built with <a href="https://jemdoc.jaboc.net/" target="blank">jemdoc</a> + MathJax</p>
+</div>
+</div>
+</td>
+</tr>
+</table>
+</body>
+</html>

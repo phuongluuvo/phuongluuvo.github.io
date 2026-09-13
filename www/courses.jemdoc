@@ -1,0 +1,77 @@
+# jemdoc: menu{menu.jemdoc}{courses.html}, notime
+= Courses
+Course information, lecture slides, and materials
+
+Materials are updated during the semester. The files below are placeholders -- replace them
+with your own PDFs in the +www+ +files+ folder (see GUIDE.md).
+
+== Example Course 1 -- Wireless Communications
+
+~~~
+{Course information}
+- *Code*: EE301 \M *Level*: Undergraduate \M *Semester*: Spring 2026 \M *Credits*: 3
+- *When*: Monday 09:00--11:00, Building B1, Room 201
+- *Office hours*: Tuesday 14:00--16:00, or by appointment
+
+*What you will learn:* how a wireless link works, from path loss and fading to the capacity of
+a multi-user system; and how to formulate and solve a simple resource allocation problem.
+~~~
+
+*Materials*
+
+- [files/syllabus.pdf Syllabus and reading list (PDF)]
+- [files/lecture-01.pdf Lecture 1 -- Introduction and path loss (PDF)]
+- [files/lecture-02.pdf Lecture 2 -- Fading and diversity (PDF)]
+- [files/lecture-03.pdf Lecture 3 -- Capacity and resource allocation (PDF)]
+
+== Example Course 2 -- Convex Optimization for Engineers
+
+~~~
+{Course information}
+- *Code*: EE502 \M *Level*: Graduate \M *Semester*: Autumn 2025 \M *Credits*: 3
+- *When*: Wednesday 14:00--16:00, Building B1, Room 405
+
+*What you will learn:* convex sets and functions, duality, and how to recognise and solve the
+optimization problems that appear in communications and signal processing.
+~~~
+
+*Materials*
+
+- [files/syllabus.pdf Syllabus and reading list (PDF)]
+- [files/lecture-01.pdf Lecture 1 -- Convex sets and functions (PDF)]
+
+== Example Course 3 -- Research Methods Seminar
+
+~~~
+{Course information}
+- *Level*: Master and PhD \M *Semester*: Every semester \M *Credits*: 1
+
+*What you will learn:* how to read a paper critically, how to write a technical report, how to
+give a seminar talk, and how to use Git and LaTeX for your thesis.
+~~~
+
+*Materials*
+
+- [files/syllabus.pdf Seminar plan and schedule (PDF)]
+
+# ---------------------------------------------------------------------------
+# TEMPLATE -- to ADD a course, copy everything between the ==== markers below.
+# Leave a blank line before this comment block.
+#
+# ==== begin course ====
+# == Short course title
+#
+# ~~~
+# {Course information}
+# - *Code*: XX101 \M *Level*: Undergraduate \M *Semester*: Spring 2027 \M *Credits*: 3
+# - *When*: ... \M *Office hours*: ...
+#
+# *What you will learn:* one or two sentences.
+# ~~~
+#
+# *Materials*
+#
+# - [files/syllabus.pdf Syllabus (PDF)]
+# - [files/lecture-01.pdf Lecture 1 (PDF)]
+# ==== end course ====
+#

@@ -682,10 +682,15 @@ def replacelinks(b):
     if m1[0] == '/':
         option = ''
         m1 = m1[1:]
-    else:
-        # LOCAL FIX: escape the quotes so the later "smart quotes" substitution
-        # does not turn target="blank" into target=&ldquo;blank&rdquo;.
+    elif '://' in m1 or '@' in m1:
+        # LOCAL FIX: open external links (and email addresses) in a new tab, and
+        # escape the quotes so the later "smart quotes" substitution does not
+        # turn target="blank" into target=&ldquo;blank&rdquo;.
         option = r' target=\"blank\"'
+    else:
+        # LOCAL FIX: internal links (other .html pages, local PDFs, ...) stay in
+        # the current tab instead of spawning a new one on every click.
+        option = ''
 
     if '@' in m1 and not m1.startswith('mailto:') and not \
        m1.startswith('http://'):
@@ -1523,12 +1528,15 @@ def procfile(f):
           # handles
           # {}{img_left}{source}{alttext}{width}{height}{linktarget}.
           g += ['']*(7 - len(g))
-          
+
+          # LOCAL FIX: the HTML width/height attributes take a bare number, so
+          # <img width="175"> is valid while <img width="175px"> is not. jemdoc
+          # used to append "px" here, which browsers silently ignore.
           if g[4].isdigit():
-            g[4] += 'px'
+            g[4] += ''
 
           if g[5].isdigit():
-            g[5] += 'px'
+            g[5] += ''
 
           out(f.outf, '<table class="imgtable"><tr><td>\n')
           if g[6]:
@@ -1637,7 +1645,9 @@ def main():
       thisout = outname
 
     infile = io.open(inname, 'rb')
-    outfile = io.open(thisout, 'w')
+    # LOCAL FIX: newline='' keeps the generated HTML at LF on every platform;
+    # without it, Windows would rewrite every \n as \r\n.
+    outfile = io.open(thisout, 'w', newline='\n')
 
 #    print(infile.read())
     f = controlstruct(infile, outfile, conf, inname)

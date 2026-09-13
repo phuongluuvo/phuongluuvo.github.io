@@ -1,12 +1,20 @@
-*.pyc
-otherstuff
-proctags.py
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+
+# The build output folder used by the GitHub Actions workflow (make site).
+# The HTML that GitHub Pages actually serves is generated into the repository
+# root, and that HTML *is* committed -- do not ignore *.html here.
+_site/
+
+# jemdoc equation cache. Only created if you ever switch jemdoc from MathJax
+# to its built-in LaTeX equation mode (see GUIDE.md).
+eqs/
+
+# Editor / OS noise
 *.swp
-tags.vim
-tags
-matlab
-build
-MANIFEST
-jo
-*.html
-stage/
+.DS_Store
+Thumbs.db

@@ -1,0 +1,57 @@
+# jemdoc: menu{menu.jemdoc}{about.html}, notime
+= About me
+Contact details, CV, and other things people ask for
+
+I am happiest when a messy practical problem turns into a clean mathematical statement -- and
+then into something that actually runs. Outside research I enjoy teaching, reading, and
+(long) walks.
+
+== Contact
+
+~~~
+{Where to find me}
+- *Email*: [phuong.luuvo@example.edu]
+- *Office*: Building B1, Room 305, Example University
+- *Postal address*: Department of Communications Engineering, Example University,\n
+  1 Example Street, Example City, Country
+- *Office hours*: Tuesday 14:00--16:00 and Thursday 10:00--11:00
+~~~
+
+== Profiles and identifiers
+
+- [https://scholar.google.com/citations?user=XXXXXXXX Google Scholar]
+- [https://orcid.org/0000-0000-0000-0000 ORCID]
+- [https://www.researchgate.net/profile/Phuong-Luu-Vo ResearchGate]
+- [https://github.com/phuongluuvo GitHub]
+- [files/cv.pdf Curriculum Vitae (PDF)]
+
+== For students
+
+If you are looking for a prethesis, thesis, or internship project, the
+[prospective.html Prospective Students] page explains the process, the requirements, and the
+topics that are currently open. Please read it before contacting me.
+
+If you are already working with me, the [courses.html Courses] page collects lecture slides and
+the [publications.html Publications] page collects the papers we build on.
+
+== Other academic activities
+
+- Associate Editor, /Example Transactions on Communications/.
+- Guest editor of a special issue on learning-based network optimization.
+- Member of the department seminar committee.
+- Outreach: annual "women in engineering" mentoring programme.
+
+== Credits
+
+This website is generated from plain-text jemdoc sources with jemdoc + MathJax, and is served
+by GitHub Pages. The source lives in the repository
+[https://github.com/phuongluuvo/phuongluuvo.github.io phuongluuvo.github.io on GitHub].
+
+# ---------------------------------------------------------------------------
+# TEMPLATE -- another "== Section" block:
+#
+# == Section title
+#
+# A normal paragraph. Use *bold*, /italics/, _underline_, +monospace+,
+# and links written as [https://example.com link text].
+#

@@ -1,0 +1,47 @@
+# jemdoc: menu{menu.jemdoc}{biography.html}, notime
+= Biography
+Career, research interests, and background
+
+I am an Associate Professor in the Department of Communications Engineering at Example
+University. I received my Ph.D. in Electrical and Computer Engineering and have since worked
+on the mathematical foundations and the practical algorithms behind modern wireless networks.
+
+My work combines tools from convex and stochastic optimization, queueing and network
+economics, and -- more recently -- machine learning. The common thread is that wireless systems
+are shared resources, so almost every interesting question is an optimization question.
+
+== Research interests
+
+- Resource allocation and scheduling in wireless networks
+- Convex, stochastic, and distributed optimization
+- Learning-based control and reinforcement learning for networks
+- Reconfigurable intelligent surfaces and large-scale antenna systems
+- Performance analysis, energy efficiency, and network economics
+
+== Education
+
+- *Ph.D.* in Electrical and Computer Engineering, Example University, 20XX.
+- *M.Sc.* in Electrical Engineering, Example University, 20XX.
+- *B.Eng.* in Telecommunications, Example University, 20XX.
+
+== Academic appointments
+
+- *Associate Professor*, Department of Communications Engineering, Example University,
+  since 20XX.
+- *Assistant Professor*, Department of Communications Engineering, Example University,
+  20XX--20XX.
+- *Postdoctoral Researcher*, Example Research Institute, 20XX--20XX.
+
+== Professional activities
+
+- Associate Editor, /Example Transactions on Communications/, since 20XX.
+- Technical Program Committee member, several international conferences.
+- Reviewer for major journals in communications and networking.
+- Session chair and organizer of special sessions and workshops.
+
+== Funding
+
+See [awards.html Awards & Grants] for the list of research grants.
+
+See [about.html About me] for how to get in touch, and
+[files/cv.pdf my CV] for the full, up-to-date record.

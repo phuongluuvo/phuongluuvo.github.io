@@ -1,0 +1,46 @@
+# jemdoc: menu{menu.jemdoc}{students.html}, notime
+= PhD / Master students
+Doctoral and Master students in the group
+
+Each entry lists the student, the year they started, and their research topic. Students are
+listed by their starting year, newest first.
+
+== PhD students
+
+- *Example Student One* \M PhD, since 2024.\n
+  Research: learning-based power control in interference-limited networks.\n
+  Email: [student.one@example.edu]
+- *Example Student Two* \M PhD, since 2023.\n
+  Research: reconfigurable intelligent surfaces for coverage extension.\n
+  Email: [student.two@example.edu]
+- *Example Student Three* \M PhD, since 2022.\n
+  Research: energy-efficient scheduling with delay constraints.\n
+  Email: [student.three@example.edu]
+
+== Master students
+
+- *Example Student Four* \M M.Sc., since 2025.\n
+  Research: graph neural networks for network topology optimization.\n
+  Email: [student.four@example.edu]
+- *Example Student Five* \M M.Sc., since 2024.\n
+  Research: robust beamforming under channel uncertainty.\n
+  Email: [student.five@example.edu]
+
+== How we work
+
+- A weekly one-hour individual meeting, plus a group seminar every two weeks.
+- Students are expected to read papers actively, write down what they understand, and
+  present their work regularly.
+- We aim for every PhD student to publish in a good international journal and a major
+  conference before defending.
+
+# ---------------------------------------------------------------------------
+# TEMPLATE -- to ADD a student, copy these two lines under the right heading
+# ("== PhD students" or "== Master students"); to REMOVE a student, delete
+# all three lines. The "\n" at the end of a line forces a line break.
+# Leave a blank line before this comment block.
+#
+# - *Full Name* \M PhD, since 2026.\n
+#   Research: topic in one sentence.\n
+#   Email: [name@example.edu]
+#
