@@ -34,3 +34,5 @@ eqs/
 *.swp
 .DS_Store
 Thumbs.db
+
+guide.md
