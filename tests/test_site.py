@@ -28,7 +28,6 @@ from bs4 import BeautifulSoup
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SRC = os.path.join(ROOT, "www")
 BUILD = os.path.join(ROOT, "build.py")
-BASE_URL = "https://phuongluuvo.github.io/"
 
 #: jemdoc emits a few obsolete-but-harmless attributes; html5lib reports them
 #: as parse errors and we do not want the test-suite to fail because of them.
@@ -142,13 +141,8 @@ def test_static_assets_are_copied(site):
         "images/portrait.svg",
         "files/cv.pdf",
         ".nojekyll",
-        "CNAME",
     ):
         assert (site / relative).is_file(), "missing asset: %s" % relative
-
-
-def test_cname_has_the_custom_domain(site):
-    assert (site / "CNAME").read_text(encoding="utf-8").strip() == "phuongluuvo.me"
 
 
 # --------------------------------------------------------------------------- #

@@ -5,7 +5,8 @@ This repository is the personal website of Assoc. Prof. Phuong Luu Vo: static
 equations, published with GitHub Pages.
 
 **Read [`guide.md`](guide.md) before changing anything.** It is the full manual for both humans
-and agents; §13 is the agent-specific part. [`README.md`](README.md) covers the tooling.
+and agents; §13 is the agent-specific part. It is the only manual — nothing is duplicated
+elsewhere.
 
 ## The five rules that matter most
 
@@ -65,7 +66,7 @@ python build.py
 grep -l 'Your new menu label' _site/*.html    # expect all 11 pages
 ```
 
-The suite (44 tests, `tests/test_site.py`) catches broken links, a menu entry pointing at a
+The suite (`tests/test_site.py`) catches broken links, a menu entry pointing at a
 renamed page, a page that fails to highlight itself, a bare `&`, malformed HTML, invalid UTF-8
 (or a code-page lookalike character), a missing stylesheet or `<h1>`, missing MathJax, a
 malformed publication list, a publication that never reaches the News page, a Home-page news
@@ -85,5 +86,5 @@ block that drifts from the News page, CRLF line endings, and an invalid CI workf
 * Reformat the CRLF → LF normalisation in `build.py`, or save `.jemdoc` files as CRLF. jemdoc
   treats a CRLF blank line as non-blank and silently swallows paragraphs.
 * Modify `tools/jemdoc` casually. It is vendored upstream jemdoc + MathJax 0.7.3 with **five**
-  local fixes marked `LOCAL FIX` (`README.md` §5). Keep them all intact.
+  local fixes marked `LOCAL FIX` (`guide.md` §2). Keep them all intact.
 * Mass-rewrite page content to "improve" style; content belongs to the site owner.

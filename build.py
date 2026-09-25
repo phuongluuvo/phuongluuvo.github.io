@@ -10,7 +10,8 @@ WHAT IT DOES
        line endings, so this step makes the build work the same everywhere.)
     3. Runs ``tools/jemdoc`` on every page, which produces ``*.html``.
     4. Copies the generated HTML plus the static folders
-       (``css/``, ``files/``, ``images/``) and ``CNAME`` into the output folder.
+       (``css/``, ``files/``, ``images/``) into the output folder, and writes the
+       ``.nojekyll`` marker that stops GitHub Pages from running Jekyll.
 
 USAGE
     python build.py                  build the site into ``_site/`` (default)
@@ -191,12 +192,6 @@ def build(outdir: str) -> None:
     # GitHub Pages must not run Jekyll over the output.
     with open(os.path.join(outdir, ".nojekyll"), "w", encoding="utf-8") as handle:
         handle.write("")
-
-    for extra in ("CNAME",):
-        source = os.path.join(ROOT, extra)
-        destination = os.path.join(outdir, extra)
-        if os.path.isfile(source) and os.path.abspath(source) != os.path.abspath(destination):
-            shutil.copyfile(source, destination)
 
     print("Build finished.")
     print("  output folder : %s" % outdir)
