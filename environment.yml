@@ -5,8 +5,9 @@
 #   python build.py
 #
 # Python 3.9+ is enough for build.py (it only uses the standard library).
-# The extra packages below exist so that the test-suite can parse and validate
-# the generated HTML.
+# The packages below exist so that the test-suite can parse and validate the
+# generated HTML. requirements.txt holds the same list for pip -- keep the two
+# in sync.
 name: vtlp
 
 channels:
@@ -18,9 +19,4 @@ dependencies:
   - lxml                # fast parser backend for beautifulsoup4
   - html5lib            # strict HTML5 parser, catches malformed nesting
   - pytest              # test runner
-  - requests            # used by the optional link/preview checks
   - pyyaml              # validates .github/workflows/*.yml in the tests
-
-  - pip
-  - pip:
-      - pytest-html

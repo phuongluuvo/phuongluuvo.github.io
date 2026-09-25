@@ -1,38 +1,37 @@
 # jemdoc: menu{menu.jemdoc}{awards.html}, notime
 = Awards & Grants
-Research funding, prizes, and invited talks
+Research funding, prizes, and the patent
 
 == Research grants
 
-- *2026--2028* \M *Principal Investigator*, "Reconfigurable intelligent surfaces for
-  energy-efficient coverage," Example National Research Programme. Budget: XXX,000.
-- *2025--2027* \M *Principal Investigator*, "Learning-based resource allocation for 6G
-  networks," Example University Research Fund. Budget: XX,000.
-- *2023--2024* \M *Co-Investigator*, "Measurement campaign for urban small cells,"
-  Example Industry Partnership. Budget: XX,000.
+- *2020--2022* \M *Principal Investigator*, "Applying a distributed training model for resource
+  allocation in edge caching networks" (DS2020-28-01), VNU-HCM. Budget: 500 million VND.
+- *2016--2018* \M *Principal Investigator*, "Resource management optimization in cache-enabled
+  mobile networks" (102.02-2015.36), Nafosted. Budget: 460 million VND.
+- *2015--2016* \M *Principal Investigator*, "Optimizing the content placement in caching
+  networks supporting adaptive bit-rate streaming" (C2015-28-01), VNU-HCM.
+  Budget: 50 million VND.
+- *2013--2015* \M *Key member*, "Performance improvement of multipath TCP congestion control
+  algorithms" (102.02-2013.48), Nafosted. Budget: 584 million VND.
 
 == Awards and honours
 
-- *2025* \M Best Paper Award, Example Symposium on Network Optimization (ESNO).
-- *2024* \M Outstanding Young Researcher Award, Example University.
-- *2022* \M Teaching Excellence Award, Department of Communications Engineering.
-- *2020* \M Best Paper Award, Example International Conference on Communications.
+- *2018* \M Outstanding Scientific Publication Award for Individual, academic year 2017--2018,
+  VNU-HCM.
+- *1996* \M Third prize, National Mechanical Olympic Competition (Hydraulics).
 
-== Invited talks and keynotes
+== Patent
 
-- *2026* \M "Learning to allocate resources in wireless networks," Example Workshop on
-  Future Wireless Networks.
-- *2025* \M Panel speaker, Example Conference on Network Economics.
-- *2024* \M Invited seminar, Example Research Institute.
-
-== Editorial and reviewing service
-
-- Associate Editor, /Example Transactions on Communications/ (since 20XX).
-- Technical Program Committee member: EICC, EGLOBECOM, ESNO (20XX--present).
-- Reviewer for /Example Transactions on Wireless Communications/, /Example Journal on
-  Selected Areas in Communications/, and others.
+- "Method for managing width of window in multi-path TCP," Korean Intellectual Property Office
+  (KIPO).
 
 # ---------------------------------------------------------------------------
 # TEMPLATE -- add an entry with one bullet line, e.g.:
 # - *2027* \M Award or grant description in one sentence.
 #
+# NOTE: this list was built from the ORCID record
+# (https://orcid.org/0000-0003-3909-4385) and the HCMIU faculty page
+# (https://it.hcmiu.edu.vn/user/vtlphuong/). The "invited talks" section that shipped
+# with the demo was removed because none of it could be verified -- add yours back
+# here as they happen.
+# ---------------------------------------------------------------------------

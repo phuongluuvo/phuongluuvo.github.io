@@ -9,8 +9,13 @@
 *.yml     text eol=lf
 *.md      text eol=lf
 *.bib     text eol=lf
+*.txt     text eol=lf
 *.svg     text eol=lf
 Makefile  text eol=lf
+
+# These two are read by git itself, so keep them LF as well.
+.gitattributes text eol=lf
+.gitignore     text eol=lf
 
 # Real binary files.
 *.pdf     binary

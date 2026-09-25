@@ -1,0 +1,32 @@
+# news-extra.txt -- the hand-written half of the News page.
+#
+# News is built from two sources, newest first:
+#
+#   1. every entry on the Publications page -- so a paper that arrives through
+#      ORCID, or that you paste into publications-extra.bib, appears in the News
+#      by itself;
+#   2. the lines in THIS file -- grants, talks, awards, new students, anything
+#      that is not a paper.
+#
+# Nothing here is published; this file stays on your computer.
+#
+# FORMAT -- one announcement per line:
+#
+#     YYYY-MM-DD | the text of the announcement
+#
+# The date must come first, then a vertical bar, then the text. Write the month
+# as two digits. Items are sorted automatically, so the order of the lines does
+# not matter. Anything after the date can be plain text, and
+# [a label](https://link) becomes a link.
+#
+# EXAMPLES -- uncomment (delete the leading "#") to use:
+#
+# 2026-09-01 | Three new papers accepted at [IEEE ICC 2026](https://icc2026.ieee-icc.org/).
+# 2026-06-15 | Invited talk at the Vietnam School of Information Theory.
+# 2026-03-02 | Welcome to two new thesis students joining the group this term.
+# 2025-11-20 | Awarded a two-year research grant by the national foundation.
+#
+# Only the two most recent years are shown in full on the News page; older years
+# are collapsed behind a click. The Home page always shows the four newest items.
+#
+# After editing, run:  make update

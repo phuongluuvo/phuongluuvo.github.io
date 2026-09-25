@@ -1,0 +1,64 @@
+# jemdoc: menu{menu.jemdoc}{joining.html}, notime
+= For Students
+Prethesis, thesis, and internship projects
+
+I supervise *prethesis*, *thesis*, and *internship* projects at the School of Computer Science
+and Engineering, International University (VNU-HCM). This page explains what that involves and
+how to get in touch.
+
+== The three kinds of project
+
+~~~
+{What I supervise}
+- *Prethesis*: a first research project, usually in the final year of the undergraduate
+  programme.
+- *Thesis*: a full undergraduate or Master thesis, over one or two semesters.
+- *Internship*: a shorter project, typically running for 8--16 weeks.
+
+The label changes, the work does not: read the literature, choose one clear question, build or
+reproduce a method, and measure it honestly.
+~~~
+
+== What I work on
+
+My current interests are distributed and federated learning, deep reinforcement learning for
+networks, semantic communication, and wireless and mobile networking with the Internet of
+Things. See [biography.html Biography] for the full list and
+[publications.html Publications] for the papers behind it.
+
+The easiest way to find a topic is to open the two or three most recent papers on the
+Publications page and ask which one you would like to understand deeply enough to extend.
+
+== How we work
+
+- One individual meeting each week, plus a group seminar.
+- You are expected to read actively, write down what you understand, and present your work
+  regularly -- including the weeks when it is not going well.
+- The goal is a result you can defend: a clear question, a method, and evidence.
+
+== How to get in touch
+
+Write to [vtlphuong@hcmiu.edu.vn] and include:
+
+- your *transcript* and your *CV*;
+- a short statement of the topics you would like to work on;
+- anything that shows how you work -- a course project, a report, a repository.
+
+Say which of the three kinds of project you are applying for, and when you would start.
+
+# ---------------------------------------------------------------------------
+# NOTE: this page was assembled only from information that already existed on the
+# site (the Home and Biography pages). The concrete details of your own process --
+# deadlines, how many places are open each semester, formal requirements, and the
+# list of currently open topics -- are not published anywhere I could read, so
+# they were deliberately left out rather than invented.
+#
+# Add them as new sections, for example:
+#
+# == Open topics
+#
+# === T1. Short topic title (open)
+# *Question:* the one question the project answers.\n
+# *Scope:* what the student will actually do, step by step.\n
+# *Prerequisites:* tools and background needed.
+# ---------------------------------------------------------------------------

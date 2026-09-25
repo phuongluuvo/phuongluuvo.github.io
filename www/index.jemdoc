@@ -1,40 +1,39 @@
 # jemdoc: menu{menu.jemdoc}{index.html}, title{Home}, notime
 = Phuong Luu Vo
-Associate Professor, Department of Communications Engineering, Example University
+Associate Professor, School of Computer Science and Engineering, International University (VNU-HCM)
 
 ~~~
 {}{img_left}{images/portrait.svg}{Portrait of Phuong Luu Vo}{175}{}{}
-Welcome! I am an Associate Professor in the Department of Communications Engineering at
-Example University, where I lead the *Wireless Networks and Optimization (WNO) Group*.
+Welcome! I am an Associate Professor at the School of Computer Science and Engineering,
+International University -- Vietnam National University Ho Chi Minh City, where I lead the
+*Network Optimization and Distributed Learning* group.
 
-My research sits at the boundary between communication theory and optimization: I work on
-resource allocation, stochastic and convex optimization, learning-based network control, and
-the performance analysis of emerging wireless systems such as reconfigurable intelligent
-surfaces and large antenna arrays. Please have a look at my [publications.html Publications]
-and at the work of my [students.html research group].
+My research covers distributed computing and distributed learning, machine learning and deep
+reinforcement learning, and wireless and mobile networking with the Internet of Things. Recent
+work is on semantic communication, federated and edge learning, and adaptive video streaming
+over multipath and cache-enabled networks. Please have a look at my
+[publications.html Publications] and at the work of my [students.html research group].
 
 I am currently looking for motivated students for *prethesis*, *thesis*, and *internship*
-projects. Before you write to me, please read the [prospective.html Prospective Students]
-page carefully -- it explains the whole process, the requirements, and the topics that are
-currently open.
+projects. See [joining.html For Students] for what that involves and how to get in touch.
 ~~~
 
-== Contact and office hours
+== Contact
 
 ~~~
 {Contact}
-- *Email*: [phuong.luuvo@example.edu]
-- *Office*: Building B1, Room 305, Example University
-- *Office hours*: Tuesday 14:00--16:00 and Thursday 10:00--11:00 (or by appointment)
+- *Email*: [vtlphuong@hcmiu.edu.vn]
+- *Office*: Room 610, International University, Block 6, Linh Trung Ward, Thu Duc District,\n
+  Ho Chi Minh City, Vietnam
+- *Telephone*: (84-8) 37244270, ext. 3232 \M *Fax*: (84-8) 37244271
 
-I normally reply to email within a few working days. For thesis and prethesis enquiries,
-please include your transcript, your CV, and a short statement of the topics you are
-interested in.
+For thesis and prethesis enquiries, please include your transcript, your CV, and a short
+statement of the topics you are interested in.
 ~~~
 
 == Quick links
 
-[files/cv.pdf Download my CV (PDF)] \M [https://scholar.google.com/citations?user=XXXXXXXX Google Scholar] \M [https://orcid.org/0000-0000-0000-0000 ORCID] \M [https://www.researchgate.net/profile/Phuong-Luu-Vo ResearchGate] \M [https://github.com/phuongluuvo GitHub]
+[https://orcid.org/0000-0003-3909-4385 ORCID] \M [https://scholar.google.com/citations?user=6DmQXO4AAAAJ Google Scholar] \M [https://www.scopus.com/authid/detail.uri?authorId=37049664100 Scopus] \M [https://it.hcmiu.edu.vn/user/vtlphuong/ HCMIU profile] \M [https://github.com/phuongluuvo GitHub]
 
 == Research at a glance
 
@@ -56,12 +55,19 @@ check that the mathematics on this site renders correctly in your browser.
 
 == Latest news
 
-- *September 2026* \M Two papers accepted at the Example International Conference on
-  Communications (EICC 2026). Congratulations to the whole group!
-- *August 2026* \M New journal paper on learning-based power control accepted in
-  /Example Transactions on Wireless Communications/.
-- *June 2026* \M Our group received a two-year research grant on reconfigurable intelligent
-  surfaces. See [awards.html Awards & Grants].
-- *May 2026* \M Welcome to two new PhD students, who joined the group this semester.
+# Everything between the two GENERATED markers is rewritten by tools/update_site.py
+# from your publications (ORCID + www/publications-extra.bib) and from
+# www/news-extra.txt. Delete the markers to take manual control of this section.
+# BEGIN GENERATED latest-news
+~~~
+{}{raw}
+<ul class="news">
+<li><span class="news-date">2027</span> <span class="news-text">Book chapter published in <i>Lecture Notes in Computer Science</i>: “Multi-domain Time Series Reconstruction with Frequency-Enhanced Transformers”. <a href="https://doi.org/10.1007/978-981-92-2480-7_33" target="blank">doi</a></span></li>
+<li><span class="news-date">2026-06-01</span> <span class="news-text">Book chapter published in <i>Lecture Notes in Computer Science</i>: “Secure Semantic Communications with Adversarial Training and Active Eavesdropper”. <a href="https://doi.org/10.1007/978-981-92-0074-0_32" target="blank">doi</a></span></li>
+<li><span class="news-date">2026-02</span> <span class="news-text">Journal paper published in <i>ICT Express</i>: “A lightweight-to-diffusion framework for semantic image communications”. <a href="https://doi.org/10.1016/j.icte.2025.12.013" target="blank">doi</a></span></li>
+<li><span class="news-date">2026</span> <span class="news-text">Book chapter published in <i>Communications in Computer and Information Science</i>: “Semantic Communication with Transformer and Knowledge Distillation for Language Translation”. <a href="https://doi.org/10.1007/978-3-032-10209-6_8" target="blank">doi</a></span></li>
+</ul>
+~~~
+# END GENERATED latest-news
 
 [news.html See all news]

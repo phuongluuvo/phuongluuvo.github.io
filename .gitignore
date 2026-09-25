@@ -5,13 +5,29 @@ __pycache__/
 .venv/
 venv/
 
-# The build output folder used by the GitHub Actions workflow (make site).
-# The HTML that GitHub Pages actually serves is generated into the repository
-# root, and that HTML *is* committed -- do not ignore *.html here.
+# ---------------------------------------------------------------------------
+# Generated site output
+#
+# `python build.py` writes the WHOLE site into _site/ from the sources in www/.
+# Nothing in the output folder is hand-written, so none of it is committed:
+# GitHub Actions builds it on every push and deploys it. Edit www/, never the
+# output.
+#
+# The rules anchored with a leading "/" are belt and braces. They block the old
+# layout, in which the generated pages sat in the repository root next to the
+# sources. Anchoring keeps www/ completely unaffected by them.
+# ---------------------------------------------------------------------------
 _site/
+/docs/
+
+/*.html
+/css/
+/files/
+/images/
+/.nojekyll
 
 # jemdoc equation cache. Only created if you ever switch jemdoc from MathJax
-# to its built-in LaTeX equation mode (see GUIDE.md).
+# to its built-in LaTeX equation mode (see guide.md).
 eqs/
 
 # Editor / OS noise

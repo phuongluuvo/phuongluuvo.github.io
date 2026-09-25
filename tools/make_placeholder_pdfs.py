@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-make_placeholder_pdfs.py -- create the dummy PDF files that ship with this site.
+make_placeholder_pdfs.py -- create the dummy PDF that ships with this site.
 
-The website links to a CV and to course materials. So that the demo has no broken
-links, this script writes tiny, valid, single-page PDFs that simply say "placeholder".
-Replace them with the real documents (same file names) and you are done.
+The website links to a CV. So that the demo has no broken link, this script writes
+a tiny, valid, single-page PDF that simply says "placeholder". Replace it with the
+real document (same file name) and you are done.
+
+Course materials are deliberately NOT stored here: they are linked from a separate
+GitHub repository instead. See www/courses.jemdoc.
 
 Usage:
     python tools/make_placeholder_pdfs.py
@@ -63,42 +66,15 @@ def make_pdf(path: str, title: str, body: list[str]) -> None:
     print("wrote %s" % os.path.relpath(path, os.path.dirname(HERE)))
 
 
+#: Only the CV ships with the site. Course materials are linked from a separate
+#: GitHub repository (see www/courses.jemdoc), so no placeholder slides are written.
 PLACEHOLDERS = {
     "cv.pdf": (
         "Curriculum Vitae - PLACEHOLDER",
         [
             "This is a placeholder file.",
             "Replace it with your real CV, keeping the file name cv.pdf.",
-            "The website links to it from the Home and About me pages.",
-        ],
-    ),
-    "syllabus.pdf": (
-        "Syllabus - PLACEHOLDER",
-        [
-            "This is a placeholder file.",
-            "Replace it with the real syllabus of your course.",
-            "Every course on the Courses page links to this file.",
-        ],
-    ),
-    "lecture-01.pdf": (
-        "Lecture 1 - PLACEHOLDER",
-        [
-            "This is a placeholder file.",
-            "Replace it with the real slide deck, keeping the file name.",
-        ],
-    ),
-    "lecture-02.pdf": (
-        "Lecture 2 - PLACEHOLDER",
-        [
-            "This is a placeholder file.",
-            "Replace it with the real slide deck, keeping the file name.",
-        ],
-    ),
-    "lecture-03.pdf": (
-        "Lecture 3 - PLACEHOLDER",
-        [
-            "This is a placeholder file.",
-            "Replace it with the real slide deck, keeping the file name.",
+            "It is not linked from any page yet: add the link when the CV is real.",
         ],
     ),
 }

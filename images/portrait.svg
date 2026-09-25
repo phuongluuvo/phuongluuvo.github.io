@@ -1,7 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 350 430" width="350" height="430" role="img" aria-label="Portrait photo placeholder">
-  <rect width="350" height="430" fill="#e9eef5"/>
-  <text x="175" y="44" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" fill="#8494a8">Photo placeholder</text>
-  <circle cx="175" cy="196" r="68" fill="#c6d2e0"/>
-  <path d="M38 430c0-80 61-134 137-134s137 54 137 134z" fill="#c6d2e0"/>
-  <text x="175" y="414" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" fill="#5f7089">www/images/portrait.svg</text>
-</svg>

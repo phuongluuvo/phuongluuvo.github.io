@@ -1,0 +1,102 @@
+% ===========================================================================
+% EXTRA PUBLICATIONS -- BibTeX for anything that is NOT in your ORCID record.
+%
+% Paste entries below. They are merged into the Publications page by the same
+% generator that reads ORCID, sorted into the correct year, displayed in
+% exactly the same style, and announced on the News page as well.
+%
+% HOW TO USE
+%   1. Paste a normal BibTeX entry below (from the publisher, from Zotero, or
+%      from Google Scholar's "Cite > BibTeX").
+%   2. Run:   make update
+%   3. Commit both www/publications-extra.bib and the regenerated
+%      www/publications.jemdoc (and www/news.jemdoc).
+%
+% RULES
+%   * Lines starting with % are comments. Keep an entry commented out until you
+%     are ready to publish it.
+%   * The order in this file does not matter: the page is always sorted by year,
+%     newest first.
+%   * An entry whose DOI or title already appears in ORCID is skipped, so it is
+%     safe to paste something today and let ORCID pick it up later.
+%   * To remove an entry from the site, delete it here and re-run.
+%   * `make update` needs the internet. To rebuild the generated pages from this
+%     file alone (no ORCID, no Crossref), run:
+%         python tools/update_site.py --offline
+%
+% WHAT THE GENERATOR READS
+%   @article                                    -> Journal
+%   @inproceedings, @conference                 -> Conference
+%   @incollection, @inbook, @book               -> Book chapter
+%   @phdthesis, @mastersthesis                  -> Thesis
+%   @techreport                                 -> Report
+%   @unpublished, @misc                         -> Preprint / Other
+%
+%   author, title, journal / booktitle, year, month, volume, number, pages,
+%   doi, publisher, note
+%
+%   LaTeX is tidied up for the web page: "and" separates authors, "Last, First"
+%   becomes "First Last", page ranges written -- become an en dash, and \& ~ \"o
+%   and friends are cleaned up. `note` is shown in small text after the entry,
+%   which is handy for "Best paper award".
+% ---------------------------------------------------------------------------
+% The four entries below are real publications that appear on your HCMIU faculty
+% page but are missing from ORCID. They were typed in by hand from that page, so
+% please check the volume/number/pages against the papers themselves. Delete any
+% you do not want, or delete all of them -- the file works fine when empty.
+% ---------------------------------------------------------------------------
+
+@article{vo2013network,
+  author  = {Vo, Phuong Luu and Tran, Nguyen H. and Hong, Choong Seon and Lee, Sungwon},
+  title   = {Network Utility Maximisation Framework with Multiclass Traffic},
+  journal = {IET Networks},
+  volume  = {2},
+  number  = {3},
+  month   = {sep},
+  year    = {2013}
+}
+
+@inproceedings{vo2013multipath,
+  author    = {Vo, Phuong L. and Le, Anh T. and Hong, Choong S.},
+  title     = {A Multipath Receiver-driven Congestion Control Protocol for Content-centric Network},
+  booktitle = {International Conference on Future Internet Technologies (CFI)},
+  address   = {Beijing, China},
+  month     = {jun},
+  year      = {2013}
+}
+
+@article{vo2014content,
+  author  = {Vo, Phuong Luu and Le, Tuan-Anh and Ullah, Saeed and Dang, Duc Ngoc Minh},
+  title   = {Content Caching for Adaptive Bit-Rate Streaming in Cache Networks},
+  journal = {Journal of Science and Technology (Vietnamese Academy of Science and Technology)},
+  month   = {nov},
+  year    = {2014}
+}
+
+@article{nguyen2019performance,
+  author  = {Nguyen, Trung Thuan and Vu, Duy Khanh and Vo, Phuong L. and Le, Chau and Nguyen, Quang Duy},
+  title   = {Performance of DASH over Multipath TCP},
+  journal = {REV Journal on Electronics and Communications},
+  volume  = {9},
+  number  = {1-2},
+  month   = {jan},
+  year    = {2019},
+  doi     = {10.21553/rev-jec.226}
+}
+
+% ---------------------------------------------------------------------------
+% TEMPLATE -- copy this, remove the % signs, and fill it in.
+%
+% @article{vo2027shortkey,
+%   author  = {Vo, Phuong L. and Family, Given},
+%   title   = {Title of the paper},
+%   journal = {Journal Name},
+%   volume  = {12},
+%   number  = {3},
+%   pages   = {45--67},
+%   month   = {jun},
+%   year    = {2027},
+%   doi     = {10.0000/example.2027.0001}
+% }
+%
+% ---------------------------------------------------------------------------

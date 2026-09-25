@@ -1,0 +1,29 @@
+# Test dependencies for tests/test_site.py.
+#
+# These are needed ONLY to run the test-suite. build.py itself uses nothing but
+# the Python standard library (3.9+), so you can build the whole site with no
+# packages installed at all.
+#
+#   python -m venv .venv
+#   .venv\Scripts\python -m pip install -r requirements.txt    # Windows
+#   .venv/bin/python   -m pip install -r requirements.txt      # macOS / Linux
+#   python -m pytest
+#
+# Conda users: use environment.yml instead, which creates the "vtlp" environment
+# with the same packages. Keep the two lists in sync when you change one.
+#
+# What each package is for:
+#
+#   beautifulsoup4  parse the generated HTML
+#   lxml            fast parser backend for beautifulsoup4
+#   html5lib        strict HTML5 parser, catches malformed nesting
+#   pytest          test runner
+#   pyyaml          validates .github/workflows/*.yml
+#
+# (Keep this list comment-only: comments may not appear on the same line as a
+# package name, because not every requirements parser tolerates inline comments.)
+beautifulsoup4
+lxml
+html5lib
+pytest
+pyyaml
