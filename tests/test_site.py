@@ -1148,8 +1148,12 @@ def test_ci_refreshes_the_generated_pages_but_tolerates_a_failure():
 
 def test_the_generated_pages_are_committed():
     """CI builds from a fresh checkout, so a generated page that was never
-    committed would silently disappear from the deployed site."""
-    names = ["www/publications.jemdoc", "www/news.jemdoc"]
+    committed would silently disappear from the deployed site.
+
+    Both live in subfolders of www/ now; the paths come from the constants at the
+    top of this file so a move only has to be made once.
+    """
+    names = [label for label, _path in GENERATED_SOURCES]
     try:
         result = subprocess.run(["git", "ls-files", "--error-unmatch"] + names,
                                 cwd=ROOT, capture_output=True, text=True)
