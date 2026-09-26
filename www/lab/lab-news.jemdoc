@@ -1,16 +1,7 @@
 # jemdoc: menu{menu-lab.jemdoc}{lab-news.html}, notime
 = Lab news
-New members, defended theses, accepted papers, talks and visitors
-
-Announcements about the group. The site owner writes these by hand -- unlike the
-[news.html main News page], nothing here is generated.
 
 == This year
-
-~~~
-{No announcements yet}
-Add the first one below, then rebuild with *python build.py*.
-~~~
 
 == Earlier
 

@@ -17,7 +17,7 @@ give a seminar talk, and how to use Git and LaTeX for your thesis.
 <details class="materials" open>
 <summary>Seminar plan and slides</summary>
 <ul>
-<li><a href="https://raw.githubusercontent.com/YOUR-GITHUB-USER/YOUR-COURSE-REPO/main/seminar/seminar-plan.pdf" target="blank">Seminar plan and schedule (PDF)</a></li>
+<li><a href="%%SHARED%%/seminar-plan.pdf" target="blank">Seminar plan and schedule (PDF)</a></li>
 </ul>
 </details>
 ~~~

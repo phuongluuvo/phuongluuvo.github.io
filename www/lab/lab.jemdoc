@@ -1,0 +1,20 @@
+# jemdoc: menu{menu-lab.jemdoc}{lab.html}, title{Lab}, notime
+= Edge AI Lab
+
+The Edge AI Lab works on the algorithms behind networked intelligence: how computation is split
+between a device and the edge, how learning survives when the data cannot be pooled, and how
+the network underneath decides what is possible.
+
+== What we work on
+
+- Semantic communication and edge intelligence
+- Federated and distributed learning under limited communication
+- Deep reinforcement learning for network control
+- Resource allocation, caching and adaptive streaming
+- Optimization and game theory for shared resources
+
+
+#== Projects and funding
+
+#- [lab-projects.html Projects] -- what is running now and what has finished.
+#- [awards.html Awards & Grants] -- the grants, prizes and the patent behind them.

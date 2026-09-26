@@ -4,9 +4,11 @@
 build.py -- build the website of Assoc. Prof. Phuong Luu Vo.
 
 WHAT IT DOES
-    1. Collects every ``www/*.jemdoc`` file that is a page: `mysite.conf` and
-       every ``menu*.jemdoc`` are skipped, because a menu is included by the
-       pages that use it rather than built into one of its own.
+    1. Collects every ``.jemdoc`` file anywhere under ``www/`` that is a page:
+       ``mysite.conf`` and every ``menu*.jemdoc`` are skipped, because a menu is
+       included by the pages that use it rather than built into one of its own.
+       Subfolders under ``www/`` organise the sources -- every page is built to
+       the top of the output folder, so its address is still ``name.html``.
     2. Copies them plus ``www/mysite.conf`` into a temporary staging folder,
        normalising line endings to LF. (jemdoc is sensitive to Windows CRLF
        line endings, so this step makes the build work the same everywhere.)
@@ -62,6 +64,17 @@ ASSET_DIRS = ("css", "files", "images")
 #: from an earlier build, so that a hand-written file is never removed.
 GENERATED_MARKER = "GENERATED FILE"
 
+#: A page writes %%NAME%% where it wants the address that NAME stands for in the
+#: [materials] section of www/mysite.conf, e.g. %%IT545%%/lec1.pdf. That is how a
+#: course keeps its lecture notes in a repository of its own without the address
+#: appearing anywhere in the page.
+MATERIALS_TOKEN = re.compile(r"%%([A-Za-z0-9_-]+)%%")
+MATERIALS_SECTION = "[materials]"
+
+#: Folders inside www/ that are copied to the output rather than searched for
+#: pages, so a .jemdoc file dropped in one of them is not built.
+ASSET_DIRS: tuple[str, ...] = ("css", "files", "images")
+
 
 # --------------------------------------------------------------------------- #
 # helpers
@@ -73,8 +86,62 @@ def read_text_lf(path: str) -> str:
         return handle.read().replace("\r\n", "\n").replace("\r", "\n")
 
 
+def read_materials() -> dict[str, str]:
+    """The ``[materials]`` settings from ``www/mysite.conf``: name -> address.
+
+    One line per place the course files live::
+
+        [materials]
+        it545   https://raw.githubusercontent.com/USER/REPO/BRANCH
+        shared  https://raw.githubusercontent.com/USER/OTHER/main
+
+    A jemdoc section ends at the first blank line, and a line starting with ``#``
+    is a comment, so the ordinary lines between those are the settings.
+    """
+    path = os.path.join(SRC, CONF)
+    if not os.path.isfile(path):
+        return {}
+    text = read_text_lf(path)
+    start = text.find(MATERIALS_SECTION)
+    if start < 0:
+        return {}
+    found: dict[str, str] = {}
+    for line in text[start + len(MATERIALS_SECTION):].split("\n")[1:]:
+        line = line.strip()
+        if not line:
+            break                   # the section ends at the first blank line
+        if line.startswith("#"):
+            continue
+        parts = line.split(None, 1)
+        if len(parts) == 2 and parts[1].strip():
+            found[parts[0].lower()] = parts[1].strip().rstrip("/")
+    return found
+
+
+def fill_materials(name: str, text: str, materials: dict[str, str]) -> str:
+    """Replace every %%NAME%% in one page with the address the conf file gives.
+
+    An unknown name stops the build rather than being left in the page, where it
+    would become a link that quietly goes nowhere.
+    """
+    used = {match.group(1).lower() for match in MATERIALS_TOKEN.finditer(text)}
+    unknown = sorted(used - set(materials))
+    if unknown:
+        sys.exit(
+            "error: www/%s uses %s, but www/%s has no such line under %s.\n"
+            "       Add one line per place the files live, for example:\n"
+            "\n"
+            "           %s\n"
+            "           %s   https://raw.githubusercontent.com/USER/REPO/BRANCH\n"
+            % (name,
+               ", ".join("%%%s%%" % word.upper() for word in unknown),
+               CONF, MATERIALS_SECTION, MATERIALS_SECTION, unknown[0].upper())
+        )
+    return MATERIALS_TOKEN.sub(lambda match: materials[match.group(1).lower()], text)
+
+
 def is_menu_file(name: str) -> bool:
-    """True for a ``www/menu*.jemdoc`` file, e.g. menu.jemdoc or menu-lab.jemdoc.
+    """True for a ``menu*.jemdoc`` file, e.g. menu.jemdoc or menu-lab.jemdoc.
 
     Every page includes exactly one menu, and the lab pages use a different one,
     so the sidebar changes inside the lab without touching the rest of the site.
@@ -82,22 +149,49 @@ def is_menu_file(name: str) -> bool:
     return name.startswith("menu") and name.endswith(".jemdoc")
 
 
+def output_name(relative: str) -> str:
+    """The page a source becomes: ``teaching/it545.jemdoc`` -> ``it545.html``.
+
+    Subfolders in ``www/`` are organisation only. Every page is built to the top
+    of the output folder, so a visitor's address is still ``it545.html`` and the
+    links between pages never have to know where a source is kept.
+    """
+    return os.path.basename(relative)[: -len(".jemdoc")] + ".html"
+
+
 def find_pages() -> list[str]:
-    """Return the names of all .jemdoc pages, alphabetically.
+    """Every page source, as a path relative to ``www/``, alphabetically.
 
     A menu file is *included* by the pages that use it, so it is not a page
     itself. There is more than one: www/menu.jemdoc for the main site and
-    www/menu-lab.jemdoc for the Edge AI Lab pages, whose sidebar is different.
+    www/menu-lab.jemdoc for the pages of the Edge AI Lab, whose sidebar differs.
     """
-    pages = [
-        name
-        for name in sorted(os.listdir(SRC))
-        if name.endswith(".jemdoc")
-        and name not in NOT_A_PAGE
-        and not is_menu_file(name)
-    ]
+    pages = []
+    for root, dirs, files in os.walk(SRC):
+        dirs[:] = [name for name in sorted(dirs) if name not in ASSET_DIRS]
+        for name in sorted(files):
+            if not name.endswith(".jemdoc"):
+                continue
+            if name == CONF or name in NOT_A_PAGE or is_menu_file(name):
+                continue
+            pages.append(os.path.relpath(os.path.join(root, name), SRC)
+                         .replace(os.sep, "/"))
+    pages.sort()
     if not pages:
         sys.exit("error: no .jemdoc pages found in %s" % SRC)
+
+    # Two sources with the same file name would both be built as the same page.
+    taken: dict[str, str] = {}
+    for relative in pages:
+        stem = output_name(relative)
+        if stem in taken:
+            sys.exit(
+                "error: www/%s and www/%s would both be built as %s.\n"
+                "       Subfolders are organisation only, so two pages cannot "
+                "share a name --\n       rename one of them."
+                % (taken[stem], relative, stem)
+            )
+        taken[stem] = relative
     return pages
 
 
@@ -288,15 +382,30 @@ def write_page(source: str, target: str, tidy: bool) -> None:
 
 
 def stage_sources(staging: str, pages: list[str]) -> None:
-    """Copy the .jemdoc sources (and the menu) into *staging* with LF endings."""
-    names = sorted(
-        name for name in os.listdir(SRC) if name.endswith(".jemdoc")
-    ) + [CONF]
-    for name in names:
-        source = os.path.join(SRC, name)
+    """Copy every source into *staging*, flattened, with LF endings.
+
+    jemdoc runs inside *staging* and resolves every relative path from there, so
+    the sources are laid out flat on the way in: ``www/teaching/it545.jemdoc``
+    arrives as ``it545.jemdoc``, beside the menus and the conf file. That is what
+    keeps the built addresses flat however the sources are arranged.
+
+    ``%%NAME%%`` is replaced here with the address ``www/mysite.conf`` gives for
+    NAME, so a page never spells out where its lecture notes live.
+    """
+    materials = read_materials()
+    sources: dict[str, str] = {CONF: os.path.join(SRC, CONF)}
+    for root, dirs, files in os.walk(SRC):
+        dirs[:] = [name for name in sorted(dirs) if name not in ASSET_DIRS]
+        for name in sorted(files):
+            if name.endswith(".jemdoc"):
+                sources[name] = os.path.join(root, name)
+
+    for name, source in sorted(sources.items()):
         if not os.path.isfile(source):
             continue
         text = read_text_lf(source)
+        if name.endswith(".jemdoc") and not is_menu_file(name):
+            text = fill_materials(name, text, materials)
         with open(os.path.join(staging, name), "w", encoding="utf-8", newline="\n") as handle:
             handle.write(text)
 
@@ -351,8 +460,8 @@ def _list_files(folder: str, prefix: str) -> list[str]:
 def clean(outdir: str, pages: list[str]) -> None:
     """Remove the generated HTML files."""
     removed = 0
-    for name in pages:
-        html = os.path.join(outdir, name[:-len(".jemdoc")] + ".html")
+    for relative in pages:
+        html = os.path.join(outdir, output_name(relative))
         if os.path.isfile(html):
             os.remove(html)
             removed += 1
@@ -371,11 +480,11 @@ def build(outdir: str, tidy: bool = True) -> None:
     staging = tempfile.mkdtemp(prefix="jemdoc-build-")
     try:
         stage_sources(staging, pages)
-        run_jemdoc(staging, pages)
+        run_jemdoc(staging, [os.path.basename(page) for page in pages])
 
         written = []
-        for name in pages:
-            html = name[:-len(".jemdoc")] + ".html"
+        for relative in pages:
+            html = output_name(relative)
             write_page(os.path.join(staging, html),
                        os.path.join(outdir, html), tidy)
             written.append(html)

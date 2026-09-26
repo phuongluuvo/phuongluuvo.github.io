@@ -15,6 +15,36 @@ the hard rules for AI agents and links back here; there is no third document to 
 
 ---
 
+## Start here
+
+Four commands, run in this folder. That is the whole workflow.
+
+```bash
+python build.py              # rebuild the site into _site/
+python build.py --serve      # rebuild, then look at it at http://localhost:8000
+python -m pytest             # run the checks (needs the "vtlp" environment)
+make verify                  # build and check, in one go
+```
+
+**To publish:** commit and push. GitHub rebuilds the site from `www/` and puts it online. There
+is no upload step, and nothing is visible to anyone until you push.
+
+**The one rule:** never edit a file inside `_site/`. It is the build's *output*; `build.py`
+rewrites all 15 pages on every run, so a change made there is wiped by the next build. Edit the
+matching `www/` file — the table in [§6.1](#61-which-file-do-i-edit) tells you which one for any
+given page.
+
+| | |
+| --- | --- |
+| **Sources** | everything you edit lives in `www/` |
+| **Output** | `_site/`, generated, gitignored, never committed |
+| **Publish** | `git push` — CI builds and deploys it |
+| **Course files** (notes, slides) | a repository of their own; its address is one line in `www/mysite.conf` — see [§9.4](#94-add-a-course) |
+| **Generated pages** | `www/research/publications.jemdoc` and `www/home/news.jemdoc` are written by `tools/update_site.py`; run `make update` |
+| **The one thing that bites** | editing `_site/` instead of `www/`, and not pushing |
+
+---
+
 ## Contents
 
 1. [Overview](#1-overview)
@@ -45,7 +75,7 @@ Pages**.
 | **jemdoc** | A tiny text-to-HTML converter. Plain-text `.jemdoc` files are compiled into `.html` files. jemdoc is *not* installed from PyPI — a vendored copy lives in `tools/jemdoc`. |
 | **MathJax 3** | Loaded client-side from the jsDelivr CDN. It typesets LaTeX (`$...$`, `\(...\)`) in the visitor's browser. Nothing is pre-rendered at build time, so equations need internet access to appear. |
 | **`build.py`** | The one build script. It normalises line endings, runs jemdoc over every source page, copies the assets, and clears out pages whose source has gone. Standard library only — no dependencies. |
-| **`tools/update_site.py`** | Regenerates the two generated pages. `www/publications.jemdoc` comes from the ORCID record, with the full author list, volume, pages and DOI from Crossref; `www/news.jemdoc` and the "Latest news" block on the Home page come from that same list plus `www/news-extra.txt`. Anything ORCID does not have yet goes into `www/publications-extra.bib`. Run `make update` when you publish something. |
+| **`tools/update_site.py`** | Regenerates the two generated pages. `www/research/publications.jemdoc` comes from the ORCID record, with the full author list, volume, pages and DOI from Crossref; `www/home/news.jemdoc` and the "Latest news" block on the Home page come from that same list plus `www/data/news-extra.txt`. Anything ORCID does not have yet goes into `www/data/publications-extra.bib`. Run `make update` when you publish something. |
 | **`tests/test_site.py`** | The automated checks on the *generated* site: no broken links, identical menu on every page, valid HTML and UTF-8, MathJax present, a well-formed publication list, and a news page that covers every publication. |
 
 **The one rule that matters:** you edit the `.jemdoc` sources in `www/`, and `build.py` turns
@@ -63,23 +93,31 @@ phuongluuvo.github.io/
 │   │                            page-title suffix, footer  (= the shared "include")
 │   ├── menu.jemdoc              sidebar for the main site
 │   ├── menu-lab.jemdoc          sidebar for the Edge AI Lab pages
-│   ├── index.jemdoc             Home (hero + About + Contact)   ─┐
-│   ├── news.jemdoc              News (GENERATED)                 │
-│   ├── awards.jemdoc            Awards & Grants                  │
-│   ├── interests.jemdoc         Research Interests               │
-│   ├── publications.jemdoc      Publications (GENERATED)         │
-│   ├── lab.jemdoc               Edge AI Lab      ┐               │
-│   ├── lab-members.jemdoc       Lab Members      │ own sidebar   ├─ one file = one page
-│   ├── lab-projects.jemdoc      Lab Projects     │               │
-│   ├── lab-news.jemdoc          Lab news         ┘               │
-│   ├── ee301.jemdoc             EE301            ┐               │
-│   ├── ee502.jemdoc             EE502            │ own sidebar   │
-│   ├── research-methods.jemdoc  Research Methods ┘               │
-│   ├── joining.jemdoc           Prethesis and Thesis             │
-│   ├── gallery.jemdoc           Gallery                          │
-│   └── mathjax-test.jemdoc      MathJax check page              ─┘
-│   ├── publications-extra.bib   BibTeX you add by hand (see §9.2)
-│   ├── news-extra.txt           your own announcements (see §9.1)
+│   │   ── the pages. One file = one page, and the folder is only for your own
+│   │      benefit: every page is built to the top of _site/, so its address is
+│   │      still name.html and no link has to know where the source lives.
+│   ├── home/                    the personal pages
+│   │   ├── index.jemdoc             Home (hero + About + Contact)
+│   │   └── news.jemdoc              News (GENERATED)
+│   ├── research/
+│   │   ├── interests.jemdoc         Research Interests
+│   │   ├── publications.jemdoc      Publications (GENERATED)
+│   │   ├── awards.jemdoc            Awards & Grants
+│   │   └── gallery.jemdoc           Gallery
+│   ├── teaching/
+│   │   ├── it545.jemdoc             IT545 -- one page, its files live elsewhere
+│   │   ├── ee502.jemdoc             EE502
+│   │   ├── research-methods.jemdoc  Research Methods Seminar
+│   │   └── joining.jemdoc           Prethesis and Thesis
+│   ├── lab/                     the Edge AI Lab, which has its own sidebar
+│   │   ├── lab.jemdoc               Lab home
+│   │   ├── lab-members.jemdoc       Members
+│   │   ├── lab-projects.jemdoc      Projects
+│   │   └── lab-news.jemdoc          Lab news
+│   ├── misc/mathjax-test.jemdoc the MathJax check page
+│   ├── data/                    the two files you edit by hand
+│   │   ├── news-extra.txt           your own announcements (see §9.1)
+│   │   └── publications-extra.bib   BibTeX ORCID does not have (see §9.2)
 │   ├── css/site.css             the stylesheet source
 │   ├── images/                  pictures shown on a page   ┐ copied into the output
 │   └── files/                   downloads (create it when  ┘ on every build
@@ -96,7 +134,7 @@ phuongluuvo.github.io/
 │
 ├── tools/                   helper scripts; jemdoc itself is third-party
 │   ├── jemdoc                   vendored jemdoc + MathJax 0.7.3 with 5 local fixes (see below)
-│   ├── update_site.py           regenerates www/publications.jemdoc and www/news.jemdoc
+│   ├── update_site.py           regenerates www/research/publications.jemdoc and www/home/news.jemdoc
 │   └── README-jemdoc.md         upstream jemdoc README (provenance and licence)
 │
 ├── .github/workflows/pages.yml  CI: build + deploy, and a rebuild-and-test job
@@ -111,6 +149,8 @@ phuongluuvo.github.io/
 | Folder | Purpose |
 | --- | --- |
 | `www/` | All hand-edited sources: pages, sidebars, control file, stylesheet, and assets. |
+| `www/home/`, `www/research/`, `www/teaching/`, `www/lab/`, `www/misc/` | The pages, grouped so the folder says what a page is for. **Organisation only** -- a page built from `www/teaching/it545.jemdoc` is still `it545.html` at the top level, and so is every link to it. |
+| `www/data/` | The two files you edit by hand: your own announcements, and BibTeX for papers ORCID does not have. |
 | `www/images/` | Pictures that appear **on a page**. Copied into the output on build. |
 | `www/files/` | Documents visitors **download**. Copied into the output on build. Absent until you have one. |
 | `tools/` | The generator, and vendored third-party tools. |
@@ -127,8 +167,8 @@ instead of an error.
 | --- | --- | --- |
 | a photo, a diagram or an icon shown **on a page** | `www/images/` | `images/your-file.png` |
 | a document a visitor **downloads** (CV, poster, syllabus) | `www/files/` | `files/your-file.pdf` |
-| a **course** handout, slide deck or exam paper | **not here** — a separate GitHub repository | the full `https://raw.githubusercontent.com/...` URL |
-| a new page | `www/` | — |
+| a **course** handout, slide deck or exam paper | **not here** — a repository of its own, one line in `www/mysite.conf` | a link written as `%%IT545%%/lec1.pdf` |
+| a new page | the folder in `www/` that fits — `teaching/`, `research/`, `lab/`… | — |
 
 Three rules that matter:
 
@@ -271,7 +311,8 @@ the folder only appears once you have something to download.
 
 ### What the build actually does
 
-1. Collects every `www/*.jemdoc`, skipping `mysite.conf` and every file whose name starts with
+1. Collects every `.jemdoc` file anywhere under `www/`, skipping `mysite.conf` and every file
+   whose name starts with
    `menu` (`menu.jemdoc`, `menu-lab.jemdoc`), because a menu is included
    by pages rather than built into a page of its own.
 2. Copies the sources **and** `www/mysite.conf` into a temporary staging folder, converting
@@ -357,28 +398,28 @@ the `_site/` folder produced by `python build.py`.
 | The sidebar inside the Edge AI Lab | `www/menu-lab.jemdoc` |
 | Colours, fonts, spacing, page width, the profile header | `www/css/site.css` — the palette is the first block |
 | The MathJax setup, the `<head>`, the page-title suffix, the footer, the favicon | `www/mysite.conf` |
-| Home: the profile header, About (appointments + education), contact | `www/index.jemdoc` |
-| News and announcements | `www/news-extra.txt`, then `make update` — `www/news.jemdoc` is **generated**, see [§9.1](#91-add-a-news-item) |
-| Research interests (current / past) | `www/interests.jemdoc` |
-| Publications | `www/publications.jemdoc` — **generated**, see [§9.2](#92-refresh-the-publication-list) |
-| A paper that ORCID does not have yet | paste BibTeX into `www/publications-extra.bib`, then `make update` |
-| Awards and grants | `www/awards.jemdoc` |
-| The Edge AI Lab: description, people, projects, lab news | `www/lab.jemdoc`, `www/lab-members.jemdoc`, `www/lab-projects.jemdoc`, `www/lab-news.jemdoc` |
-| One course, everything on it (info, slides, textbook, files) | `www/ee301.jemdoc`, `www/ee502.jemdoc`, `www/research-methods.jemdoc` |
-| Prethesis, thesis and internship projects | `www/joining.jemdoc` |
-| Photo gallery | `www/gallery.jemdoc` + files in `www/images/` |
+| Home: the profile header, About (appointments + education), contact | `www/home/index.jemdoc` |
+| News and announcements | `www/data/news-extra.txt`, then `make update` — `www/home/news.jemdoc` is **generated**, see [§9.1](#91-add-a-news-item) |
+| Research interests (current / past) | `www/research/interests.jemdoc` |
+| Publications | `www/research/publications.jemdoc` — **generated**, see [§9.2](#92-refresh-the-publication-list) |
+| A paper that ORCID does not have yet | paste BibTeX into `www/data/publications-extra.bib`, then `make update` |
+| Awards and grants | `www/research/awards.jemdoc` |
+| The Edge AI Lab: description, people, projects, lab news | `www/lab/lab.jemdoc`, `www/lab/lab-members.jemdoc`, `www/lab/lab-projects.jemdoc`, `www/lab/lab-news.jemdoc` |
+| One course, everything on it (info, slides, textbook, files) | `www/teaching/it545.jemdoc`, `www/teaching/ee502.jemdoc`, `www/teaching/research-methods.jemdoc` |
+| Prethesis, thesis and internship projects | `www/teaching/joining.jemdoc` |
+| Photo gallery | `www/research/gallery.jemdoc` + files in `www/images/` |
 | A document visitors download (CV, poster, syllabus) | put it in `www/files/`, then link it — see [§2](#2-folder-structure) |
 | The portrait in the profile header | replace `www/images/portrait.jpg` |
-| The MathJax check page | `www/mathjax-test.jemdoc` |
+| The MathJax check page | `www/misc/mathjax-test.jemdoc` |
 
 > **Never edit anything inside `_site/`.** It is the build's *output*, not a source. `build.py`
 > rewrites all 16 pages on every run, so anything changed there is wiped the next time you
 > build, commit or push — and the site reverts to whatever the `www/` sources say. If a page
 > shows something you want different, find its source in the table above and change that.
 >
-> Two of those sources are themselves generated: `www/publications.jemdoc` and
-> `www/news.jemdoc`. For those, do not edit the `.jemdoc` either — edit
-> `www/publications-extra.bib` (a paper) or `www/news-extra.txt` (an announcement that is not a
+> Two of those sources are themselves generated: `www/research/publications.jemdoc` and
+> `www/home/news.jemdoc`. For those, do not edit the `.jemdoc` either — edit
+> `www/data/publications-extra.bib` (a paper) or `www/data/news-extra.txt` (an announcement that is not a
 > paper), then run `make update`.
 
 ### 6.2 The first line of every page
@@ -404,7 +445,7 @@ News and announcements
 1. Copy an existing page:
 
    ```bash
-   cp www/news.jemdoc www/seminars.jemdoc
+   cp www/home/news.jemdoc www/seminars.jemdoc
    ```
 
 2. Edit it. Change the first line so the second value matches the new file name, then write the
@@ -645,7 +686,7 @@ Use exactly one `=` heading per page — the test-suite asserts every page has a
   seven fields are `{title}{img_left}{file}{alt}{width}{height}{link}`. Leave the width blank
   to use the image's natural size.
 * Gallery photos use raw HTML inside a `<div class="gallery">` block in
-  `www/gallery.jemdoc`; the grid rearranges itself for any number of photos. See
+  `www/research/gallery.jemdoc`; the grid rearranges itself for any number of photos. See
   [§9.6](#96-add-a-photo-to-the-gallery).
 * `width` must be a bare number (`175`), never `175px` — jemdoc has a local fix for exactly
    this (see [§2](#2-folder-structure)).
@@ -677,27 +718,27 @@ you want them back, look at an earlier revision of the stylesheet
 * One blank line between blocks; no trailing whitespace.
 * Keep the commented **template** at the bottom of each list-style page up to date when you add
   a new kind of entry.
-* Never edit generated files: anything under `_site/`, `www/publications.jemdoc` and
-  `www/news.jemdoc`. Both say so at the top of the file.
+* Never edit generated files: anything under `_site/`, `www/research/publications.jemdoc` and
+  `www/home/news.jemdoc`. Both say so at the top of the file.
 
 ---
 
 ## 9. Task recipes
 
 Every recipe ends the same way: **`python build.py`**, then **`python -m pytest`**, then commit
-the changed sources. Two of those sources — `www/publications.jemdoc` and `www/news.jemdoc` —
+the changed sources. Two of those sources — `www/research/publications.jemdoc` and `www/home/news.jemdoc` —
 are themselves generated, so they are committed too. The build output in `_site/` never is.
 
 ### 9.1 Add a news item
 
-File: `www/news-extra.txt` — then run `make update`.
+File: `www/data/news-extra.txt` — then run `make update`.
 
 The News page is **generated** from two sources:
 
 1. **Your publications.** Every entry on the Publications page becomes an announcement on its
    own, so a paper that arrives through ORCID, or that you paste into
-   `www/publications-extra.bib`, appears in the news with nothing for you to write.
-2. **`www/news-extra.txt`**, for everything that is not a paper: grants, talks, awards, new
+   `www/data/publications-extra.bib`, appears in the news with nothing for you to write.
+2. **`www/data/news-extra.txt`**, for everything that is not a paper: grants, talks, awards, new
    students. One announcement per line:
 
    ```
@@ -720,7 +761,7 @@ make update
 ```
 
 That is a shortcut for `python tools/update_site.py && python build.py`. It rewrites
-`www/news.jemdoc` and the Publications page. It is safe to run as often as you like: a page
+`www/home/news.jemdoc` and the Publications page. It is safe to run as often as you like: a page
 whose content has not changed is not rewritten at all. (It used to refresh a news block on the
 Home page as well; that block is gone, because News has its own page. The generator still
 supports the markers if you want it back.)
@@ -752,7 +793,7 @@ How the page is laid out:
 
 ### 9.2 Refresh the publication list
 
-File: `www/publications.jemdoc` — **generated. Do not hand-edit it**; the next refresh
+File: `www/research/publications.jemdoc` — **generated. Do not hand-edit it**; the next refresh
 overwrites it.
 
 The list is built from the [ORCID record](https://orcid.org/0000-0003-3909-4385), with the full
@@ -770,7 +811,7 @@ paper:
    That is a shortcut for `python tools/update_site.py && python build.py`. The script needs no
    arguments; the ORCID iD is the `ORCID_ID` constant at the top of the file. It writes the
    Publications page *and* the News page, which is why one command covers both.
-3. Check the result and commit `www/publications.jemdoc` along with your other changes.
+3. Check the result and commit `www/research/publications.jemdoc` along with your other changes.
 
 What the script does, and what it will not do:
 
@@ -797,7 +838,7 @@ list really is correct.
 #### Adding a paper that is not in ORCID
 
 Some things never reach ORCID: a book chapter, a workshop paper, a patent, a journal that does
-not deposit DOIs. For those, edit `www/publications-extra.bib` and paste the BibTeX straight in:
+not deposit DOIs. For those, edit `www/data/publications-extra.bib` and paste the BibTeX straight in:
 
 ```bibtex
 @inproceedings{vo2027workshop,
@@ -825,7 +866,7 @@ in exactly the same style, and announced on the News page too.
 
 ### 9.3 Add, remove or move a member
 
-File: `www/lab-members.jemdoc` — the lab's Members page, which is where the people of the group
+File: `www/lab/lab-members.jemdoc` — the lab's Members page, which is where the people of the group
 live. There is no separate Faculty or Students page any more: staff, graduate students,
 undergraduate students and alumni are four sections of this one page.
 
@@ -856,7 +897,7 @@ any other files — nothing is split up. To add a course:
 1. Copy a course page and edit the two values on the first line:
 
    ```bash
-   cp www/ee301.jemdoc www/ee410.jemdoc
+   cp www/teaching/it545.jemdoc www/ee410.jemdoc
    ```
 
    ```
@@ -887,10 +928,55 @@ any other files — nothing is split up. To add a course:
 
 4. Rebuild. That is the whole job: one page and one menu line, with no list page to keep in step.
 
-The material files are **not** stored in this repository. They live in a separate GitHub
-repository and are linked from the course page, so the site stays small. Each group of files is
-a collapsible **dropdown**: a `<details>` element with a `<summary>` title. Because that is raw
-HTML, it goes inside a `~~~` block whose language is `raw`:
+**Put the course files in a repository of their own.** Lecture notes, slides, assignments and
+exam papers do **not** live here: they are large, they change often, and they would bloat every
+build. Each course keeps its files in a GitHub repository, laid out how you like, for example
+with one folder per course:
+
+```
+algorithm-optimization/          <- the repository, on branch toiuuvagiaithuat-canban
+    linear-algebra-review.pdf
+    lec1.pdf
+    ...
+courses/                         <- another repository, on branch main
+    ee502/lecture-01.pdf
+    seminar/seminar-plan.pdf
+```
+
+**Name each place once**, in `www/mysite.conf`, one line per course:
+
+```
+[materials]
+it545  https://raw.githubusercontent.com/phuongluuvo/algorithm-optimization/toiuuvagiaithuat-canban
+ee502  https://raw.githubusercontent.com/phuongluuvo/courses/main/ee502
+shared https://raw.githubusercontent.com/phuongluuvo/courses/main/seminar
+```
+
+A page then writes `%%NAME%%` in place of that address, and `build.py` fills it in:
+
+```
+<li><a href="%%IT545%%/lec1.pdf" target="blank">Lecture 1 (PDF)</a></li>
+```
+
+So pointing a course at new files, or renaming its repository, is **one line here** and no page
+changes. If a page uses a name that is not in the list, the build stops and tells you which one
+— it never leaves a link that quietly goes nowhere.
+
+Three things to get right:
+
+* **The other repository must be public.** In a private one the links 404 for every visitor.
+* **The branch is part of the address** — `.../REPO/main`, or `.../REPO/toiuuvagiaithuat-canban`.
+  A wrong branch name is a 404 on every file, and it is easy to miss because the links look fine.
+* **Raw or preview.** `raw.githubusercontent.com` opens or downloads the file straight away.
+  For GitHub's preview page instead — nicer for a PDF — write the `github.com` form in
+  `[materials]`: `https://github.com/USER/REPO/blob/BRANCH`.
+
+Nothing here has to be rebuilt when those files change: visitors follow the address into the
+other repository, so publishing a new lecture note is a commit there and nothing else.
+
+**The list of files.** Each group is a plain `<ul>`, and you can wrap it in a `<details>`
+element to make it a collapsible dropdown. Because that is raw HTML, it goes inside a `~~~`
+block whose language is `raw`:
 
 ```
 ~~~
@@ -898,8 +984,8 @@ HTML, it goes inside a `~~~` block whose language is `raw`:
 <details class="materials">
 <summary>Lecture slides</summary>
 <ul>
-<li><a href="https://raw.githubusercontent.com/USER/REPO/main/ee301/lecture-01.pdf" target="blank">Lecture 1 &ndash; Introduction (PDF)</a></li>
-<li><a href="https://raw.githubusercontent.com/USER/REPO/main/ee301/lecture-02.pdf" target="blank">Lecture 2 &ndash; Fading (PDF)</a></li>
+<li><a href="%%IT545%%/lec1.pdf" target="blank">Lecture 1 &ndash; Linear Programming (PDF)</a></li>
+<li><a href="%%IT545%%/lec2.pdf" target="blank">Lecture 2 &ndash; Convex Sets (PDF)</a></li>
 </ul>
 </details>
 ~~~
@@ -914,15 +1000,11 @@ Rules that keep it working:
 * Repeat the whole `<details>…</details>` block for each group — slides, assignments, reading
   list, past papers. The styling is automatic: `class="materials"` is defined in
   `www/css/site.css`.
-* Two ways to link a file in another repository: the raw URL
-  (`https://raw.githubusercontent.com/USER/REPO/main/FOLDER/file.pdf`) opens or downloads it
-  directly, while the GitHub page for it
-  (`https://github.com/USER/REPO/blob/main/FOLDER/file.pdf`) shows a preview first.
-* There is a fully commented `<details>` example in each course page.
+* There is a fully commented example at the bottom of `www/teaching/it545.jemdoc`.
 
 ### 9.5 Add an award or a grant
 
-File: `www/awards.jemdoc` — one bullet per item:
+File: `www/research/awards.jemdoc` — one bullet per item:
 
 ```
 - *2027* \M Description of the award or grant in one sentence.
@@ -931,7 +1013,7 @@ File: `www/awards.jemdoc` — one bullet per item:
 ### 9.6 Add a photo to the gallery
 
 1. Put the image in `www/images/` (`gallery-5.jpg`, etc. — lower case, no spaces).
-2. In `www/gallery.jemdoc`, copy one `<figure>` inside the `<div class="gallery">` block:
+2. In `www/research/gallery.jemdoc`, copy one `<figure>` inside the `<div class="gallery">` block:
 
    ```
    <figure><img src="images/gallery-5.jpg" alt="Short description" /><figcaption>Caption text.</figcaption></figure>
@@ -943,12 +1025,12 @@ File: `www/awards.jemdoc` — one bullet per item:
 
 Two places, and they are the only two:
 
-* `www/index.jemdoc` — the **Contact information** section of the Home page: room, email,
+* `www/home/index.jemdoc` — the **Contact information** section of the Home page: room, email,
   telephone. This is the one visitors look for.
-* `www/lab-members.jemdoc` — the contact column of the staff table.
+* `www/lab/lab-members.jemdoc` — the contact column of the staff table.
 
 The old Biography page held a third copy; it was merged into Home and deleted, so there is one
-less place to keep in step. The prethesis and thesis page (`www/joining.jemdoc`) tells people
+less place to keep in step. The prethesis and thesis page (`www/teaching/joining.jemdoc`) tells people
 what to send, and links to the Home page rather than repeating the address.
 
 ### 9.8 Publish a CV, or any other download
@@ -965,7 +1047,7 @@ real one up takes two steps.
 
    Then save the document as `www/files/cv.pdf`. Keep the name simple — lower case, no spaces.
 
-2. Add the link where you want it. The profile header on `www/index.jemdoc` is the natural
+2. Add the link where you want it. The profile header on `www/home/index.jemdoc` is the natural
    place; it already holds the HCMIU, Google Scholar and ORCID links:
 
    ```
@@ -1074,20 +1156,20 @@ paper.
 What is **still demo content**:
 
 - [x] *Portrait photo* — `www/images/portrait.jpg` is a real photograph now, and
-      `www/index.jemdoc` points at it.
+      `www/home/index.jemdoc` points at it.
 - [ ] *Gallery photos and captions* — the placeholder illustrations were deleted, so
-      `www/gallery.jemdoc` has an empty `<div class="gallery">` waiting for real photographs and
+      `www/research/gallery.jemdoc` has an empty `<div class="gallery">` waiting for real photographs and
       captions. Put the files in `www/images/` and paste a `<figure>` block per photo (the
-      template is at the bottom of `www/gallery.jemdoc`).
-- [ ] *Members* — `www/lab-members.jemdoc` shows one real row (yourself) and no students. The
+      template is at the bottom of `www/research/gallery.jemdoc`).
+- [ ] *Members* — `www/lab/lab-members.jemdoc` shows one real row (yourself) and no students. The
       former demo names are kept, commented out, at the bottom of that file.
-- [ ] *Lab text* — `www/lab.jemdoc`, `www/lab-projects.jemdoc` and `www/lab-news.jemdoc` are
+- [ ] *Lab text* — `www/lab/lab.jemdoc`, `www/lab/lab-projects.jemdoc` and `www/lab/lab-news.jemdoc` are
       skeletons. Nothing about the lab that the rest of the site does not already state has
       been filled in.
-- [ ] *Research interests* — the list on `www/interests.jemdoc` is real, but `layout.md` asks
+- [ ] *Research interests* — the list on `www/research/interests.jemdoc` is real, but `layout.md` asks
       for it split into current and past. The file ends with the template for that.
-- [ ] *Course detail* — the textbook section on each course page, and
-      `YOUR-GITHUB-USER/YOUR-COURSE-REPO` in the material links.
+- [ ] *Course detail* — the textbook section on each course page, and the `[materials]` line in
+      `www/mysite.conf`, which must name a real repository before the course files open.
 - [ ] *Group name* — choose one: "Network Optimization and Distributed Learning" is used on the
       Home and Research Interests pages; the deleted Faculty page said "Wireless Networks and
       Optimization Group".
@@ -1099,9 +1181,9 @@ invented:
 - *Teaching history and professional service* — these were sections of the deleted Biography
   page. Teaching now lives in the course sites, which say what is taught and provide the
   material, and the service list was dropped on request; only the verifiable reviewer list
-  remains on `www/awards.jemdoc`.
-- *Talks, group news and new students* — `www/news.jemdoc` lists real publication records only,
-  and `www/lab-news.jemdoc` is an empty skeleton for you to fill in.
+  remains on `www/research/awards.jemdoc`.
+- *Talks, group news and new students* — `www/home/news.jemdoc` lists real publication records only,
+  and `www/lab/lab-news.jemdoc` is an empty skeleton for you to fill in.
 
 To find anything left over:
 
@@ -1422,12 +1504,12 @@ really is correct.
 **"CI printed `Could not refresh the generated pages; using the committed copies.`"**
 Expected and harmless. That step is deliberately best effort, so a network blip or a partial
 API response cannot block a deployment — the build then uses the committed
-`www/publications.jemdoc` and `www/news.jemdoc`. Run `make update` locally when you want them
+`www/research/publications.jemdoc` and `www/home/news.jemdoc`. Run `make update` locally when you want them
 refreshed, and commit the result.
 
 **"The Home page still shows the old news items."**
 That block is rewritten from the News page. It sits between two `GENERATED latest-news` comment
-markers in `www/index.jemdoc`, and if either marker is missing it is left alone on purpose. Run
+markers in `www/home/index.jemdoc`, and if either marker is missing it is left alone on purpose. Run
 `make update` to refresh it.
 
 **"How do I read a failed CI run?"**
@@ -1436,8 +1518,8 @@ Reproduce it locally with `python build.py && python -m pytest` (or `make verify
 source, and push again. A red **Rebuild and test** job does not stop the deployment, because it
 is the second, non-blocking job — but it always means something is genuinely wrong.
 
-**"I broke `www/publications.jemdoc` or `www/news.jemdoc`."**
-Both are committed, so git can restore them: `git checkout -- www/news.jemdoc`, or simply
+**"I broke `www/research/publications.jemdoc` or `www/home/news.jemdoc`."**
+Both are committed, so git can restore them: `git checkout -- www/home/news.jemdoc`, or simply
 re-run `python tools/update_site.py`. There is no way to break them permanently, which is
 exactly why the generated files are committed rather than ignored.
 
@@ -1460,10 +1542,10 @@ Read this before making any change.
 
    Their sources are, respectively: `www/*.jemdoc`, `www/css/site.css` and
    `www/images/`. `www/` is the only place to edit — with two exceptions:
-   `www/publications.jemdoc` and `www/news.jemdoc` are both generated by
+   `www/research/publications.jemdoc` and `www/home/news.jemdoc` are both generated by
    `tools/update_site.py`. Never edit those two by hand. To change what they contain, edit your
-   ORCID record, or paste BibTeX into `www/publications-extra.bib`, or write an announcement in
-   `www/news-extra.txt`, and run `make update`.
+   ORCID record, or paste BibTeX into `www/data/publications-extra.bib`, or write an announcement in
+   `www/data/news-extra.txt`, and run `make update`.
 2. **Always rebuild after a source change:** `python build.py`. The deployed site is built from
    `www/` by CI, so an unpushed change is simply not live; but a change you never build is a
    change you never verified.
@@ -1535,7 +1617,7 @@ Then read the result against what you changed:
 | `test_html_parses_without_serious_errors` | malformed HTML, e.g. a broken `<div>` in `mysite.conf` |
 | `test_every_page_has_a_title_and_the_stylesheet` | `[windowtitle]`, `[defaultcss]` or the `<h1>` markup broke |
 | `test_mathjax_is_loaded_on_every_page` | the MathJax include was dropped or moved out of `[firstbit]` |
-| `test_publications_are_grouped_by_year_newest_first`, `test_every_publication_links_to_its_doi`, `test_publication_year_summaries_agree_with_their_entries` | the generated publication list is malformed, or `www/publications.jemdoc` has been hand-edited |
+| `test_publications_are_grouped_by_year_newest_first`, `test_every_publication_links_to_its_doi`, `test_publication_year_summaries_agree_with_their_entries` | the generated publication list is malformed, or `www/research/publications.jemdoc` has been hand-edited |
 | `test_generated_html_uses_lf_line_endings`, `test_build_normalizes_crlf_line_endings`, `test_every_source_page_is_staged_with_lf` | CRLF line endings or a BOM crept in |
 | `test_github_actions_workflow_is_valid_yaml` | `.github/workflows/*.yml` is no longer valid YAML |
 

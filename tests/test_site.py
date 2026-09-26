@@ -29,6 +29,17 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SRC = os.path.join(ROOT, "www")
 BUILD = os.path.join(ROOT, "build.py")
 
+#: The two pages tools/update_site.py writes, and the file your own announcements
+#: go in. They sit in subfolders of www/ like every other source, so the layout is
+#: named here once instead of in each test.
+PUBLICATIONS_SRC = os.path.join(SRC, "research", "publications.jemdoc")
+NEWS_SRC = os.path.join(SRC, "home", "news.jemdoc")
+NEWS_EXTRA_SRC = os.path.join(SRC, "data", "news-extra.txt")
+GENERATED_SOURCES = (
+    ("www/research/publications.jemdoc", PUBLICATIONS_SRC),
+    ("www/home/news.jemdoc", NEWS_SRC),
+)
+
 #: jemdoc emits a few obsolete-but-harmless attributes; html5lib reports them
 #: as parse errors and we do not want the test-suite to fail because of them.
 TOLERATED_HTML5LIB_ERRORS = {
@@ -68,18 +79,16 @@ def site(tmp_path_factory):
 
 @pytest.fixture(scope="session")
 def page_names():
-    """The .html names that the sources should produce.
+    """The .html names the sources should produce.
 
-    A ``www/menu*.jemdoc`` file is *included* by the pages that use it rather
-    than built into a page of its own, so it is not one of these -- the same
-    rule build.py applies.
+    A ``menu*.jemdoc`` file is *included* by the pages that use it rather than
+    built into a page of its own, so it is not one of these -- the same rule
+    build.py applies. A source may sit in a subfolder of ``www/``; the folder is
+    organisation only and the built address is flat, so what matters is the file
+    name.
     """
     module = load_build_module()
-    return sorted(
-        name[: -len(".jemdoc")] + ".html"
-        for name in os.listdir(SRC)
-        if name.endswith(".jemdoc") and not module.is_menu_file(name)
-    )
+    return sorted(module.output_name(relative) for relative in module.find_pages())
 
 
 def soup_of(site, name):
@@ -172,7 +181,7 @@ def test_indenting_the_html_does_not_change_what_a_page_says(tmp_path):
     module.build(str(tidy), tidy=True)
 
     for name in module.find_pages():
-        html = name[: -len(".jemdoc")] + ".html"
+        html = module.output_name(name)
         before = (plain / html).read_text(encoding="utf-8")
         after = (tidy / html).read_text(encoding="utf-8")
         assert _plain_text(before) == _plain_text(after), (
@@ -208,16 +217,16 @@ def test_the_tidier_is_idempotent():
 def test_non_ascii_text_survives_the_build_unchanged(site):
     """A character in a source page must come out of the build as itself, not
     as a code-page lookalike."""
-    for name in ("publications.jemdoc", "news.jemdoc"):
-        with open(os.path.join(SRC, name), "r", encoding="utf-8") as handle:
+    for label, path in GENERATED_SOURCES:
+        with open(path, "r", encoding="utf-8") as handle:
             source = handle.read()
         expected = sorted({char for char in source if ord(char) > 127})
-        assert expected, "%s has no non-ASCII character to check" % name
+        assert expected, "%s has no non-ASCII character to check" % label
 
-        built = text_of(site, name[: -len(".jemdoc")] + ".html")
+        built = text_of(site, os.path.basename(label).replace(".jemdoc", ".html"))
         for char in expected:
             assert char in built, (
-                "%s: %r did not survive the build" % (name, char)
+                "%s: %r did not survive the build" % (label, char)
             )
 
 
@@ -302,26 +311,41 @@ def test_the_lab_pages_use_the_lab_menu(site):
     assert "lab-news.html" not in main, "the main menu leaked the lab menu"
 
 
-#: The course pages, in the order the Teaching group lists them.
-COURSES = ("ee301.html", "ee502.html", "research-methods.html")
+def test_every_page_outside_the_lab_shows_the_main_menu(site, page_names):
+    """A page wears the sidebar of the site it belongs to.
 
-
-def test_the_courses_sit_in_the_teaching_group(site):
-    """A course is an ordinary page of the main site, listed in the Teaching group
-    beside Prethesis and Thesis.
-
-    It is deliberately not a section with a sidebar of its own: there was a
-    course list page and a shared course sidebar, and both were removed.
+    The lab pages carry ``www/menu-lab.jemdoc``; every other page carries
+    ``www/menu.jemdoc``, whatever folder its source sits in. A course is an
+    ordinary page of the main site -- there is no course sidebar any more.
     """
-    main = [a.get("href") for a in soup_of(site, "index.html").select("#layout-menu a")]
-    for course in COURSES + ("joining.html",):
-        assert course in main, "the main menu does not offer %s" % course
+    lab = {name for name in page_names if name.startswith("lab")}
+    assert lab, "no lab pages found"
 
-    for name in COURSES:
+    main = [a.get("href") for a in soup_of(site, "index.html").select("#layout-menu a")]
+    assert main, "the home page has no menu"
+
+    for name in page_names:
         links = [a.get("href") for a in soup_of(site, name).select("#layout-menu a")]
-        assert links == main, (
-            "%s does not show the main site's menu, so it is a section of its own"
-            % name
+        if name in lab:
+            assert links != main, "%s is a lab page but shows the main menu" % name
+        else:
+            assert links == main, (
+                "%s does not show the main site's menu" % name
+            )
+
+
+def test_every_page_has_exactly_one_page_heading(site, page_names):
+    """One ``= Title`` per page.
+
+    A stray second one -- from a section typed as ``= Section`` rather than
+    ``== Section`` -- makes a second ``<h1>``: invalid, and a heading as loud as
+    the page title itself.
+    """
+    for name in page_names:
+        headings = soup_of(site, name).select("h1")
+        assert len(headings) == 1, (
+            "%s has %d <h1> headings: %s"
+            % (name, len(headings), [h.get_text(strip=True) for h in headings])
         )
 
 
@@ -335,24 +359,66 @@ def test_no_separate_course_section_survives(site):
     )
 
 
-def test_each_course_is_one_page_holding_everything(site):
-    """A course page carries the whole course: the information box, the slides
-    and the textbook. Nothing is split off into a second page, and nothing in the
-    sidebar jumps *inside* a page -- the sidebar moves between courses instead."""
-    for name in COURSES:
-        text = text_of(site, name)
-        assert "Course information" in text, "%s has no course information block" % name
-        assert "What you will learn" in text, "%s says nothing about the course" % name
+def test_the_materials_addresses_are_read_from_the_conf_file():
+    """Each place the course files live is named once, in www/mysite.conf."""
+    module = load_build_module()
+    materials = module.read_materials()
+    assert materials, "www/mysite.conf has no [materials] settings"
+    for name, address in sorted(materials.items()):
+        assert address.startswith("https://"), (
+            "%s: %r is not an address" % (name, address)
+        )
+        assert not address.endswith("/"), (
+            "%s: the address should not end with a slash: %r" % (name, address)
+        )
 
+
+def test_every_materials_placeholder_is_filled_in(site, page_names):
+    """No %%NAME%% may survive into a page, and every course-file link has to
+    start at one of the addresses the conf file names.
+
+    A leftover placeholder is a dead link that nothing else notices, because
+    "%%IT545%%/lec1.pdf" is a relative path that simply does not exist.
+    """
+    module = load_build_module()
+    addresses = list(module.read_materials().values())
+    assert addresses, "no [materials] addresses to check against"
+
+    for name in page_names:
+        text = text_of(site, name)
+        leftover = module.MATERIALS_TOKEN.findall(text)
+        assert not leftover, "%s still contains %s" % (
+            name, ", ".join("%%%s%%" % word for word in leftover)
+        )
+        for target in re.findall(r'href="(https://raw\.githubusercontent\.com[^"]*)"', text):
+            assert any(target.startswith(address + "/") for address in addresses), (
+                "%s links to %s, which is not under any address in www/mysite.conf"
+                % (name, target)
+            )
+
+
+def test_every_course_page_holds_its_own_material(site, page_names):
+    """A course is one page: the course information and its own slides, with the
+    material in collapsible dropdowns.
+
+    A page qualifies by carrying a Slides heading; there is no course list and no
+    course sidebar any more, so this looks at the pages themselves.
+    """
+    checked = 0
+    for name in page_names:
         soup = soup_of(site, name)
         headings = [h.get_text(strip=True) for h in soup.select("#layout-content h2")]
-        for section in ("Slides", "Textbook"):
-            assert section in headings, "%s has no %s section" % (name, section)
-
+        if "Slides" not in headings:
+            continue
+        checked += 1
+        assert soup.select("#layout-content ul li a[target=blank]"), (
+            "%s has a Slides section but no links to the course files" % name
+        )
         jumps = [a.get("href") for a in soup.select("#layout-menu a") if "#" in a.get("href")]
         assert not jumps, (
             "%s: the sidebar should not jump inside the page: %s" % (name, jumps)
         )
+    assert checked, "no page has a Slides section, so nothing was checked"
 
 
 def test_every_menu_starts_with_the_site_name_linking_home(site, page_names):
@@ -380,10 +446,8 @@ def test_menu_contains_the_expected_entries(site):
     # jemdoc replaces spaces in menu labels with non-breaking spaces.
     labels = [a.get_text(strip=True).replace("\xa0", " ") for a in menu.find_all("a")]
     for expected in (
-        "Phuong Luu Vo", "News", "Awards & Grants", "Edge AI Lab",
-        "Research Interests", "Publications", "Gallery",
-        "Wireless Communications (EE301)", "Convex Optimization (EE502)",
-        "Research Methods Seminar", "Prethesis and Thesis",
+        "Phuong Luu Vo", "News", "Awards & Grants", "Lab",
+        "Research Interests", "Publications", "IT545", "Thesis",
     ):
         assert expected in labels, "menu entry %r is missing" % expected
 
@@ -853,23 +917,24 @@ def test_news_extra_items_are_parsed(tmp_path):
     assert links == [{"link": "https://example.org/grant", "label": "the funder"}]
 
 
-def test_the_generated_pages_have_one_clean_note(site):
-    """The note heading a generated page is the only sentence on it that is not
-    inside the generated markup, and it must survive jemdoc untouched: jemdoc
-    reads /text/ as italics, so a path such as tools/update_site.py written into
-    that sentence silently swallowed its own slashes."""
-    for name in ("news.html", "publications.html"):
-        soup = soup_of(site, name)
-        notes = [p for p in soup.select("#layout-content > p") if not p.get("class")]
-        assert len(notes) == 1, (
-            "%s should have exactly one generated note, found %d" % (name, len(notes))
-        )
+def test_the_generated_pages_do_not_talk_about_the_build(site):
+    """Publications and News carry the papers and the announcements, and nothing
+    else: no sentence explaining which script writes the file.
 
-        note = notes[0]
-        stray = note.find(["i", "em", "b", "strong", "tt", "code"])
-        assert stray is None, (
-            "%s: the note came out as <%s>, so jemdoc ate a character: %r"
-            % (name, stray.name, note.get_text()[:100])
+    Both pages used to open with one, and it had to avoid every "/" because
+    jemdoc reads /text/ as italics and silently swallowed the paths written into
+    it. Taking the sentence out removed that trap with it; the file header still
+    says who writes the file, where only the owner looks.
+    """
+    for name in ("publications.html", "news.html"):
+        soup = soup_of(site, name)
+        loose = [
+            p.get_text(" ", strip=True)
+            for p in soup.select("#layout-content > p")
+            if not p.get("class")
+        ]
+        assert not loose, (
+            "%s still carries a note about the build: %s" % (name, loose)
         )
 
 
@@ -890,12 +955,12 @@ def test_the_generator_runs_end_to_end_without_any_network_access():
 def test_news_extra_ships_with_every_line_commented_out():
     """Only the documented examples are committed, so no announcement reaches the
     site that the site owner did not write."""
-    with open(os.path.join(SRC, "news-extra.txt"), "r", encoding="utf-8") as handle:
+    with open(NEWS_EXTRA_SRC, "r", encoding="utf-8") as handle:
         active = [
             line for line in handle.read().splitlines()
             if line.strip() and not line.lstrip().startswith("#")
         ]
-    assert not active, "www/news-extra.txt ships with live lines: %s" % active
+    assert not active, "www/data/news-extra.txt ships with live lines: %s" % active
 
 
 def test_home_page_is_left_alone_when_the_markers_are_missing(tmp_path):
@@ -975,11 +1040,11 @@ def test_write_text_leaves_an_unchanged_file_alone(tmp_path):
 
 
 def test_the_generated_sources_say_that_they_are_generated():
-    for name in ("publications.jemdoc", "news.jemdoc"):
-        with open(os.path.join(SRC, name), "r", encoding="utf-8") as handle:
+    for label, path in GENERATED_SOURCES:
+        with open(path, "r", encoding="utf-8") as handle:
             head = handle.read(500)
         assert "GENERATED by tools/update_site.py" in head, (
-            "%s does not warn that it is generated" % name
+            "%s does not warn that it is generated" % label
         )
 
 

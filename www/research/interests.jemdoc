@@ -1,0 +1,26 @@
+# jemdoc: menu{menu.jemdoc}{interests.html}, notime
+= Research Interests
+
+== Current
+
+- *Deep Learning, LLMs, and Deep Reinforcement Learning for Networks.*
+- *Federated Learning, Collaborative Inference, and Distributed Learning.*
+- *Edge Intelligence and Edge Inference.*
+- *Semantic Communication.*
+- *Wireless and Mobile Networking, and the Internet of Things.*
+
+# ---------------------------------------------------------------------------
+# TEMPLATE -- www/layout.md asks for these interests to be grouped into
+# "Current" and "Past". The list above is what could be verified from the ORCID
+# record and the HCMIU faculty page; deciding which of those lines is current
+# and which is finished is a judgement only the site owner can make. When you
+# have that split, replace the "What we work on" section with:
+#
+# == Current
+#
+# - ...
+#
+# == Past
+#
+# - ...
+# ---------------------------------------------------------------------------

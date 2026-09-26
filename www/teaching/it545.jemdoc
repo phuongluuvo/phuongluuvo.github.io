@@ -1,0 +1,58 @@
+# jemdoc: menu{menu.jemdoc}{it545.html}, title{IT545}, notime
+= Algorithm Optimization (IT545)
+Level: Graduate
+
+*What you will learn:*
+
+- The theoretical foundations of linear programming and convex optimization.
+- How these techniques apply to logistics, economics, and engineering.
+- First-order and second-order algorithms for solving optimization problems.
+- Practical methods including gradient descent, stochastic gradient descent, proximal gradient descent, Newton methods, and accelerated gradient descent.
+
+== Slides
+~~~
+{}{raw}
+<ul>
+<li><a href="%%IT545%%/linear-algebra-review.pdf" 
+target="blank">Linear Algebra Review</a></li>
+
+<li><a href="%%IT545%%/lec1.pdf" 
+target="blank">Lecture 1 - Linear Programming and ILP</a></li>
+
+<li><a href="%%IT545%%/lec2.pdf" 
+target="blank">Lecture 2 - Convex Sets and Convex Functions</a></li>
+
+<li><a href="%%IT545%%/lec3.pdf" 
+target="blank">Lecture 3 - Convex Problems</a></li>
+
+<li><a href="%%IT545%%/lec4.pdf" 
+target="blank">Lecture 4 - Regression</a></li>
+
+<li><a href="%%IT545%%/lec5.pdf" 
+target="blank">Lecture 5 - First-oder Algorithms</a></li>
+
+<li><a href="%%IT545%%/lec6.pdf" 
+target="blank">Lecture 6 - Duality</a></li>
+
+<li><a href="%%IT545%%/lec7.pdf" 
+target="blank">Lecture 7 - Duality Decomposition</a></li>
+
+<li><a href="%%IT545%%/lec8.pdf" 
+target="blank">Lecture 8 - Robust Optimization</a></li>
+
+<li><a href="%%IT545%%/lec9.pdf" 
+target="blank">Lecture 9 - Distributed Learning</a></li>
+
+<li><a href="%%IT545%%/lec10.pdf" 
+target="blank">Lecture 10 - Second-order meathods</a></li>
+
+
+</ul>
+~~~
+
+== Textbook
+
+- *Convex Optimization* by Stephen Boyd and Lieven Vandenberghe.
+- *Linear Programming: Foundations and Extensions* by Robert J. Vanderbei.
+- Convex Optimization video lectures from Stanford and CMU.
+- Research papers.

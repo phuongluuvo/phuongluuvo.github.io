@@ -18,7 +18,7 @@ optimization problems that appear in communications and signal processing.
 <details class="materials" open>
 <summary>Lecture slides</summary>
 <ul>
-<li><a href="https://raw.githubusercontent.com/YOUR-GITHUB-USER/YOUR-COURSE-REPO/main/ee502/lecture-01.pdf" target="blank">Lecture 1 &ndash; Convex sets and functions (PDF)</a></li>
+<li><a href="%%EE502%%/lecture-01.pdf" target="blank">Lecture 1 &ndash; Convex sets and functions (PDF)</a></li>
 </ul>
 </details>
 ~~~
@@ -39,7 +39,7 @@ in, the section stays a reminder.
 <details class="materials">
 <summary>Syllabus and reading list</summary>
 <ul>
-<li><a href="https://raw.githubusercontent.com/YOUR-GITHUB-USER/YOUR-COURSE-REPO/main/ee502/syllabus.pdf" target="blank">Syllabus and reading list (PDF)</a></li>
+<li><a href="%%EE502%%/syllabus.pdf" target="blank">Syllabus and reading list (PDF)</a></li>
 </ul>
 </details>
 ~~~

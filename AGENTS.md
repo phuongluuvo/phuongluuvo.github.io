@@ -10,21 +10,28 @@ elsewhere.
 
 ## The five rules that matter most
 
-1. **Edit sources in `www/` only.** `www/*.jemdoc` (pages), the two sidebars
-   (`www/menu.jemdoc`, `www/menu-lab.jemdoc`),
-   `www/mysite.conf` (control file: `<head>`, MathJax config, `<title>`, footer, favicon),
-   `www/css/site.css`, `www/images/` (pictures shown on a page) and `www/files/` (documents
-   visitors download — optional, and it does not exist until there is one).
+1. **Edit sources in `www/` only.** Pages live in subfolders that say what they are for —
+   `www/home/`, `www/research/`, `www/teaching/`, `www/lab/`, `www/misc/` — alongside the two
+   sidebars (`www/menu.jemdoc`, `www/menu-lab.jemdoc`), `www/mysite.conf` (control file:
+   `<head>`, MathJax config, `<title>`, footer, favicon, the `[materials]` list),
+   `www/css/site.css`, `www/images/` (pictures shown on a page), `www/files/` (documents
+   visitors download — optional, and it does not exist until there is one) and `www/data/`
+   (the two files you edit by hand: announcements and extra BibTeX).
+
+   **The subfolders are organisation only.** Every page is built to the top of `_site/`, so
+   `www/teaching/it545.jemdoc` is served as `it545.html` and moving a page between folders
+   costs nothing — no link, no menu entry. Two pages may therefore not share a file name; the
+   build refuses and says which two collide.
 2. **Never hand-edit generated files.** `build.py` writes the entire site into `_site/` —
    `_site/*.html`, `_site/css/`, `_site/images/`, `_site/files/` and `.nojekyll`. That folder is
    gitignored and rebuilt from scratch every time, and every generated page carries a
    `GENERATED FILE. DO NOT EDIT` comment in its `<head>`. The asset folders are **mirrored**,
    so a file deleted from `www/` is deleted from the output on the next build.
-   **Two source files are also generated:** `www/publications.jemdoc` and `www/news.jemdoc`
+   **Two source files are also generated:** `www/research/publications.jemdoc` and `www/home/news.jemdoc`
    both come from `tools/update_site.py`. To change the publication list, edit the ORCID record
    and run `make update`; for a paper ORCID does not have, paste BibTeX into
-   `www/publications-extra.bib`; for an announcement that is not a paper, write it in
-   `www/news-extra.txt`. Never edit a generated `.jemdoc` by hand.
+   `www/data/publications-extra.bib`; for an announcement that is not a paper, write it in
+   `www/data/news-extra.txt`. Never edit a generated `.jemdoc` by hand.
 3. **After any source change run `python build.py`.** The published site is rebuilt from `www/`
    by CI, so an unbuilt change is an unverified change. Commit **sources only** — `_site/` is
    generated and ignored; never commit it.
@@ -75,12 +82,14 @@ block that drifts from the News page, CRLF line endings, and an invalid CI workf
 
 ## Do not
 
-* Rename or move `www/`, any `menu*.jemdoc` or `mysite.conf`. jemdoc runs inside one staging
-  directory and resolves every relative path from the site root; that layout is load-bearing.
+* Rename or move `www/` itself, either sidebar, `mysite.conf`, or the asset folders (`css/`,
+  `images/`, `files/`). jemdoc runs inside one staging directory and resolves every relative
+  path from the site root, so that layout is load-bearing. Moving a *page* between the
+  subfolders, or into one, is fine and costs nothing.
 * Commit generated output, or remove the `_site/`, `/docs/` or anchored `/*.html`, `/css/`,
   `/files/`, `/images/`, `/.nojekyll` rules from `.gitignore`. This repository holds sources,
   tooling and documentation only.
-* Hand-edit `www/publications.jemdoc`, or add a page whose file name is the tail of another
+* Hand-edit `www/research/publications.jemdoc`, or add a page whose file name is the tail of another
   page's name (see rule 4).
 * Rename files to a different case, or introduce spaces/uppercase. Windows and macOS would
   accept it; git and GitHub Pages would not.

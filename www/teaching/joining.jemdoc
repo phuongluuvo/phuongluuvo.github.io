@@ -1,0 +1,39 @@
+# jemdoc: menu{menu.jemdoc}{joining.html}, notime
+= Prethesis and Thesis
+
+== Co-supervision
+
+Some of these projects are run jointly with a colleague, in which case there are two supervisors
+and the scope is agreed between the three of us. Mention it in your message if you would like to
+be considered for one of those.
+
+- *Dr. Toan-Van Nguyen*: Department of Electrical and Computer Engineering, San Diego State University, USA.
+- *Assoc. Prof. Tung Kieu*: Department of Computer Science, Aalborg University, Denmark.
+- *Msc. Nguyen Trung Nghia*: School of Computer Science and Engineering, International University, Vietnam.
+
+== What I work on
+
+My current interests include deep learning, federated learning, edge inference, collaborative
+inference, semantic communication, large language models (LLM), distributed learning, deep
+reinforcement learning for networks, and wireless and mobile networking with the Internet of
+Things.
+
+The easiest way to find a topic is to open the two or three most recent papers on the
+Publications page and ask which one you would like to understand deeply enough to extend.
+
+== Open topics
+
+=== Topics you can discuss with me
+
+- *Deep Learning and Large Language Models (LLM):* Applications in network optimization and semantic communication.
+- *Federated Learning and Collaborative Inference:* Distributed training and inference across resource-constrained edge devices.
+- *Edge Intelligence and Semantic Communication:* Transmitting semantic meaning rather than raw bits over limited bandwidth.
+- *Deep Reinforcement Learning for Networks:* Learning control policies for wireless and mobile networking without accurate models.
+- *Network Optimization and Game Theory:* Resource allocation and network utility maximization.
+
+== How we work
+
+- One individual meeting each week, plus a group seminar.
+- You are expected to read actively, write down what you understand, and present your work
+  regularly -- including the weeks when it is not going well.
+- The goal is a result you can defend: a clear question, a method, and evidence.

@@ -1,0 +1,47 @@
+# jemdoc: menu{menu.jemdoc}{index.html}, title{Home}, notime
+= Phuong Luu Vo (Võ Thị Lưu Phương)
+
+~~~
+{}{raw}
+<div class="hero">
+  <img src="images/portrait.jpg" alt="Portrait of Phuong Luu Vo" />
+  <div class="hero-body">
+    <p class="hero-name"><a href="index.html">Phuong Luu Vo, Ph.D.</a></p>
+    <p class="hero-role">Associate Professor</p>
+    <p class="hero-org"><a href="https://it.hcmiu.edu.vn/user/vtlphuong/" target="blank">School of Computer Science and Engineering</a>,
+      <a href="https://hcmiu.edu.vn/" target="blank">International University</a> &mdash;
+      Vietnam National University Ho Chi Minh City</p>
+    <ul class="hero-links">
+      <li><a href="https://scholar.google.com/citations?user=6DmQXO4AAAAJ" target="blank">Google Scholar</a></li>
+      <li><a href="https://orcid.org/0000-0003-3909-4385" target="blank">ORCID</a></li>
+    </ul>
+    <p class="hero-bio">
+      Dr. Vo received the B.Eng. degree in Electronics and Telecommunications from HCMC University of Technology, Vietnam, in 1999, 
+      the M.Sc. degree in Telecommunications (Radio Electronics) from HCMC University of Technology, Vietnam, in 2003, and 
+      the Ph.D. degree in Computer Engineering from Kyung Hee University, Korea, in 2014. 
+      She is currently an Associate Professor and Head of the IT Department at International University, Vietnam National University Ho Chi Minh City. 
+      She has been a researcher at the School of Computer Science and Engineering, International University, since 2007, 
+      and worked in industry from 1998 to 2007.
+    </p>
+  </div>
+</div>
+~~~
+
+== About
+
+- International University, Vietnam National University Ho Chi Minh City
+  -- Head of IT Department (present)
+  -- Associate Professor (present)
+  -- Researcher (2007 -- present), School of Computer Science and Engineering
+- Industry (1998 -- 2007)
+- Education
+  -- 01\/2009 -- 01\/2014: Ph.D., Computer Engineering, Kyung Hee University, Korea
+  -- 01\/2000 -- 01\/2003: M.Sc., Telecommunications, HCMC University of Technology, Vietnam
+  -- 01\/1994 -- 01\/1999: B.Eng., Electronics and Telecommunications, HCMC University of Technology, Vietnam
+
+== Contact information
+
+Room 610, International University, Block 6, Linh Trung Ward,\n
+Thu Duc District, Ho Chi Minh City, Vietnam\n
+*Email*: [vtlphuong@hcmiu.edu.vn]\n
+*Telephone*: (028) 37244270, ext. 3232
