@@ -1,11 +1,11 @@
-# jemdoc: menu{menu.jemdoc}{courses.html}, notime
+# jemdoc: menu{menu-courses.jemdoc}{courses.html}, notime
 = Courses
 Course information, lecture slides and textbooks
 
-Each course has its own page, with the course information, the slides and the textbook in one
-place. Material files are **not** stored in this repository: they live in a separate GitHub
-repository and are linked from the course page, so this site stays small and the files can be
-updated on their own.
+Each course is a site of its own, with the course information, the slides, the textbook and any
+other files on one page. Material files are **not** stored in this repository: they live in a
+separate GitHub repository and are linked from the course page, so this site stays small and the
+files can be updated on their own.
 
 ~~~
 {}{raw}

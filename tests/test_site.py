@@ -224,7 +224,7 @@ def test_non_ascii_text_survives_the_build_unchanged(site):
 def test_static_assets_are_copied(site):
     for relative in (
         "css/site.css",
-        "images/portrait.svg",
+        "images/portrait.jpg",
         ".nojekyll",
     ):
         assert (site / relative).is_file(), "missing asset: %s" % relative
@@ -254,7 +254,7 @@ def test_a_file_deleted_from_www_disappears_from_the_output(tmp_path):
     assert not ghost.exists(), (
         "www/files/ is gone, so its output copy should be gone too"
     )
-    assert (out / "images" / "portrait.svg").is_file(), "a live asset was removed"
+    assert (out / "images" / "portrait.jpg").is_file(), "a live asset was removed"
 
 
 # --------------------------------------------------------------------------- #
@@ -302,16 +302,68 @@ def test_the_lab_pages_use_the_lab_menu(site):
     assert "lab-news.html" not in main, "the main menu leaked the lab menu"
 
 
-def test_the_course_pages_share_one_sidebar(site):
-    """Each course is a little site of its own: one sidebar, listing them all."""
-    for name in ("ee301.html", "ee502.html", "research-methods.html"):
+#: The Courses section, and the page that introduces it.
+COURSES = ("ee301.html", "ee502.html", "research-methods.html")
+
+
+def test_the_courses_are_one_section_with_one_sidebar(site):
+    """Courses is laid out exactly like the Edge AI Lab: the section home carries
+    the section's own sidebar, and so does every course page, so a visitor moves
+    between the courses from anywhere inside the section.
+
+    The home entry is called "Home" -- the way the lab menu does it -- and never
+    "All courses".
+    """
+    for name in ("courses.html",) + COURSES:
         links = [a.get("href") for a in soup_of(site, name).select("#layout-menu a")]
-        assert "courses.html" in links, (
-            "%s has no way back to the course list" % name
-        )
+        assert "courses.html" in links, "%s has no way back to the course list" % name
         assert "publications.html" not in links, (
-            "%s is a course page but shows the main site's menu" % name
+            "%s is in the Courses section but shows the main site's menu" % name
         )
+        for course in COURSES:
+            assert course in links, "%s does not offer %s" % (name, course)
+
+    labels = [
+        a.get_text(strip=True).replace("\xa0", " ")
+        for a in soup_of(site, "ee301.html").select("#layout-menu a")
+    ]
+    assert "Home" in labels, "the course sidebar has no Home entry"
+    assert "All courses" not in labels, (
+        "the course sidebar still says 'All courses'; it should say Home"
+    )
+
+    main = [a.get("href") for a in soup_of(site, "index.html").select("#layout-menu a")]
+    assert "courses.html" in main, "the main menu has no Courses entry"
+    for course in COURSES:
+        assert course not in main, "the main menu leaked the course page %s" % course
+
+
+def test_each_course_is_one_page_holding_everything(site):
+    """A course page carries the whole course: the information box, the slides
+    and the textbook. Nothing is split off into a second page, and nothing in the
+    sidebar jumps *inside* a page -- the sidebar moves between courses instead."""
+    for name in COURSES:
+        text = text_of(site, name)
+        assert "Course information" in text, "%s has no course information block" % name
+        assert "What you will learn" in text, "%s says nothing about the course" % name
+
+        soup = soup_of(site, name)
+        headings = [h.get_text(strip=True) for h in soup.select("#layout-content h2")]
+        for section in ("Slides", "Textbook"):
+            assert section in headings, "%s has no %s section" % (name, section)
+
+        jumps = [a.get("href") for a in soup.select("#layout-menu a") if "#" in a.get("href")]
+        assert not jumps, (
+            "%s: the sidebar should not jump inside the page: %s" % (name, jumps)
+        )
+
+
+def test_the_course_list_offers_every_course(site):
+    """courses.html is the section home: it introduces the courses the sidebar
+    then links to."""
+    linked = [a.get("href") for a in soup_of(site, "courses.html").find_all("a", href=True)]
+    for course in COURSES:
+        assert course in linked, "%s is not offered from the course list" % course
 
 
 def test_every_menu_starts_with_the_site_name_linking_home(site, page_names):
@@ -963,21 +1015,45 @@ def test_every_copied_asset_has_content(site):
     assert not empty, "these assets are empty: %s" % empty
 
 
-def test_the_images_are_valid_svg(site):
-    """A malformed SVG renders as a broken-image icon and nothing else: no build
-    error, no failed link, no test failure. This was a real bug -- a note added
-    to www/images/portrait.svg contained a double hyphen inside an XML comment,
-    which is illegal, and the portrait silently disappeared."""
+def test_the_images_are_valid(site):
+    """A broken image renders as a broken-image icon and nothing else: no build
+    error, no failed link, no test failure.
+
+    This was a real bug once: a note added to www/images/portrait.svg contained a
+    double hyphen inside an XML comment, which is illegal, and the portrait
+    silently disappeared from the page.
+
+    Both kinds are covered -- an SVG has to parse as XML, and a photograph has
+    to really be the format its extension claims.
+    """
     import xml.etree.ElementTree as ElementTree
 
-    images = sorted((site / "images").glob("*.svg"))
-    assert images, "no SVG images were copied into the output"
+    magic = {
+        ".jpg": (b"\xff\xd8\xff",),
+        ".jpeg": (b"\xff\xd8\xff",),
+        ".png": (b"\x89PNG\r\n\x1a\n",),
+        ".gif": (b"GIF87a", b"GIF89a"),
+        ".webp": (b"RIFF",),
+    }
+
+    images = sorted(path for path in (site / "images").iterdir() if path.is_file())
+    assert images, "no images were copied into the output"
 
     for path in images:
-        try:
-            ElementTree.parse(path)
-        except ElementTree.ParseError as error:
-            pytest.fail("%s is not valid XML/SVG: %s" % (path.name, error))
+        suffix = path.suffix.lower()
+        if suffix == ".svg":
+            try:
+                ElementTree.parse(path)
+            except ElementTree.ParseError as error:
+                pytest.fail("%s is not valid XML/SVG: %s" % (path.name, error))
+        elif suffix in magic:
+            head = path.read_bytes()[:8]
+            assert any(head.startswith(sig) for sig in magic[suffix]), (
+                "%s is not really a %s file" % (path.name, suffix.lstrip("."))
+            )
+        else:
+            pytest.fail("%s is an image type nothing here checks; add it to the "
+                        "table in this test" % path.name)
 
 
 # --------------------------------------------------------------------------- #

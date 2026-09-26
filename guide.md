@@ -63,7 +63,7 @@ phuongluuvo.github.io/
 │   │                            page-title suffix, footer  (= the shared "include")
 │   ├── menu.jemdoc              sidebar for the main site
 │   ├── menu-lab.jemdoc          sidebar for the Edge AI Lab pages
-│   ├── menu-courses.jemdoc      sidebar for the course pages
+│   ├── menu-courses.jemdoc      sidebar for the Courses section
 │   ├── index.jemdoc             Home (hero + About + Contact)   ─┐
 │   ├── news.jemdoc              News (GENERATED)                 │
 │   ├── awards.jemdoc            Awards & Grants                  │
@@ -73,7 +73,7 @@ phuongluuvo.github.io/
 │   ├── lab-members.jemdoc       Lab Members      │ own sidebar   ├─ one file = one page
 │   ├── lab-projects.jemdoc      Lab Projects     │               │
 │   ├── lab-news.jemdoc          Lab news         ┘               │
-│   ├── courses.jemdoc           Courses (overview)               │
+│   ├── courses.jemdoc           Courses (the list)               │
 │   ├── ee301.jemdoc             EE301            ┐               │
 │   ├── ee502.jemdoc             EE502            │ own sidebar   │
 │   ├── research-methods.jemdoc  Research Methods ┘               │
@@ -282,7 +282,7 @@ the folder only appears once you have something to download.
    merges. Keeping the sources at LF (`www/` is safe via `.gitattributes`) plus this
    normalisation makes the build identical on Windows, macOS, Linux and CI.
 3. Runs `tools/jemdoc -c mysite.conf <pages>` inside the staging folder. Relative paths inside
-   a page (`css/site.css`, `images/portrait.svg`) therefore resolve from the **site root**.
+   a page (`css/site.css`, `images/portrait.jpg`) therefore resolve from the **site root**.
 4. Indents that HTML so that it can be read. jemdoc writes its own tags at column zero and
    passes the tags copied out of a page through with whatever indentation the page gave them,
    so the two styles run together and the nesting cannot be followed. Only the whitespace in
@@ -366,13 +366,23 @@ the `_site/` folder produced by `python build.py`.
 | A paper that ORCID does not have yet | paste BibTeX into `www/publications-extra.bib`, then `make update` |
 | Awards and grants | `www/awards.jemdoc` |
 | The Edge AI Lab: description, people, projects, lab news | `www/lab.jemdoc`, `www/lab-members.jemdoc`, `www/lab-projects.jemdoc`, `www/lab-news.jemdoc` |
-| The course list | `www/courses.jemdoc` |
+| The course list on the main site | `www/courses.jemdoc` |
 | One course (info, slides, textbook) | `www/ee301.jemdoc`, `www/ee502.jemdoc`, `www/research-methods.jemdoc` |
 | Prethesis, thesis and internship projects | `www/joining.jemdoc` |
 | Photo gallery | `www/gallery.jemdoc` + files in `www/images/` |
 | A document visitors download (CV, poster, syllabus) | put it in `www/files/`, then link it — see [§2](#2-folder-structure) |
-| The portrait in the profile header | replace `www/images/portrait.svg` — see the note inside it |
+| The portrait in the profile header | replace `www/images/portrait.jpg` |
 | The MathJax check page | `www/mathjax-test.jemdoc` |
+
+> **Never edit anything inside `_site/`.** It is the build's *output*, not a source. `build.py`
+> rewrites all 16 pages on every run, so anything changed there is wiped the next time you
+> build, commit or push — and the site reverts to whatever the `www/` sources say. If a page
+> shows something you want different, find its source in the table above and change that.
+>
+> Two of those sources are themselves generated: `www/publications.jemdoc` and
+> `www/news.jemdoc`. For those, do not edit the `.jemdoc` either — edit
+> `www/publications-extra.bib` (a paper) or `www/news-extra.txt` (an announcement that is not a
+> paper), then run `make update`.
 
 ### 6.2 The first line of every page
 
@@ -426,18 +436,28 @@ News and announcements
 
    Then commit both the `.jemdoc` **and** the generated `.html`.
 
-### 6.4 The three menus
+### 6.4 The four menus
 
-There are three menu files, and every page includes exactly one of them:
+There are four menu files, and every page includes exactly one of them:
 
 | Menu file | Used by | Sidebar shows |
 | --- | --- | --- |
 | `www/menu.jemdoc` | the main-site pages | the whole site |
 | `www/menu-lab.jemdoc` | `lab.html` and the three other lab pages | the lab |
-| `www/menu-courses.jemdoc` | `ee301.html`, `ee502.html`, `research-methods.html` | the courses |
+| `www/menu-courses.jemdoc` | `courses.html` and the three course pages | the courses |
 
-That is what lets the lab and each course feel like their own site without duplicating a page.
-`build.py` never turns a `menu*.jemdoc` file into a page of its own — it is only ever included.
+Each section is a site of its own: click *Edge AI Lab* or *Courses* on the main site and you
+land inside it, with that section's sidebar, and it stays until you follow the site name back
+out. `lab.html` and `courses.html` are the homes of those two sections, and they carry the
+section's own sidebar rather than the main one.
+
+The Courses sidebar offers **Home** (the `courses.html` list) and then the courses themselves.
+The entry is called Home -- the way the lab menu does it -- and deliberately **not** "All
+courses".
+
+`build.py` never turns a `menu*.jemdoc` file into a page of its own — it is only ever included,
+and a menu no page includes is dead weight: the test-suite counts the menus that actually appear
+and fails when that number does not match the number of `menu*.jemdoc` files.
 
 ```
 Phuong Luu Vo [index.html]
@@ -571,7 +591,7 @@ visitor with no internet connection. That is expected and harmless.
   (`lab-members.jemdoc` → `lab-members.html`). **The two names must correspond** — links and
   the menu refer to the `.html` name, the menu's own entry must match it, and `build.py`
   derives one from the other.
-* Assets follow the same rule: `gallery-1.svg`, `lecture-01.pdf`, `portrait.svg`.
+* Assets follow the same rule: `portrait.jpg`, `lecture-01.pdf`.
 * Prefer lower case even on Windows/macOS, where the filesystem would let you get away with
   anything: git and GitHub Pages are case-sensitive, and a case-only rename is a common source
   of "it works on my machine".
@@ -619,11 +639,11 @@ Use exactly one `=` heading per page — the test-suite asserts every page has a
 ### 8.4 Images
 
 * Keep images in `www/images/`, reasonably small (under roughly 300 KB) so pages stay fast.
-* Reference them **relative to the site root**: `images/portrait.svg`, not `www/images/...`.
+* Reference them **relative to the site root**: `images/portrait.jpg`, not `www/images/...`.
 * The full path is what the visitor's browser downloads, and `build.py` copies `www/images/` to
   `images/`.
 * Always write a meaningful `alt` text.
-* A plain image in a paragraph: `{}{img_left}{images/portrait.svg}{Alt text}{175}{}{}` — the
+* A plain image in a paragraph: `{}{img_left}{images/portrait.jpg}{Alt text}{175}{}{}` -- the
   seven fields are `{title}{img_left}{file}{alt}{width}{height}{link}`. Leave the width blank
   to use the image's natural size.
 * Gallery photos use raw HTML inside a `<div class="gallery">` block in
@@ -829,10 +849,13 @@ undergraduate students and alumni are four sections of this one page.
 
 ### 9.4 Add a course
 
-Files: `www/courses.jemdoc` (the overview) and one page per course.
+Files: `www/courses.jemdoc` (the section home) and one page per course.
 
-A course is its own little site: it has a page, and every course page shares the sidebar in
-`www/menu-courses.jemdoc`, so a visitor can hop between courses. To add one:
+Courses is a section of its own, laid out exactly like the Edge AI Lab: `courses.html` carries
+the sidebar in `www/menu-courses.jemdoc`, and so does every course page, so a visitor moves
+between the courses from anywhere inside the section. Each course is **one page** holding the
+course information, the slides, the textbook and any other files — nothing is split up, and the
+sidebar never jumps *inside* a page. To add a course:
 
 1. Copy a course page and edit the two values on the first line:
 
@@ -846,7 +869,7 @@ A course is its own little site: it has a page, and every course page shares the
    Graduate · 3 credits
    ```
 
-2. Give it the three sections every course has — `== Slides`, `== Textbook` — plus
+2. Give it the sections every course has -- `== Slides`, `== Textbook` -- plus
    `== Course information`, built from the info box the other pages use:
 
    ```
@@ -859,17 +882,18 @@ A course is its own little site: it has a page, and every course page shares the
    ~~~
    ```
 
-3. Add it to the course sidebar, `www/menu-courses.jemdoc`:
+3. Add it to the course sidebar, `www/menu-courses.jemdoc`, under the `Home` entry:
 
    ```
     {{Antenna Theory}} (EE410) [ee410.html]
    ```
 
-4. Add a card to the overview, `www/courses.jemdoc`, by copying an existing `<li>` block inside
-   the `<ul class="cards">`.
+4. Add a card to `www/courses.jemdoc`, by copying an existing `<li>` block inside the
+   `<ul class="cards">`. The card is what a visitor sees on the Courses page; the sidebar line
+   above is what they use once inside the section.
 
-5. Add it to the main sidebar, `www/menu.jemdoc`, if it should be reachable from the Teaching
-   section — and rebuild.
+5. Add a *Courses* entry to the main sidebar, `www/menu.jemdoc`, only if the whole section
+   should be reachable from there — and rebuild.
 
 The material files are **not** stored in this repository. They live in a separate GitHub
 repository and are linked from the course page, so the site stays small. Each group of files is
@@ -1057,10 +1081,12 @@ paper.
 
 What is **still demo content**:
 
-- [ ] *Portrait photo* — `www/images/portrait.svg` is still a placeholder illustration, now in
-      the site palette. The note inside the file says how to swap in a real photograph.
-- [ ] *Gallery photos and captions* — `www/images/gallery-1..4.svg` and the `<figure>` blocks in
-      `www/gallery.jemdoc`.
+- [x] *Portrait photo* — `www/images/portrait.jpg` is a real photograph now, and
+      `www/index.jemdoc` points at it.
+- [ ] *Gallery photos and captions* — the placeholder illustrations were deleted, so
+      `www/gallery.jemdoc` has an empty `<div class="gallery">` waiting for real photographs and
+      captions. Put the files in `www/images/` and paste a `<figure>` block per photo (the
+      template is at the bottom of `www/gallery.jemdoc`).
 - [ ] *Members* — `www/lab-members.jemdoc` shows one real row (yourself) and no students. The
       former demo names are kept, commented out, at the bottom of that file.
 - [ ] *Lab text* — `www/lab.jemdoc`, `www/lab-projects.jemdoc` and `www/lab-news.jemdoc` are
@@ -1157,7 +1183,7 @@ python -m pytest
 - [ ] **Visual check** of the pages you touched: `python build.py --serve`, then look at the
       changed pages at both a wide and a narrow window.
 - [ ] **Assets exist** in the output: `.nojekyll`, `css/site.css`,
-      `images/portrait.svg` (covered by `test_static_assets_are_copied`).
+      `images/portrait.jpg` (covered by `test_static_assets_are_copied`).
 - [ ] **Nothing stale is left over.** If you deleted a file, the build says so under
       `stale removed`, and `test_a_file_deleted_from_www_disappears_from_the_output` guards it.
 - [ ] **Commit sources only.** `_site/` is generated and ignored — never commit it. The
@@ -1315,11 +1341,22 @@ with LF endings.
 The stylesheet is `www/css/site.css` and is copied into `_site/css/` on build. Rebuild, and
 force-reload the browser (<kbd>Ctrl</kbd>+<kbd>F5</kbd>).
 
+**"I changed a page and the change vanished / the site went back to how it was."**
+You edited the output instead of the source. `_site/` is regenerated from `www/` on every build,
+so an edit there lasts only until the next `python build.py`, `git push` or CI run. Make the
+change in the matching `www/` file — the warning in §6.1 lists which one — and rebuild. If the
+work is already gone, VS Code's Timeline (right-click the file, **Local History**) still holds
+the earlier versions.
+
 **"An image is missing — just a broken-image icon."**
-A malformed SVG renders as nothing, with no build error, no failing link and no warning. The
-usual cause is a **double hyphen inside an XML comment**, which is illegal in XML: the note at
-the top of `www/images/portrait.svg` once contained one and the portrait silently disappeared.
-Rewrite `--` as a single `-`, or delete the comment. `test_the_images_are_valid_svg` catches it.
+Two causes, and neither one stops the build or reports an error. Either the name in the page does
+not match a file in `www/images/` — check the extension, and check the path is relative to the
+site root (`images/portrait.jpg`, never `www/images/...` and never a Windows-style
+`images\portrait.jpg`) — or the image is an SVG with a **double hyphen inside an XML comment**,
+which is illegal in XML: the note at the top of the old placeholder portrait contained one and the
+portrait silently disappeared. Rewrite `--` as a single `-`, or delete the comment.
+`test_every_local_link_and_image_resolves` catches the first and `test_the_images_are_valid` the
+second.
 
 **"Where do I put a PDF or a PNG?"**
 On a page: `www/images/`, linked as `images/your-file.png`. For visitors to download:

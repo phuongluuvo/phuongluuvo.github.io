@@ -19,6 +19,20 @@ The label changes, the work does not: read the literature, choose one clear ques
 reproduce a method, and measure it honestly.
 ~~~
 
+== Co-supervision
+
+Some of these projects are run jointly with a colleague, in which case there are two supervisors
+and the scope is agreed between the three of us. Mention it in your message if you would like to
+be considered for one of those.
+
+~~~
+{Co-advisor}
+- *Name*: YOUR-CO-ADVISOR-NAME \M *Group*: YOUR-CO-ADVISOR-GROUP
+
+Replace this box with the co-advisor's details, add one line per person if there is more than
+one, or delete this whole section if every project is supervised on its own.
+~~~
+
 == What I work on
 
 My current interests are distributed and federated learning, deep reinforcement learning for

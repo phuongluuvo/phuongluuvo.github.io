@@ -1,9 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 300" width="480" height="300" role="img" aria-label="Group photo placeholder 1">
-  <rect width="480" height="300" fill="#e9eef5"/>
-  <circle cx="392" cy="66" r="30" fill="#f2d9a8"/>
-  <path d="M0 235 L120 130 L215 235 Z" fill="#b9c9db"/>
-  <path d="M150 235 L280 96 L410 235 Z" fill="#9db3ca"/>
-  <rect y="235" width="480" height="65" fill="#cfd9e5"/>
-  <text x="240" y="40" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="17" fill="#71829a">Group photo 1</text>
-  <text x="240" y="284" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="12" fill="#74849b">Replace www/images/gallery-1.svg</text>
-</svg>

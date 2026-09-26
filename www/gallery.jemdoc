@@ -2,17 +2,13 @@
 = Gallery
 Photos of the group
 
-We try to take a group photo at least once a year. To add a photo, put the image file into the
-+images+ folder of +www+ and copy one of the +figure+ blocks below (there is a ready-to-use
-template at the bottom of this file).
+We try to take a group photo at least once a year. To add one, put the image file into the
++images+ folder of +www+ and paste the +figure+ template from the bottom of this file into the
+gallery below.
 
 ~~~
 {}{raw}
 <div class="gallery">
-<figure><img src="images/gallery-1.svg" alt="Group photo 1" /><figcaption>Group retreat, summer 2026.</figcaption></figure>
-<figure><img src="images/gallery-2.svg" alt="Group photo 2" /><figcaption>Lab open day, spring 2026.</figcaption></figure>
-<figure><img src="images/gallery-3.svg" alt="Group photo 3" /><figcaption>Poster session at EICC 2025.</figcaption></figure>
-<figure><img src="images/gallery-4.svg" alt="Group photo 4" /><figcaption>End-of-semester group lunch, 2025.</figcaption></figure>
 </div>
 ~~~
 
