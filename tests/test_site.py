@@ -125,6 +125,86 @@ def test_generated_html_is_valid_utf8(site, page_names):
             pytest.fail("%s is not valid UTF-8: %s" % (name, error))
 
 
+# --------------------------------------------------------------------------- #
+# the indentation of the generated HTML
+# --------------------------------------------------------------------------- #
+
+def _plain_text(html):
+    """What a page says: no comments, no code, no tags, no runs of whitespace."""
+    html = re.sub(r"<!--.*?-->", " ", html, flags=re.DOTALL)
+    html = re.sub(r"<(script|style)\b.*?</\1\s*>", " ", html, flags=re.DOTALL | re.I)
+    html = re.sub(r"<[^>]*>", " ", html)
+    return re.sub(r"\s+", " ", html).strip()
+
+
+def test_the_generated_pages_are_indented(site, page_names):
+    """jemdoc writes its own tags at column zero and passes the tags copied from
+    a page through with whatever indentation the page gave them, so the two
+    styles ran into each other and the nesting could not be followed.
+
+    A page that is already in the form the build writes must not move at all,
+    which is what makes this a check of every page at once.
+    """
+    module = load_build_module()
+    for name in page_names:
+        text = text_of(site, name)
+        assert module.tidy_html(text) == text, (
+            "%s is not in the indented form build.py writes" % name
+        )
+
+
+def test_the_nesting_can_be_followed(site):
+    """A cell of the layout table is a child of its row, so it is deeper in."""
+    lines = text_of(site, "index.html").split("\n")
+    table = next(line for line in lines if 'id="tlayout"' in line)
+    menu = next(line for line in lines if 'id="layout-menu"' in line)
+    depth = lambda line: len(line) - len(line.lstrip())
+    assert menu.startswith(" "), "the menu cell is still at the left margin"
+    assert depth(menu) > depth(table), "the menu cell is not inside the table"
+
+
+def test_indenting_the_html_does_not_change_what_a_page_says(tmp_path):
+    """The tidier rewrites the whitespace in front of each line and nothing
+    else, so every page has to read the same with it as without it."""
+    module = load_build_module()
+    plain, tidy = tmp_path / "plain", tmp_path / "tidy"
+    module.build(str(plain), tidy=False)
+    module.build(str(tidy), tidy=True)
+
+    for name in module.find_pages():
+        html = name[: -len(".jemdoc")] + ".html"
+        before = (plain / html).read_text(encoding="utf-8")
+        after = (tidy / html).read_text(encoding="utf-8")
+        assert _plain_text(before) == _plain_text(after), (
+            "%s says something different once it is indented" % html
+        )
+        assert before.count("\n") == after.count("\n"), (
+            "%s gained or lost a line" % html
+        )
+
+
+def test_the_tidier_leaves_a_preformatted_block_alone():
+    """A browser keeps every space inside <pre>, so its body must not move."""
+    module = load_build_module()
+    block = "<pre>a\n   b\n\tc</pre>\n"
+    assert block in module.tidy_html("<div>\n" + block + "</div>\n")
+
+
+def test_the_tidier_never_breaks_a_line_of_text():
+    """<a> and friends sit *inside* a line, and splitting the line around one of
+    them would push a space into the middle of a sentence."""
+    module = load_build_module()
+    line = '<p>see <a href="x.html">this</a> and that</p>'
+    assert module.tidy_html(line + "\n").strip() == line
+
+
+def test_the_tidier_is_idempotent():
+    module = load_build_module()
+    html = "<html>\n<body>\n<div>\n<p>text</p>\n</div>\n</body>\n</html>\n"
+    once = module.tidy_html(html)
+    assert module.tidy_html(once) == once
+
+
 def test_non_ascii_text_survives_the_build_unchanged(site):
     """A character in a source page must come out of the build as itself, not
     as a code-page lookalike."""

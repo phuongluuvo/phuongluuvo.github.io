@@ -283,12 +283,17 @@ the folder only appears once you have something to download.
    normalisation makes the build identical on Windows, macOS, Linux and CI.
 3. Runs `tools/jemdoc -c mysite.conf <pages>` inside the staging folder. Relative paths inside
    a page (`css/site.css`, `images/portrait.svg`) therefore resolve from the **site root**.
-4. Copies the generated `*.html` into the output folder (`_site/` unless `--out` says
+4. Indents that HTML so that it can be read. jemdoc writes its own tags at column zero and
+   passes the tags copied out of a page through with whatever indentation the page gave them,
+   so the two styles run together and the nesting cannot be followed. Only the whitespace in
+   front of a line is rewritten -- never the text, and no line is ever split or joined -- so
+   the page itself cannot change. `--no-tidy` skips this step.
+5. Copies the generated `*.html` into the output folder (`_site/` unless `--out` says
    otherwise).
-5. Copies `www/css/`, `www/images/` and `www/files/` into the output, **mirroring** them:
+6. Copies `www/css/`, `www/images/` and `www/files/` into the output, **mirroring** them:
    anything in the output that is no longer in `www/` is deleted, so a removed image or PDF
    cannot linger. Writes the `.nojekyll` marker that stops GitHub Pages running Jekyll.
-6. Deletes pages from the output folder that an earlier build wrote but that no longer have a
+7. Deletes pages from the output folder that an earlier build wrote but that no longer have a
    source, so that removing a page cannot leave a stale one behind.
 
 Nothing else is touched.
@@ -301,6 +306,7 @@ Nothing else is touched.
 | Build and preview in a browser | `python build.py --serve` |
 | Build into a different folder | `python build.py --out docs` |
 | Delete the generated `*.html` files | `python build.py --clean` |
+| Build without indenting the HTML | `python build.py --no-tidy` |
 | Rebuild **and** run every check | `make verify` |
 | Run only the checks | `python -m pytest` |
 | Refresh the generated pages (Publications and News) from ORCID | `make update` |
@@ -1088,7 +1094,15 @@ grep -rn 'example\.edu\|Example \|20XX' www/
 (`Select-String -Path www/* -Pattern 'example\.edu|Example '` on Windows.)
 
 The **footer** is written by `www/mysite.conf` (`[lastupdated]`) and currently reads
-`Last updated: 2026-09-26` — no name, no copyright line. To put one back, edit that section:
+`Last updated: 2026-09-26` — no name, no copyright line.
+
+That date is **never typed by hand**. The `|` in the section is a placeholder, and jemdoc
+replaces it with the date of the build, so every `python build.py` — and every push, because CI
+rebuilds the site — refreshes the footer on all 16 pages at once. Editing the date inside a
+`_site/*.html` file by hand would be undone by the next build; that folder is generated output,
+not a source.
+
+To put a name or a copyright line back, edit that section:
 
 ```
 [lastupdated]
