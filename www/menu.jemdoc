@@ -9,8 +9,8 @@
 #     it to be forced onto one line, e.g.   {{PhD / Master students}} [x.html]
 #   * Menu order = order in this file. Keep it in sync with the pages.
 #
-# The Edge AI Lab and each course have their own sidebar:
-#   www/menu-lab.jemdoc  and  www/menu-courses.jemdoc
+# The Edge AI Lab has a sidebar of its own: www/menu-lab.jemdoc.
+# The course pages use THIS menu, like every other page of the main site.
 #
 # Careful: jemdoc marks the current entry with a SUFFIX test, so one page name
 # must never be the tail of another. See guide.md §6.4.
@@ -24,5 +24,7 @@ Research
  Publications [publications.html]
  Gallery [gallery.html]
 Teaching
- Courses [courses.html]
+ {{Wireless Communications}} (EE301) [ee301.html]
+ {{Convex Optimization}} (EE502) [ee502.html]
+ {{Research Methods Seminar}} [research-methods.html]
  {{Prethesis and Thesis}} [joining.html]

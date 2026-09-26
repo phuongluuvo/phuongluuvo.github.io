@@ -63,7 +63,6 @@ phuongluuvo.github.io/
 │   │                            page-title suffix, footer  (= the shared "include")
 │   ├── menu.jemdoc              sidebar for the main site
 │   ├── menu-lab.jemdoc          sidebar for the Edge AI Lab pages
-│   ├── menu-courses.jemdoc      sidebar for the Courses section
 │   ├── index.jemdoc             Home (hero + About + Contact)   ─┐
 │   ├── news.jemdoc              News (GENERATED)                 │
 │   ├── awards.jemdoc            Awards & Grants                  │
@@ -73,7 +72,6 @@ phuongluuvo.github.io/
 │   ├── lab-members.jemdoc       Lab Members      │ own sidebar   ├─ one file = one page
 │   ├── lab-projects.jemdoc      Lab Projects     │               │
 │   ├── lab-news.jemdoc          Lab news         ┘               │
-│   ├── courses.jemdoc           Courses (the list)               │
 │   ├── ee301.jemdoc             EE301            ┐               │
 │   ├── ee502.jemdoc             EE502            │ own sidebar   │
 │   ├── research-methods.jemdoc  Research Methods ┘               │
@@ -246,9 +244,9 @@ Expected output:
 ```
 Build finished.
   output folder : /path/to/phuongluuvo.github.io/_site
-  pages written : 16
+  pages written : 15
                   awards.html
-                  courses.html
+                  ee301.html
                   ...
   assets copied : css/, images/
   stale removed : biography.html, faculty.html, students.html, files/cv.pdf
@@ -274,7 +272,7 @@ the folder only appears once you have something to download.
 ### What the build actually does
 
 1. Collects every `www/*.jemdoc`, skipping `mysite.conf` and every file whose name starts with
-   `menu` (`menu.jemdoc`, `menu-lab.jemdoc`, `menu-courses.jemdoc`), because a menu is included
+   `menu` (`menu.jemdoc`, `menu-lab.jemdoc`), because a menu is included
    by pages rather than built into a page of its own.
 2. Copies the sources **and** `www/mysite.conf` into a temporary staging folder, converting
    CRLF to LF on the way. This matters: jemdoc decides where a paragraph ends by looking for a
@@ -356,7 +354,7 @@ the `_site/` folder produced by `python build.py`.
 | --- | --- |
 | The sidebar on the main-site pages | `www/menu.jemdoc` |
 | The sidebar inside the Edge AI Lab | `www/menu-lab.jemdoc` |
-| The sidebar inside a course site | `www/menu-courses.jemdoc` |
+| The sidebar inside the Edge AI Lab | `www/menu-lab.jemdoc` |
 | Colours, fonts, spacing, page width, the profile header | `www/css/site.css` — the palette is the first block |
 | The MathJax setup, the `<head>`, the page-title suffix, the footer, the favicon | `www/mysite.conf` |
 | Home: the profile header, About (appointments + education), contact | `www/index.jemdoc` |
@@ -366,8 +364,7 @@ the `_site/` folder produced by `python build.py`.
 | A paper that ORCID does not have yet | paste BibTeX into `www/publications-extra.bib`, then `make update` |
 | Awards and grants | `www/awards.jemdoc` |
 | The Edge AI Lab: description, people, projects, lab news | `www/lab.jemdoc`, `www/lab-members.jemdoc`, `www/lab-projects.jemdoc`, `www/lab-news.jemdoc` |
-| The course list on the main site | `www/courses.jemdoc` |
-| One course (info, slides, textbook) | `www/ee301.jemdoc`, `www/ee502.jemdoc`, `www/research-methods.jemdoc` |
+| One course, everything on it (info, slides, textbook, files) | `www/ee301.jemdoc`, `www/ee502.jemdoc`, `www/research-methods.jemdoc` |
 | Prethesis, thesis and internship projects | `www/joining.jemdoc` |
 | Photo gallery | `www/gallery.jemdoc` + files in `www/images/` |
 | A document visitors download (CV, poster, syllabus) | put it in `www/files/`, then link it — see [§2](#2-folder-structure) |
@@ -436,24 +433,23 @@ News and announcements
 
    Then commit both the `.jemdoc` **and** the generated `.html`.
 
-### 6.4 The four menus
+### 6.4 The two menus
 
-There are four menu files, and every page includes exactly one of them:
+There are two menu files, and every page includes exactly one of them:
 
 | Menu file | Used by | Sidebar shows |
 | --- | --- | --- |
-| `www/menu.jemdoc` | the main-site pages | the whole site |
+| `www/menu.jemdoc` | every page of the main site, the three course pages included | the whole site |
 | `www/menu-lab.jemdoc` | `lab.html` and the three other lab pages | the lab |
-| `www/menu-courses.jemdoc` | `courses.html` and the three course pages | the courses |
 
-Each section is a site of its own: click *Edge AI Lab* or *Courses* on the main site and you
-land inside it, with that section's sidebar, and it stays until you follow the site name back
-out. `lab.html` and `courses.html` are the homes of those two sections, and they carry the
-section's own sidebar rather than the main one.
+The Edge AI Lab is the only section with a sidebar of its own: click *Edge AI Lab* on the main
+site and you land inside it, with the lab's sidebar, and you stay there until you follow the site
+name back out.
 
-The Courses sidebar offers **Home** (the `courses.html` list) and then the courses themselves.
-The entry is called Home -- the way the lab menu does it -- and deliberately **not** "All
-courses".
+**The courses are ordinary pages of the main site.** The Teaching group lists them beside
+Prethesis and Thesis, exactly the same way, and each course page shows the main sidebar. There
+used to be a course overview page and a shared course sidebar; both were removed, because a
+course list in the sidebar and a course list in the menu were the same information twice.
 
 `build.py` never turns a `menu*.jemdoc` file into a page of its own — it is only ever included,
 and a menu no page includes is dead weight: the test-suite counts the menus that actually appear
@@ -469,7 +465,9 @@ Research
  Publications [publications.html]
  Gallery [gallery.html]
 Teaching
- Courses [courses.html]
+ {{Wireless Communications}} (EE301) [ee301.html]
+ {{Convex Optimization}} (EE502) [ee502.html]
+ {{Research Methods Seminar}} [research-methods.html]
  {{Prethesis and Thesis}} [joining.html]
 ```
 
@@ -849,13 +847,11 @@ undergraduate students and alumni are four sections of this one page.
 
 ### 9.4 Add a course
 
-Files: `www/courses.jemdoc` (the section home) and one page per course.
+Files: one page per course. There is no course list page and no course menu.
 
-Courses is a section of its own, laid out exactly like the Edge AI Lab: `courses.html` carries
-the sidebar in `www/menu-courses.jemdoc`, and so does every course page, so a visitor moves
-between the courses from anywhere inside the section. Each course is **one page** holding the
-course information, the slides, the textbook and any other files — nothing is split up, and the
-sidebar never jumps *inside* a page. To add a course:
+A course is an ordinary page of the main site, listed in the Teaching group beside Prethesis and
+Thesis. Each course is **one page** holding the course information, the slides, the textbook and
+any other files — nothing is split up. To add a course:
 
 1. Copy a course page and edit the two values on the first line:
 
@@ -864,7 +860,7 @@ sidebar never jumps *inside* a page. To add a course:
    ```
 
    ```
-   # jemdoc: menu{menu-courses.jemdoc}{ee410.html}, title{EE410}, notime
+   # jemdoc: menu{menu.jemdoc}{ee410.html}, title{EE410}, notime
    = Antenna Theory (EE410)
    Graduate · 3 credits
    ```
@@ -882,18 +878,14 @@ sidebar never jumps *inside* a page. To add a course:
    ~~~
    ```
 
-3. Add it to the course sidebar, `www/menu-courses.jemdoc`, under the `Home` entry:
+3. Add it to the Teaching group in `www/menu.jemdoc`, beside the other courses and Prethesis and
+   Thesis:
 
    ```
     {{Antenna Theory}} (EE410) [ee410.html]
    ```
 
-4. Add a card to `www/courses.jemdoc`, by copying an existing `<li>` block inside the
-   `<ul class="cards">`. The card is what a visitor sees on the Courses page; the sidebar line
-   above is what they use once inside the section.
-
-5. Add a *Courses* entry to the main sidebar, `www/menu.jemdoc`, only if the whole section
-   should be reachable from there — and rebuild.
+4. Rebuild. That is the whole job: one page and one menu line, with no list page to keep in step.
 
 The material files are **not** stored in this repository. They live in a separate GitHub
 repository and are linked from the course page, so the site stays small. Each group of files is
@@ -926,7 +918,7 @@ Rules that keep it working:
   (`https://raw.githubusercontent.com/USER/REPO/main/FOLDER/file.pdf`) opens or downloads it
   directly, while the GitHub page for it
   (`https://github.com/USER/REPO/blob/main/FOLDER/file.pdf`) shows a preview first.
-* There is a fully commented template at the bottom of `www/courses.jemdoc`.
+* There is a fully commented `<details>` example in each course page.
 
 ### 9.5 Add an award or a grant
 
@@ -1509,7 +1501,7 @@ Read this before making any change.
 | a page's content | `www/<name>.jemdoc` |
 | the sidebar of the main site | `www/menu.jemdoc` |
 | the sidebar inside the Edge AI Lab | `www/menu-lab.jemdoc` |
-| the sidebar inside a course site | `www/menu-courses.jemdoc` |
+| the sidebar inside the Edge AI Lab | `www/menu-lab.jemdoc` |
 | `<head>`, MathJax config, `<title>` suffix, footer, favicon | `www/mysite.conf` (`[firstbit]`, `[windowtitle]`, `[lastupdated]`) |
 | colours / fonts / layout | `www/css/site.css` (the palette is the first block) |
 | the publication list and the news | `tools/update_site.py` (the ORCID iD is at the top) |

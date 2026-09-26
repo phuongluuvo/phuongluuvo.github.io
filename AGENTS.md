@@ -10,8 +10,8 @@ elsewhere.
 
 ## The five rules that matter most
 
-1. **Edit sources in `www/` only.** `www/*.jemdoc` (pages), the three sidebars
-   (`www/menu.jemdoc`, `www/menu-lab.jemdoc`, `www/menu-courses.jemdoc`),
+1. **Edit sources in `www/` only.** `www/*.jemdoc` (pages), the two sidebars
+   (`www/menu.jemdoc`, `www/menu-lab.jemdoc`),
    `www/mysite.conf` (control file: `<head>`, MathJax config, `<title>`, footer, favicon),
    `www/css/site.css`, `www/images/` (pictures shown on a page) and `www/files/` (documents
    visitors download — optional, and it does not exist until there is one).
@@ -30,8 +30,8 @@ elsewhere.
    generated and ignored; never commit it.
 4. **Do not add or remove a page without updating its menu,** and keep each page's own header in
    sync: the second argument of `menu{menu.jemdoc}{X.html}` must equal that page's `.html` file
-   name. There are three menus — `menu.jemdoc` (main site), `menu-lab.jemdoc` (Edge AI Lab) and
-   `menu-courses.jemdoc` (course pages) — and `build.py` never builds one into a page.
+   name. There are two menus — `menu.jemdoc` (the main site, including the course pages) and
+   `menu-lab.jemdoc` (the Edge AI Lab) — and `build.py` never builds one into a page.
 5. **MathJax is configured in exactly one place** — the `[firstbit]` section of
    `www/mysite.conf`. Never add a MathJax `<script>` to an individual page.
 

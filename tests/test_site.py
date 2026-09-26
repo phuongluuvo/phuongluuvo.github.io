@@ -302,40 +302,37 @@ def test_the_lab_pages_use_the_lab_menu(site):
     assert "lab-news.html" not in main, "the main menu leaked the lab menu"
 
 
-#: The Courses section, and the page that introduces it.
+#: The course pages, in the order the Teaching group lists them.
 COURSES = ("ee301.html", "ee502.html", "research-methods.html")
 
 
-def test_the_courses_are_one_section_with_one_sidebar(site):
-    """Courses is laid out exactly like the Edge AI Lab: the section home carries
-    the section's own sidebar, and so does every course page, so a visitor moves
-    between the courses from anywhere inside the section.
+def test_the_courses_sit_in_the_teaching_group(site):
+    """A course is an ordinary page of the main site, listed in the Teaching group
+    beside Prethesis and Thesis.
 
-    The home entry is called "Home" -- the way the lab menu does it -- and never
-    "All courses".
+    It is deliberately not a section with a sidebar of its own: there was a
+    course list page and a shared course sidebar, and both were removed.
     """
-    for name in ("courses.html",) + COURSES:
-        links = [a.get("href") for a in soup_of(site, name).select("#layout-menu a")]
-        assert "courses.html" in links, "%s has no way back to the course list" % name
-        assert "publications.html" not in links, (
-            "%s is in the Courses section but shows the main site's menu" % name
-        )
-        for course in COURSES:
-            assert course in links, "%s does not offer %s" % (name, course)
-
-    labels = [
-        a.get_text(strip=True).replace("\xa0", " ")
-        for a in soup_of(site, "ee301.html").select("#layout-menu a")
-    ]
-    assert "Home" in labels, "the course sidebar has no Home entry"
-    assert "All courses" not in labels, (
-        "the course sidebar still says 'All courses'; it should say Home"
-    )
-
     main = [a.get("href") for a in soup_of(site, "index.html").select("#layout-menu a")]
-    assert "courses.html" in main, "the main menu has no Courses entry"
-    for course in COURSES:
-        assert course not in main, "the main menu leaked the course page %s" % course
+    for course in COURSES + ("joining.html",):
+        assert course in main, "the main menu does not offer %s" % course
+
+    for name in COURSES:
+        links = [a.get("href") for a in soup_of(site, name).select("#layout-menu a")]
+        assert links == main, (
+            "%s does not show the main site's menu, so it is a section of its own"
+            % name
+        )
+
+
+def test_no_separate_course_section_survives(site):
+    """The course list page and the course section menu are both gone."""
+    assert not (site / "courses.html").exists(), (
+        "courses.html is still in the output"
+    )
+    assert not os.path.isfile(os.path.join(SRC, "menu-courses.jemdoc")), (
+        "www/menu-courses.jemdoc is still there, so a course section still exists"
+    )
 
 
 def test_each_course_is_one_page_holding_everything(site):
@@ -356,14 +353,6 @@ def test_each_course_is_one_page_holding_everything(site):
         assert not jumps, (
             "%s: the sidebar should not jump inside the page: %s" % (name, jumps)
         )
-
-
-def test_the_course_list_offers_every_course(site):
-    """courses.html is the section home: it introduces the courses the sidebar
-    then links to."""
-    linked = [a.get("href") for a in soup_of(site, "courses.html").find_all("a", href=True)]
-    for course in COURSES:
-        assert course in linked, "%s is not offered from the course list" % course
 
 
 def test_every_menu_starts_with_the_site_name_linking_home(site, page_names):
@@ -392,8 +381,9 @@ def test_menu_contains_the_expected_entries(site):
     labels = [a.get_text(strip=True).replace("\xa0", " ") for a in menu.find_all("a")]
     for expected in (
         "Phuong Luu Vo", "News", "Awards & Grants", "Edge AI Lab",
-        "Research Interests", "Publications", "Gallery", "Courses",
-        "Prethesis and Thesis",
+        "Research Interests", "Publications", "Gallery",
+        "Wireless Communications (EE301)", "Convex Optimization (EE502)",
+        "Research Methods Seminar", "Prethesis and Thesis",
     ):
         assert expected in labels, "menu entry %r is missing" % expected
 
