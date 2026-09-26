@@ -1,0 +1,26 @@
+# ---------------------------------------------------------------------------
+# COURSE NAVIGATION MENU  (www/menu-courses.jemdoc)
+#
+# Every course page (ee301.html, ee502.html, research-methods.html) includes
+# THIS menu, so the sidebar inside a course lists the other courses. That is what
+# makes each course feel like its own site without duplicating any page.
+#
+#   * The FIRST line is the site name, and it is the link to the home page.
+#   * A line WITHOUT brackets is a coloured section heading.
+#   * A line with brackets is a link:  Visible text [target-file.html]
+#
+# "All courses" goes back to the overview, which lives on the main site and uses
+# the main menu (www/menu.jemdoc).
+#
+# To add a course: add its page in www/, add one line under "Courses" here, add
+# one card to www/courses.jemdoc, and add the course to the main menu too.
+#
+# Careful: jemdoc marks the current entry with a SUFFIX test, so one page name
+# must never be the tail of another. See guide.md §6.4.
+# ---------------------------------------------------------------------------
+Phuong Luu Vo [index.html]
+Courses
+ All courses [courses.html]
+ {{Wireless Communications}} (EE301) [ee301.html]
+ {{Convex Optimization}} (EE502) [ee502.html]
+ {{Research Methods Seminar}} [research-methods.html]

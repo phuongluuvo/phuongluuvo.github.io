@@ -39,6 +39,23 @@
 %   becomes "First Last", page ranges written -- become an en dash, and \& ~ \"o
 %   and friends are cleaned up. `note` is shown in small text after the entry,
 %   which is handy for "Best paper award".
+%
+% OPTIONAL EXTRA LINKS
+%   An entry taken from ORCID shows a DOI link and nothing else, on purpose:
+%   a clean one-line entry beats a row of links that all lead to the same page.
+%   When you paste an entry here you can add any of these fields, and each one
+%   becomes a link next to the DOI, in this order:
+%
+%     arxiv  = {2401.01234}             -> arXiv
+%     pdf    = {https://.../paper.pdf}  -> pdf
+%     slides = {https://.../talk.pdf}   -> slides
+%     code   = {https://github.com/...} -> code
+%     video  = {https://...}            -> video
+%     url    = {https://...}            -> link
+%
+%   A full URL is used exactly as written; for `arxiv` you may give either the
+%   full URL or just the identifier. These fields are NOT tidied up like the
+%   others, because a URL may contain characters the tidy-up would rewrite.
 % ---------------------------------------------------------------------------
 % The four entries below are real publications that appear on your HCMIU faculty
 % page but are missing from ORCID. They were typed in by hand from that page, so

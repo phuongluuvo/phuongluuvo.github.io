@@ -1,73 +1,79 @@
 # jemdoc: menu{menu.jemdoc}{index.html}, title{Home}, notime
 = Phuong Luu Vo
-Associate Professor, School of Computer Science and Engineering, International University (VNU-HCM)
 
-~~~
-{}{img_left}{images/portrait.svg}{Portrait of Phuong Luu Vo}{175}{}{}
-Welcome! I am an Associate Professor at the School of Computer Science and Engineering,
-International University -- Vietnam National University Ho Chi Minh City, where I lead the
-*Network Optimization and Distributed Learning* group.
-
-My research covers distributed computing and distributed learning, machine learning and deep
-reinforcement learning, and wireless and mobile networking with the Internet of Things. Recent
-work is on semantic communication, federated and edge learning, and adaptive video streaming
-over multipath and cache-enabled networks. Please have a look at my
-[publications.html Publications] and at the work of my [students.html research group].
-
-I am currently looking for motivated students for *prethesis*, *thesis*, and *internship*
-projects. See [joining.html For Students] for what that involves and how to get in touch.
-~~~
-
-== Contact
-
-~~~
-{Contact}
-- *Email*: [vtlphuong@hcmiu.edu.vn]
-- *Office*: Room 610, International University, Block 6, Linh Trung Ward, Thu Duc District,\n
-  Ho Chi Minh City, Vietnam
-- *Telephone*: (84-8) 37244270, ext. 3232 \M *Fax*: (84-8) 37244271
-
-For thesis and prethesis enquiries, please include your transcript, your CV, and a short
-statement of the topics you are interested in.
-~~~
-
-== Quick links
-
-[https://orcid.org/0000-0003-3909-4385 ORCID] \M [https://scholar.google.com/citations?user=6DmQXO4AAAAJ Google Scholar] \M [https://www.scopus.com/authid/detail.uri?authorId=37049664100 Scopus] \M [https://it.hcmiu.edu.vn/user/vtlphuong/ HCMIU profile] \M [https://github.com/phuongluuvo GitHub]
-
-== Research at a glance
-
-A large part of our work can be written as a resource allocation problem. For a single-cell
-network with $K$ users sharing a total power budget $P_{\max}$, where $p_k$ denotes the power
-allocated to user $k$ and $h_k$ its channel gain, a typical design problem is
-
-\(
-\begin{array}{ll}
-\mbox{maximize} & \displaystyle \sum_{k=1}^{K} \log_2\!\left(1 + \frac{p_k\,h_k}{\sigma^2}\right) \\
-\mbox{subject to} & \displaystyle \sum_{k=1}^{K} p_k \le P_{\max}, \qquad p_k \ge 0, \quad k = 1,\ldots,K .
-\end{array}
-\)
-
-We are interested both in the structure of the optimal solution and in algorithms that find it
-with limited channel state information. See the [publications.html Publications] page for the
-papers that came out of this line of work, and [mathjax-test.html this page] if you want to
-check that the mathematics on this site renders correctly in your browser.
-
-== Latest news
-
-# Everything between the two GENERATED markers is rewritten by tools/update_site.py
-# from your publications (ORCID + www/publications-extra.bib) and from
-# www/news-extra.txt. Delete the markers to take manual control of this section.
-# BEGIN GENERATED latest-news
 ~~~
 {}{raw}
-<ul class="news">
-<li><span class="news-date">2027</span> <span class="news-text">Book chapter published in <i>Lecture Notes in Computer Science</i>: “Multi-domain Time Series Reconstruction with Frequency-Enhanced Transformers”. <a href="https://doi.org/10.1007/978-981-92-2480-7_33" target="blank">doi</a></span></li>
-<li><span class="news-date">2026-06-01</span> <span class="news-text">Book chapter published in <i>Lecture Notes in Computer Science</i>: “Secure Semantic Communications with Adversarial Training and Active Eavesdropper”. <a href="https://doi.org/10.1007/978-981-92-0074-0_32" target="blank">doi</a></span></li>
-<li><span class="news-date">2026-02</span> <span class="news-text">Journal paper published in <i>ICT Express</i>: “A lightweight-to-diffusion framework for semantic image communications”. <a href="https://doi.org/10.1016/j.icte.2025.12.013" target="blank">doi</a></span></li>
-<li><span class="news-date">2026</span> <span class="news-text">Book chapter published in <i>Communications in Computer and Information Science</i>: “Semantic Communication with Transformer and Knowledge Distillation for Language Translation”. <a href="https://doi.org/10.1007/978-3-032-10209-6_8" target="blank">doi</a></span></li>
-</ul>
+<div class="hero">
+  <img src="images/portrait.svg" alt="Portrait of Phuong Luu Vo" />
+  <div class="hero-body">
+    <p class="hero-name"><a href="index.html">Phuong Luu Vo, Ph.D.</a></p>
+    <p class="hero-role">Associate Professor</p>
+    <p class="hero-org"><a href="https://it.hcmiu.edu.vn/user/vtlphuong/" target="blank">School of Computer Science and Engineering</a>,
+      <a href="https://hcmiu.edu.vn/" target="blank">International University</a> &mdash;
+      Vietnam National University Ho Chi Minh City</p>
+    <ul class="hero-links">
+      <li><a href="https://it.hcmiu.edu.vn/user/vtlphuong/" target="blank">HCMIU profile</a></li>
+      <li><a href="https://scholar.google.com/citations?user=6DmQXO4AAAAJ" target="blank">Google Scholar</a></li>
+      <li><a href="https://orcid.org/0000-0003-3909-4385" target="blank">ORCID</a></li>
+    </ul>
+    <p class="hero-bio">I lead the <b>Network Optimization and Distributed Learning</b> group.
+      My research covers distributed computing and distributed learning, machine learning and
+      deep reinforcement learning, and wireless and mobile networking with the Internet of
+      Things. Recent work is on semantic communication, federated and edge learning, and
+      adaptive video streaming over multipath and cache-enabled networks. Please have a look at
+      my <a href="publications.html">publications</a> and at the work of the
+      <a href="lab.html">Edge AI Lab</a>.</p>
+  </div>
+</div>
 ~~~
-# END GENERATED latest-news
 
-[news.html See all news]
+== About
+
+I am Assoc. Prof. Vo Thi Luu Phuong (published as *Phuong Luu Vo*), an Associate Professor at the
+School of Computer Science and Engineering, International University -- Vietnam National
+University Ho Chi Minh City, where I lead the *Network Optimization and Distributed Learning*
+group.
+
+I received my Ph.D. in Computer Engineering from Kyung Hee University, Korea, and have since
+worked on the algorithms behind networked systems: how resources are shared, where content is
+placed and how it is delivered, and -- more recently -- how learning can make those decisions
+without a full model of the system. The questions the group is working on now are on the
+[interests.html Research Interests] page.
+
+=== Academic and professional appointments
+
+- *Associate Professor*, School of Computer Science and Engineering, International University
+  (VNU-HCM), currently.
+- *Head of the IT Department*, School of Computer Science and Engineering, International
+  University (VNU-HCM).
+- *Researcher*, School of Computer Science and Engineering, International University (VNU-HCM),
+  2007 to present.
+- *Industry positions*, 1998--2007.
+
+=== Education
+
+- *Ph.D.* in Computer Engineering, Kyung Hee University, Seoul, Korea, 2009--2014.
+- *M.Sc.* in Telecommunication, Ho Chi Minh City University of Technology, Vietnam, 1999--2003.
+
+== Contact information
+
+Room 610, International University, Block 6, Linh Trung Ward,\n
+Thu Duc District, Ho Chi Minh City, Vietnam\n
+*Email*: [vtlphuong@hcmiu.edu.vn]\n
+*Telephone*: (84-8) 37244270, ext. 3232
+
+For prethesis and thesis enquiries please include your transcript, your CV and a short statement
+of the topics you are interested in. See [joining.html Prethesis and Thesis].
+
+# ---------------------------------------------------------------------------
+# TEMPLATE -- this page is the old Home page and the old Biography merged into
+# one, as asked. It carries the hero, About (appointments + education) and the
+# contact details, and nothing else: News has its own page, teaching lives in the
+# course sites, and research lives on the Research Interests and Publications
+# pages.
+#
+# TODO: the group is called "Network Optimization and Distributed Learning" here
+# and on www/interests.jemdoc. www/faculty.jemdoc used to call it "Wireless
+# Networks and Optimization Group". Pick one and use it everywhere.
+# ---------------------------------------------------------------------------
+

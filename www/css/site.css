@@ -1,32 +1,52 @@
 /* ==========================================================================
-   site.css -- minimal stylesheet for the personal website of
+   site.css -- stylesheet for the personal website of
                Assoc. Prof. Vo Thi Luu Phuong
 
+   The visual language is Duy H. N. Nguyen's (nguyen.sdsu.edu), which is
+   jemdoc's own default stylesheet: Georgia throughout, a light-grey sidebar,
+   blue headings, blue links. The layout on top of it is ours: a sidebar of
+   grouped links, and a content column that opens with a portrait beside the
+   name, title, institution and links.
+
    Design rules, so that anything added later still fits:
-     * one narrow column of text, generous whitespace, hairline rules;
-     * ONE accent colour, used only for links and the current menu item;
-     * no boxes, no shadows, no filled panels, no badge icons;
+     * one column of text, generous whitespace, hairline rules;
+     * ONE heading colour and ONE link colour, no tinted page backgrounds;
+     * cards are flat: a hairline border on white, no shadows, no gradients;
      * every list in the site shares the same markers and spacing.
 
-   You do NOT need to understand CSS to run the site. If you only want to
-   change the colours, edit the variables in the ":root" block right below.
-   See guide.md -> "Changing the look and feel".
+   You do NOT need to understand CSS to run the site. To re-skin it, edit the
+   palette below. See guide.md -> "Change the look and feel".
    ========================================================================== */
 
 :root {
-  --navy:        #16181d;   /* headings and body text                   */
-  --text:        #16181d;   /* normal body text                         */
-  --accent:      #17457a;   /* links, current menu entry                */
-  --accent-soft: #eef3f9;   /* barely-there highlight                   */
-  --muted:       #4a5160;   /* secondary text                           */
-  --faint:       #8b93a1;   /* captions, labels, dates                  */
-  --panel:       #f7f8fa;   /* very light fill for code                 */
-  --border:      #e6e8ec;   /* hairlines                                */
-  --page-width:  980px;     /* width of the whole layout                */
-  --menu-width:  190px;     /* width of the sidebar column              */
-  --font-body:   -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-                 "Helvetica Neue", Arial, sans-serif;
-  --font-head:   var(--font-body);
+  /* ---- the palette: the only values you need to change ------------------
+     These are the colours jemdoc ships as its own default, and they are what
+     Duy H. N. Nguyen's site uses: a white page, black text, and blue for
+     headings and links.                                                      */
+
+  --bg:          #FFFFFF;   /* the page                                     */
+  --text:        #000000;   /* body text                                    */
+  --accent:      #527BBD;   /* headings, and the rules and marks under them */
+  --link:        #224B8D;   /* links in the text                            */
+  --border:      #DDDDDD;   /* hairlines                                    */
+
+  /* ---- derived from the palette; rarely changed ------------------------- */
+
+  --accent-ink:  #224B8D;   /* links that are not in body text (same blue)  */
+  --muted:       #333333;   /* secondary text                               */
+  --faint:       #666666;   /* captions and labels                          */
+  --panel:       #F6F6F6;   /* jemdoc's grey: the sidebar, code, callouts   */
+  --card:        #FFFFFF;   /* card fill                                    */
+  --menu-link:   #022B6D;   /* links in the sidebar, a deeper blue          */
+  --rule:        #AAAAAA;   /* the rule under a section heading             */
+  --rule-strong: #808080;   /* the rule under the page title and a group    */
+
+  /* ---- geometry -------------------------------------------------------- */
+
+  --page-width:  1000px;    /* kept for reference; the layout is full width  */
+  --menu-width:  175px;     /* width of the sidebar column                  */
+  --font-body:   Georgia, "Times New Roman", Times, serif;
+  --font-head:   Georgia, "Times New Roman", Times, serif;
   --font-mono:   ui-monospace, SFMono-Regular, Menlo, Consolas,
                  "Liberation Mono", monospace;
 }
@@ -37,98 +57,108 @@ html { -webkit-text-size-adjust: 100%; }
 
 body {
   margin: 0;
-  padding: 0 24px 56px;
-  background: #ffffff;
+  padding: 0 0 8px;
+  background: var(--bg);
   color: var(--text);
   font-family: var(--font-body);
   font-size: 16px;
-  line-height: 1.68;
+  line-height: 1.5;
   -webkit-font-smoothing: antialiased;
 }
 
 /* jemdoc emits every page inside a two-cell layout table: a menu cell and a
-   content cell. It becomes a narrow sidebar beside the text, so the markup
-   stays untouched while the geometry is ours. */
+   content cell. jemdoc sizes it to the whole window and puts the menu hard
+   against the left edge, and so do we: the page is edge to edge, with the grey
+   sidebar running the full height. Below 760px the two cells stack. */
 #tlayout {
   width: 100%;
-  max-width: var(--page-width);
-  margin: 0 auto;
+  max-width: none;
+  margin: 0;
   border-collapse: collapse;
 }
 
 td#layout-menu {
   width: var(--menu-width);
   vertical-align: top;
-  padding: 44px 30px 44px 0;
-  border-right: 1px solid var(--border);
-}
+  padding: 8px 10px 10px;
+  background: var(--panel);   /* jemdoc's grey bar, running the full height */  border: 1px solid var(--border);}
 
 td#layout-content {
   vertical-align: top;
-  padding: 44px 0 60px 30px;
+  padding: 8px 20px 12px;
 }
 
 /* ----------------------------------------------------------------- menu -- */
-/* A vertical list. The grey category labels ("Research Group") head their own
-   group of links and line up with them. */
+/* The site name and the group labels ("Research", "Teaching") are one style:
+   jemdoc's .menu-category, which is what Duy H. N. Nguyen's menu uses. Each one
+   is bold, and carries a rule under it that runs the width of the sidebar --
+   that line is what gives the sidebar its structure. The name is simply the
+   first of them, and it happens to be a link home. */
 
-.menu-category {
-  margin: 24px 0 7px;
+.menu-category,
+#layout-menu > .menu-item:first-child a {
+  display: block;
+  margin: 0.8em 0 0;
+  padding: 0.2em 0 0.1em;
   font-family: var(--font-body);
-  font-size: 0.66rem;
-  font-weight: 650;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--faint);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: normal;
+  text-transform: none;
+  color: var(--text);
+  border-bottom: 1px solid var(--rule-strong);
 }
 
 .menu-category:first-child { margin-top: 0; }
 
 .menu-item {
   margin: 0;
-  font-size: 0.93rem;
+  font-size: 1rem;
   line-height: 1.5;
 }
 
 .menu-item a {
   display: block;
-  padding: 3px 0 3px 11px;
-  border-left: 2px solid transparent;
-  color: var(--muted);
+  padding: 2px 0 2px 16px;
+  color: var(--menu-link);
   text-decoration: none;
 }
 
-.menu-item a:hover {
-  color: var(--accent);
-  border-left-color: var(--border);
-}
+.menu-item a:hover { text-decoration: underline; }
 
-.menu-item a.current {
-  color: var(--accent);
-  font-weight: 600;
-  border-left-color: var(--accent);
-}
+.menu-item a.current { font-weight: 700; }
+
+/* The name sits at the top of the menu, above everything else, and lines up
+   with the group labels rather than with the links under them. */
+#layout-menu > .menu-item:first-child { margin-bottom: 4px; }
+#layout-menu > .menu-item:first-child a:hover { color: var(--accent-ink); }
 
 /* --------------------------------------------------------------- headings -- */
 
-#toptitle { margin: 0 0 30px; }
+/* The page title carries a heavier rule under it, and each section heading a
+   lighter one. Together with the rules in the sidebar these are what give the
+   page its structure. */
+#toptitle {
+  margin: 0 0 1.5em;
+  padding-bottom: 0.2em;
+  border-bottom: 3px solid var(--rule-strong);
+}
 
 h1, h2, h3, h4 {
   font-family: var(--font-head);
-  color: var(--navy);
+  color: var(--accent);
   line-height: 1.3;
 }
 
 h1 {
   margin: 0 0 6px;
-  font-size: 1.72rem;
-  font-weight: 650;
-  letter-spacing: -0.012em;
+  font-size: 1.65em;   /* jemdoc's own size: 26.4px */
+  font-weight: 700;
 }
 
 #subtitle {
   margin: 0;
-  font-size: 0.98rem;
+  font-size: 1em;
   color: var(--faint);
 }
 
@@ -141,25 +171,23 @@ h1 {
 }
 
 h2 {
-  margin: 44px 0 14px;
-  padding-bottom: 7px;
-  font-size: 1.02rem;
-  font-weight: 650;
-  letter-spacing: 0.01em;
-  border-bottom: 1px solid var(--border);
+  margin: 0.9em 0 0.4em;
+  padding: 1em 0 0.25em;
+  font-size: 1.25em;   /* jemdoc's own size: 20px */
+  font-weight: 700;
+  border-bottom: 1px solid var(--rule);
 }
 
 h3 {
-  margin: 30px 0 8px;
-  font-size: 0.95rem;
-  font-weight: 650;
+  margin: 1.5em 0 0.5em;
+  font-size: 1.15em;
+  font-weight: 700;
 }
 
 h4 {
-  margin: 22px 0 6px;
-  font-size: 0.92rem;
-  font-weight: 600;
-  color: var(--muted);
+  margin: 1.4em 0 0.4em;
+  font-size: 1em;
+  font-weight: 700;
 }
 
 #fwtitle h1 { margin: 0 0 4px; }
@@ -168,7 +196,7 @@ h4 {
 
 p { margin: 0 0 1em; }
 
-#layout-content a { color: var(--accent); text-decoration: none; }
+#layout-content a { color: var(--link); text-decoration: none; }
 #layout-content a:hover { text-decoration: underline; }
 
 tt, code, pre, kbd, samp { font-family: var(--font-mono); font-size: 0.88em; }
@@ -189,13 +217,15 @@ blockquote {
 }
 
 /* ----------------------------------------------------------------- lists -- */
-/* Every list on the site shares one look: the same marker colour, the same
-   indent and the same vertical rhythm. */
+/* Every list on the site shares one look: the same markers and spacing.
+   jemdoc marks a bullet with a small SQUARE, not a round disc. */
 
 ul, ol {
-  margin: 0 0 1.15em;
-  padding-left: 1.15em;
+  margin: 0 0 0.8em;
+  padding-left: 1.6em;
 }
+
+ul { list-style-type: square; }
 
 li {
   margin: 0 0 0.42em;
@@ -279,19 +309,34 @@ dd { margin: 0.15em 0 0.6em 1.15em; }
 
 /* --------------------------------------------------- info and code blocks -- */
 
-.infoblock, .codeblock {
+/* An infoblock is the site's callout. It is written in jemdoc as
+     ~~~
+     {Title}
+     ...content, with normal jemdoc markup...
+     ~~~
+   and used for things that should not be missed: student recruitment, a new
+   grant, a deadline. */
+
+.infoblock {
+  margin: 0 0 1.7em;
+  padding: 14px 18px;
+  background: var(--panel);
+  border-left: 3px solid var(--border);
+}
+
+.infoblock .blockcontent > :last-child { margin-bottom: 0; }
+
+.codeblock {
   margin: 0 0 1.5em;
   border-left: 2px solid var(--border);
   padding-left: 16px;
 }
 
 .blocktitle {
-  font-size: 0.7rem;
-  font-weight: 650;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--faint);
-  margin-bottom: 0.5em;
+  font-size: 1em;
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 0.4em;
 }
 
 .blockcontent > :last-child { margin-bottom: 0; }
@@ -313,7 +358,7 @@ dd { margin: 0.15em 0 0.6em 1.15em; }
 pre .comment  { color: var(--faint); font-style: italic; }
 pre .string   { color: #0a6b4a; }
 pre .statement{ color: #8f2a2a; }
-pre .builtin  { color: var(--accent); }
+pre .builtin  { color: var(--accent-ink); }
 pre .special  { color: #6b3fa0; }
 pre .operator { color: var(--muted); }
 pre .error    { color: #b03030; font-weight: 600; }
@@ -353,10 +398,10 @@ details {
 
 details > summary {
   cursor: pointer;
-  padding: 13px 0;
-  font-size: 0.98rem;
-  font-weight: 650;
-  color: var(--navy);
+  padding: 11px 0;
+  font-size: 1em;
+  font-weight: 700;
+  color: var(--text);
   list-style: none;
 }
 
@@ -366,14 +411,14 @@ details > summary::before {
   content: "▸";
   display: inline-block;
   width: 1.3em;
-  color: var(--faint);
+  color: var(--accent);
   font-size: 0.85em;
   transition: transform 0.12s ease-in-out;
 }
 
 details[open] > summary::before { content: "▾"; }
 
-details > summary:hover { color: var(--accent); }
+details > summary:hover { color: var(--accent-ink); }
 
 /* ------------------------------------------------------------------ pubs -- */
 
@@ -432,61 +477,40 @@ ul.pubs > li::marker { content: none; }
 /* --------------------------------------------------------------- courses -- */
 
 details.materials > summary {
-  font-weight: 600;
-  font-size: 0.95rem;
+  font-weight: 700;
+  font-size: 1em;
 }
 
 details.materials ul { margin: 0 0 16px; }
 
 /* ------------------------------------------------------------------ news -- */
-/* The News page and the "Latest news" block on the Home page share one list.
-   A quiet uppercase year label heads an open year; older years sit behind a
-   dropdown with the same "N entries" counter as the publication years. */
+/* One announcement per line, already a whole sentence: the date sits inside it,
+   in brackets, so there is no separate date column. A year label heads an open
+   year; older years sit behind a dropdown with the same "N entries" counter as
+   the publication years. */
 
 h2.news-year {
-  margin: 30px 0 4px;
-  padding-bottom: 0;
-  border-bottom: 0;
-  font-size: 0.8rem;
-  font-weight: 650;
-  letter-spacing: 0.09em;
-  text-transform: uppercase;
-  color: var(--faint);
+  margin: 1.3em 0 0.3em;
+  padding: 0 0 0.15em;
+  font-size: 1.1em;
+  font-weight: 700;
+  color: var(--accent);
 }
 
 ul.news {
-  margin: 0 0 26px;
+  margin: 0 0 1.4em;
   padding: 0;
   list-style: none;
 }
 
 ul.news > li {
   margin: 0;
-  padding: 11px 0;
-  border-bottom: 1px solid var(--border);
+  padding: 7px 0;
 }
 
-ul.news > li:last-child { border-bottom: 0; }
 ul.news > li::marker { content: none; }
 
-.news-date {
-  display: inline-block;
-  min-width: 5.2em;
-  font-size: 0.78rem;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: 0.02em;
-  color: var(--faint);
-  white-space: nowrap;
-}
-
-.news-text { font-size: 0.94rem; line-height: 1.6; }
-
-details.year > ul.news { margin-bottom: 16px; }
-details.year > ul.news > li:last-child { border-bottom: 0; }
-
-@media (max-width: 560px) {
-  .news-date { display: block; min-width: 0; margin-bottom: 1px; }
-}
+details.year > ul.news { margin-bottom: 12px; }
 
 /* ------------------------------------------------------------ equations -- */
 
@@ -514,6 +538,117 @@ details.year > ul.news > li:last-child { border-bottom: 0; }
 #footer-text p { margin: 0; }
 #footer-text a { color: var(--faint); text-decoration: underline; }
 
+/* ------------------------------------------------------- profile header -- */
+/* The Home page opens with a portrait beside the name, title, institution and
+   the three places people look for an academic: their university profile,
+   Google Scholar and ORCID. The markup is a raw block in www/index.jemdoc. */
+
+.hero {
+  display: flex;
+  align-items: flex-start;
+  gap: 26px;
+  margin: 0 0 30px;
+  padding: 0 0 28px;
+  border-bottom: 1px solid var(--border);
+}
+
+.hero img {
+  flex: 0 0 auto;
+  width: 150px;
+  height: auto;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+}
+
+.hero-body { flex: 1 1 auto; min-width: 0; }
+
+.hero-name {
+  margin: 0 0 3px;
+  font-size: 1.6rem;
+  font-weight: 650;
+  letter-spacing: -0.012em;
+  line-height: 1.2;
+}
+
+.hero-name a { color: var(--text); text-decoration: none; }
+.hero-name a:hover { color: var(--accent-ink); text-decoration: none; }
+
+.hero-role { margin: 0; font-size: 0.98rem; color: var(--text); }
+.hero-org { margin: 2px 0 0; font-size: 0.93rem; color: var(--muted); }
+
+.hero-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 15px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hero-links li { margin: 0; padding: 0; }
+.hero-links li::marker { content: none; }
+
+.hero-links a {
+  display: inline-block;
+  padding: 4px 13px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--card);
+  font-size: 0.84rem;
+  color: var(--accent-ink);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.hero-links a:hover {
+  border-color: var(--accent);
+  background: var(--panel);
+  text-decoration: none;
+}
+
+.hero-bio { margin: 16px 0 0; font-size: 0.95rem; color: var(--muted); }
+
+/* ----------------------------------------------------------------- cards -- */
+/* Flat panels for courses, lab projects, collaborators. Markup:
+     <ul class="cards">
+       <li><p class="card-title">..</p><p class="card-meta">..</p></li>
+     </ul> */
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(232px, 1fr));
+  gap: 14px;
+  margin: 0 0 1.7em;
+  padding: 0;
+  list-style: none;
+}
+
+.cards > li {
+  margin: 0;
+  padding: 15px 17px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+
+.cards > li::marker { content: none; }
+
+.card-title {
+  margin: 0 0 4px;
+  font-size: 1.02em;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.card-title a { text-decoration: none; }
+.card-title a:hover { text-decoration: underline; }
+
+.card-meta { margin: 0; font-size: 0.85rem; color: var(--muted); line-height: 1.5; }
+.card-meta + .card-meta { margin-top: 5px; }
+
+/* A short lead-in before a page's first section. */
+.lede { margin: 0 0 1.3em; font-size: 1.02rem; }
+
 /* ------------------------------------------------------------ responsive -- */
 
 @media (max-width: 760px) {
@@ -525,35 +660,29 @@ details.year > ul.news > li:last-child { border-bottom: 0; }
     display: flex;
     flex-wrap: wrap;
     align-items: baseline;
-    padding: 24px 0 14px;
-    border-right: 0;
-    border-bottom: 1px solid var(--border);
+    padding: 10px 14px 6px;
   }
 
-  td#layout-content { padding: 28px 0 48px; }
+  td#layout-content { padding: 6px 14px 10px; }
 
-  .menu-category { margin: 6px 12px 6px 0; }
-  .menu-category:not(:first-child) { margin-left: 14px; }
+  .menu-category,
+  #layout-menu > .menu-item:first-child { margin: 6px 14px 6px 0; }
 
   .menu-item a {
     display: inline-block;
-    padding: 3px 11px;
-    border-left: 0;
-  }
-
-  .menu-item a:hover { border-left-color: transparent; }
-
-  .menu-item a.current {
-    border-left-color: transparent;
-    text-decoration: underline;
-    text-underline-offset: 3px;
+    padding: 2px 11px 2px 0;
   }
 
   body { font-size: 15.5px; }
 
-  h1 { font-size: 1.5rem; }
+  h1 { font-size: 1.5em; }
 
-  h2 { margin-top: 36px; }
+  h2 { margin-top: 1.4em; }
+
+  /* The portrait steps above the text on a narrow screen. */
+  .hero { flex-direction: column; gap: 15px; }
+  .hero img { width: 122px; }
+  .hero-name { font-size: 1.36rem; }
 }
 
 /* ----------------------------------------------------------------- print -- */

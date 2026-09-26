@@ -1,0 +1,36 @@
+# jemdoc: menu{menu-lab.jemdoc}{lab-projects.html}, notime
+= Projects
+
+What the Edge AI Lab is working on, and what it has finished. Funded projects and the grants
+behind them are listed on [awards.html Awards & Grants].
+
+== Current
+
+- *Distributionally robust semantic communication.* Making a semantic link hold up when the
+  channel and the task distribution both drift away from the training conditions.
+- *Federated and edge learning under limited communication.* Reducing what has to be sent
+  without giving up the accuracy the application needs.
+- *Adaptive video streaming over multipath and cache-enabled networks.* Choosing a
+  representation and a path together, rather than one after the other.
+
+== Completed
+
+- *Network utility maximization in interference-limited wireless networks.* The structure of
+  the optimal allocation, and algorithms that find it from limited channel state information.
+- *Content caching and delivery in mobile networks.* Where to place content when both the
+  demand and the topology move.
+
+# ---------------------------------------------------------------------------
+# TEMPLATE -- the two lists above are drawn from the publication record: each
+# item restates the line of work behind a group of papers that are already on
+# the site. They are a starting point, not a project register.
+#
+# Replace them with your real projects. One entry per project, like this:
+#
+# - *Project title.* One or two sentences on the question, the approach and the
+#   outcome.\n
+#   *Funding*: grant name and number, years, role.\n
+#   Collaborators: names.
+#
+# Keep "== Current" and "== Completed" as the two headings.
+# ---------------------------------------------------------------------------

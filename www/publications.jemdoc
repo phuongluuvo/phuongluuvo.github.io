@@ -5,8 +5,8 @@
 Journal articles, conference papers and book chapters, newest first
 
 Generated automatically from my [https://orcid.org/0000-0003-3909-4385 ORCID record] plus a local BibTeX
-file -- 49 entries across 15 years, 4 added by hand from publications-extra.bib, 3 preprint duplicates hidden. Each year below is a collapsible section; click a year to open it. Entries
-link to their DOI where one exists.
+file -- 49 entries across 15 years, 4 added by hand from publications-extra.bib, 3 preprint duplicates hidden. The two most recent years are shown in full and older years open when you
+click them. Entries link to their DOI, and hand-added ones can also carry a PDF or a talk.
 
 ~~~
 {}{raw}
@@ -20,7 +20,7 @@ link to their DOI where one exists.
 </li>
 </ul>
 </details>
-<details class="year">
+<details class="year" open>
 <summary>2026<span class="pub-count">6 entries</span></summary>
 <ul class="pubs">
 <li data-source="orcid">

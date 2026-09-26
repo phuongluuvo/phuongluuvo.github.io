@@ -61,23 +61,31 @@ phuongluuvo.github.io/
 ├── www/                     ◄── SOURCES. The only place you normally edit.
 │   ├── mysite.conf              jemdoc control file: <head>, MathJax config, CSS link,
 │   │                            page-title suffix, footer  (= the shared "include")
-│   ├── menu.jemdoc              the navigation menu, shared by every page
-│   ├── index.jemdoc             Home                   ─┐
-│   ├── biography.jemdoc         Biography               │
-│   ├── news.jemdoc              News (GENERATED)        │
-│   ├── faculty.jemdoc           Faculty                 │
-│   ├── students.jemdoc          PhD / Master students   ├─ one file = one page
-│   ├── joining.jemdoc           For Students            │
-│   ├── gallery.jemdoc           Gallery                 │
-│   ├── publications.jemdoc      Publications (GENERATED)│
-│   ├── awards.jemdoc            Awards & Grants         │
-│   ├── courses.jemdoc           Courses                 │
-│   └── mathjax-test.jemdoc      MathJax check page      ─┘
+│   ├── menu.jemdoc              sidebar for the main site
+│   ├── menu-lab.jemdoc          sidebar for the Edge AI Lab pages
+│   ├── menu-courses.jemdoc      sidebar for the course pages
+│   ├── index.jemdoc             Home (hero + About + Contact)   ─┐
+│   ├── news.jemdoc              News (GENERATED)                 │
+│   ├── awards.jemdoc            Awards & Grants                  │
+│   ├── interests.jemdoc         Research Interests               │
+│   ├── publications.jemdoc      Publications (GENERATED)         │
+│   ├── lab.jemdoc               Edge AI Lab      ┐               │
+│   ├── lab-members.jemdoc       Lab Members      │ own sidebar   ├─ one file = one page
+│   ├── lab-projects.jemdoc      Lab Projects     │               │
+│   ├── lab-news.jemdoc          Lab news         ┘               │
+│   ├── courses.jemdoc           Courses (overview)               │
+│   ├── ee301.jemdoc             EE301            ┐               │
+│   ├── ee502.jemdoc             EE502            │ own sidebar   │
+│   ├── research-methods.jemdoc  Research Methods ┘               │
+│   ├── joining.jemdoc           Prethesis and Thesis             │
+│   ├── gallery.jemdoc           Gallery                          │
+│   └── mathjax-test.jemdoc      MathJax check page              ─┘
 │   ├── publications-extra.bib   BibTeX you add by hand (see §9.2)
 │   ├── news-extra.txt           your own announcements (see §9.1)
 │   ├── css/site.css             the stylesheet source
-│   ├── files/                   files visitors download ┐ copied into the output
-│   └── images/                  portrait, gallery photos ┘ on every build
+│   ├── images/                  pictures shown on a page   ┐ copied into the output
+│   └── files/                   downloads (create it when  ┘ on every build
+│                                you have one; absent for now)
 │
 ├── build.py                 THE BUILD SCRIPT          →  python build.py
 ├── Makefile                 optional one-word wrappers (make, make serve, make verify)
@@ -91,7 +99,6 @@ phuongluuvo.github.io/
 ├── tools/                   helper scripts; jemdoc itself is third-party
 │   ├── jemdoc                   vendored jemdoc + MathJax 0.7.3 with 5 local fixes (see below)
 │   ├── update_site.py           regenerates www/publications.jemdoc and www/news.jemdoc
-│   ├── make_placeholder_pdfs.py regenerates the dummy CV in www/files/
 │   └── README-jemdoc.md         upstream jemdoc README (provenance and licence)
 │
 ├── .github/workflows/pages.yml  CI: build + deploy, and a rebuild-and-test job
@@ -105,13 +112,42 @@ phuongluuvo.github.io/
 
 | Folder | Purpose |
 | --- | --- |
-| `www/` | All hand-edited sources: pages, menu, control file, stylesheet, and assets. |
-| `www/files/` | Files visitors download (currently the CV). Copied into the output on build. |
-| `www/images/` | Images (`portrait.svg`, `gallery-*.svg`). Copied into the output on build. |
-| `tools/` | Vendored third-party tools. Only touched when updating jemdoc itself. |
+| `www/` | All hand-edited sources: pages, sidebars, control file, stylesheet, and assets. |
+| `www/images/` | Pictures that appear **on a page**. Copied into the output on build. |
+| `www/files/` | Documents visitors **download**. Copied into the output on build. Absent until you have one. |
+| `tools/` | The generator, and vendored third-party tools. |
 | `tests/` | Automated checks. Run them before every commit. |
 | `.github/workflows/` | GitHub Actions: build, deploy, test. |
-| `_site/` | **Generated.** The entire website — HTML, CSS, images, `.nojekyll`. Ignored by git; it exists only after a build. |
+| `_site/` | **Generated.** The entire website. Ignored by git; it exists only after a build. |
+
+### Where do I put a file?
+
+This is worth reading carefully, because a file in the wrong place produces a broken link
+instead of an error.
+
+| The file is… | Put it in | Link to it as |
+| --- | --- | --- |
+| a photo, a diagram or an icon shown **on a page** | `www/images/` | `images/your-file.png` |
+| a document a visitor **downloads** (CV, poster, syllabus) | `www/files/` | `files/your-file.pdf` |
+| a **course** handout, slide deck or exam paper | **not here** — a separate GitHub repository | the full `https://raw.githubusercontent.com/...` URL |
+| a new page | `www/` | — |
+
+Three rules that matter:
+
+* **Names:** lower case, hyphens, no spaces, no accents — `gallery-5.jpg`, not `Gallery 5.JPG`.
+  Git and GitHub Pages are case-sensitive even though Windows is not.
+* **Create the folder if it does not exist.** `www/files/` probably does not exist until you
+  add your first download; `mkdir www/files` and put the file in it. The build picks up any
+  folder in `ASSET_DIRS` at the top of `build.py`.
+* **Add the link as well as the file.** An image with no `<img>` and a PDF with no `<a>` are
+  invisible to visitors, and nothing in the test-suite can complain about a file nobody
+  mentions. Conversely, a link to a file that is not there *is* caught:
+  `test_every_local_link_and_image_resolves` fails with the missing path.
+
+**Never edit anything under `_site/`.** That folder is generated from `www/` on every build,
+and it is made to mirror the sources exactly — a file you delete from `www/` is deleted from
+`_site/` by the next build, and a file you add to `_site/` by hand is left where it is but is
+not part of the site.
 
 ### Where the generated site goes
 
@@ -210,20 +246,36 @@ Expected output:
 ```
 Build finished.
   output folder : /path/to/phuongluuvo.github.io/_site
-  pages written : 11
+  pages written : 16
                   awards.html
-                  biography.html
+                  courses.html
                   ...
-  assets copied : css/, files/, images/
+  assets copied : css/, images/
+  stale removed : biography.html, faculty.html, students.html, files/cv.pdf
 ```
 
-If `pages written` does not match the number of `.jemdoc` files in `www/` (11 at the time of
-writing), or a page is missing from the list, a source file was not picked up — check that it
-is directly inside `www/` and ends in `.jemdoc`.
+If `pages written` does not match the number of pages in `www/` — every `.jemdoc` file there
+except the `menu*.jemdoc` files and `mysite.conf`, which is 16 at the time of writing — or a
+page is missing from the list, then a source file was not picked up: check that it is directly
+inside `www/` and ends in `.jemdoc`.
+
+The `stale removed` line lists output files whose source has gone, and it is normal after a
+rename or a deletion. It covers two different things:
+
+* **pages** the build generated earlier — only files carrying the `GENERATED FILE` banner are
+  removed, so a hand-written `.html` file in the output folder is never touched;
+* **assets** — a file you deleted from `www/images/` or `www/files/`. The asset folders are
+  *mirrored*: the output is made to match the source rather than only added to, so removing a
+  picture or a PDF from `www/` removes it from the output on the next build.
+
+`assets copied` lists the folders that exist in `www/`. A missing `files/` there is normal —
+the folder only appears once you have something to download.
 
 ### What the build actually does
 
-1. Collects every `www/*.jemdoc` except `menu.jemdoc`.
+1. Collects every `www/*.jemdoc`, skipping `mysite.conf` and every file whose name starts with
+   `menu` (`menu.jemdoc`, `menu-lab.jemdoc`, `menu-courses.jemdoc`), because a menu is included
+   by pages rather than built into a page of its own.
 2. Copies the sources **and** `www/mysite.conf` into a temporary staging folder, converting
    CRLF to LF on the way. This matters: jemdoc decides where a paragraph ends by looking for a
    blank line, and a Windows CRLF blank line is not blank to jemdoc, so content silently
@@ -233,7 +285,9 @@ is directly inside `www/` and ends in `.jemdoc`.
    a page (`css/site.css`, `images/portrait.svg`) therefore resolve from the **site root**.
 4. Copies the generated `*.html` into the output folder (`_site/` unless `--out` says
    otherwise).
-5. Copies `www/css/`, `www/files/`, `www/images/`, and writes the `.nojekyll` marker.
+5. Copies `www/css/`, `www/images/` and `www/files/` into the output, **mirroring** them:
+   anything in the output that is no longer in `www/` is deleted, so a removed image or PDF
+   cannot linger. Writes the `.nojekyll` marker that stops GitHub Pages running Jekyll.
 6. Deletes pages from the output folder that an earlier build wrote but that no longer have a
    source, so that removing a page cannot leave a stale one behind.
 
@@ -250,7 +304,6 @@ Nothing else is touched.
 | Rebuild **and** run every check | `make verify` |
 | Run only the checks | `python -m pytest` |
 | Refresh the generated pages (Publications and News) from ORCID | `make update` |
-| Regenerate the placeholder CV in `www/files/` | `python tools/make_placeholder_pdfs.py` |
 
 `make` wrappers: `make` = `python build.py`, `make site` = the same (an alias),
 `make serve` = `--serve`, `make clean` = `--clean`, `make test` = `pytest`,
@@ -295,22 +348,24 @@ the `_site/` folder produced by `python build.py`.
 
 | What you want to change | Edit this file |
 | --- | --- |
-| The navigation menu (on every page) | `www/menu.jemdoc` |
-| Colours, fonts, spacing, page width, badges | `www/css/site.css` |
-| The MathJax setup, the `<head>`, the page-title suffix, the footer | `www/mysite.conf` |
-| Home page (welcome text, contact, quick links; the marked news block is generated) | `www/index.jemdoc` |
-| Biography: contact, profiles, interests, education, positions, service | `www/biography.jemdoc` |
+| The sidebar on the main-site pages | `www/menu.jemdoc` |
+| The sidebar inside the Edge AI Lab | `www/menu-lab.jemdoc` |
+| The sidebar inside a course site | `www/menu-courses.jemdoc` |
+| Colours, fonts, spacing, page width, the profile header | `www/css/site.css` — the palette is the first block |
+| The MathJax setup, the `<head>`, the page-title suffix, the footer, the favicon | `www/mysite.conf` |
+| Home: the profile header, About (appointments + education), contact | `www/index.jemdoc` |
 | News and announcements | `www/news-extra.txt`, then `make update` — `www/news.jemdoc` is **generated**, see [§9.1](#91-add-a-news-item) |
-| Faculty in the group | `www/faculty.jemdoc` |
-| PhD / Master students | `www/students.jemdoc` |
-| For Students (prethesis, thesis, internship) | `www/joining.jemdoc` |
-| Photo gallery | `www/gallery.jemdoc` + files in `www/images/` |
+| Research interests (current / past) | `www/interests.jemdoc` |
 | Publications | `www/publications.jemdoc` — **generated**, see [§9.2](#92-refresh-the-publication-list) |
 | A paper that ORCID does not have yet | paste BibTeX into `www/publications-extra.bib`, then `make update` |
 | Awards and grants | `www/awards.jemdoc` |
-| Courses and their material links | `www/courses.jemdoc` |
-| The CV that visitors download | replace `www/files/cv.pdf` |
-| The portrait photo on the Home page | replace `www/images/portrait.svg` |
+| The Edge AI Lab: description, people, projects, lab news | `www/lab.jemdoc`, `www/lab-members.jemdoc`, `www/lab-projects.jemdoc`, `www/lab-news.jemdoc` |
+| The course list | `www/courses.jemdoc` |
+| One course (info, slides, textbook) | `www/ee301.jemdoc`, `www/ee502.jemdoc`, `www/research-methods.jemdoc` |
+| Prethesis, thesis and internship projects | `www/joining.jemdoc` |
+| Photo gallery | `www/gallery.jemdoc` + files in `www/images/` |
+| A document visitors download (CV, poster, syllabus) | put it in `www/files/`, then link it — see [§2](#2-folder-structure) |
+| The portrait in the profile header | replace `www/images/portrait.svg` — see the note inside it |
 | The MathJax check page | `www/mathjax-test.jemdoc` |
 
 ### 6.2 The first line of every page
@@ -365,32 +420,46 @@ News and announcements
 
    Then commit both the `.jemdoc` **and** the generated `.html`.
 
-### 6.4 The shared menu
+### 6.4 The three menus
 
-`www/menu.jemdoc` is the menu for **every** page — there is exactly one copy of it.
+There are three menu files, and every page includes exactly one of them:
+
+| Menu file | Used by | Sidebar shows |
+| --- | --- | --- |
+| `www/menu.jemdoc` | the main-site pages | the whole site |
+| `www/menu-lab.jemdoc` | `lab.html` and the three other lab pages | the lab |
+| `www/menu-courses.jemdoc` | `ee301.html`, `ee502.html`, `research-methods.html` | the courses |
+
+That is what lets the lab and each course feel like their own site without duplicating a page.
+`build.py` never turns a `menu*.jemdoc` file into a page of its own — it is only ever included.
 
 ```
-Home
- Biography [biography.html]
+Phuong Luu Vo [index.html]
  News [news.html]
-Research Group
- Faculty [faculty.html]
- {{PhD / Master students}} [students.html]
- {{For Students}} [joining.html]
- ...
+ Awards & Grants [awards.html]
+Research
+ Edge AI Lab [lab.html]
+ {{Research Interests}} [interests.html]
+ Publications [publications.html]
+ Gallery [gallery.html]
+Teaching
+ Courses [courses.html]
+ {{Prethesis and Thesis}} [joining.html]
 ```
 
-* A line **without** brackets is a grey category heading (`Research Group`).
+* **The first line is the site name, and it is the link home.** There is no "Home" entry; this
+  is what replaces one. `#layout-menu > .menu-item:first-child a` in the stylesheet gives it
+  the bolder treatment.
+* A line **without** brackets is a coloured category heading (`Research`, `Teaching`).
 * A line **with** brackets is a link: ` Visible text [target-file.html]`.
-* The order in this file is the order on every page.
+* The order in the file is the order on every page of that group.
 * Wrap a long label in `{{double braces}}` to stop jemdoc forcing it onto one line.
-* **One page name must never be the tail of another.** jemdoc marks a menu entry current with
-  a suffix test (`link[-len(current):] == current` in `tools/jemdoc`), so `for-students.html`
-  would light up on `students.html` too. That is why the For Students page is
-  `www/joining.jemdoc`.
-* `index.html` and `mathjax-test.html` are deliberately **not** menu entries. The `Home`
-  category has no page of its own: the page heading at the top of every page is the link back
-  to the Home page.
+* **One page name must never be the tail of another.** jemdoc marks a menu entry current with a
+  suffix test (`link[-len(current):] == current` in `tools/jemdoc`), so a page called
+  `news.html` inside the lab would also light up whenever `lab-news.html` was current. That is
+  why the lab's news page is `lab-news.html` and the lab menu never links to `news.html`.
+* `mathjax-test.html` is deliberately **not** a menu entry, so nothing is highlighted when you
+  are on it. A test asserts exactly that.
 
 ### 6.5 Deleting a page
 
@@ -490,10 +559,10 @@ visitor with no internet connection. That is expected and harmless.
 
 ### 8.1 File names
 
-* **Lower case, hyphen-separated, ASCII only**: `students.jemdoc`, `mathjax-test.jemdoc`,
+* **Lower case, hyphen-separated, ASCII only**: `lab-members.jemdoc`, `mathjax-test.jemdoc`,
   `lecture-01.pdf`. Never use spaces, never mix case, never use accents.
 * Pages are always `.jemdoc`; the generated name is the same word with `.html`
-  (`students.jemdoc` → `students.html`). **The two names must correspond** — links and
+  (`lab-members.jemdoc` → `lab-members.html`). **The two names must correspond** — links and
   the menu refer to the `.html` name, the menu's own entry must match it, and `build.py`
   derives one from the other.
 * Assets follow the same rule: `gallery-1.svg`, `lecture-01.pdf`, `portrait.svg`.
@@ -522,7 +591,7 @@ Use exactly one `=` heading per page — the test-suite asserts every page has a
 | `_underline_` | underline |
 | `+monospace+` | `monospace` |
 | `[https://example.com Label]` | a link (URL first, visible text second) |
-| `[biography.html Biography]` | a link to a page of this site |
+| `[publications.html Publications]` | a link to a page of this site |
 | `[name@example.edu]` | a mail link with an envelope badge |
 | `- item` | a bullet (indent the next line to continue it) |
 | a blank line | the end of a paragraph — **required** between paragraphs |
@@ -627,19 +696,35 @@ make update
 ```
 
 That is a shortcut for `python tools/update_site.py && python build.py`. It rewrites
-`www/news.jemdoc`, the "Latest news" block on the Home page, and the Publications page. It is
-safe to run as often as you like: a page whose content has not changed is not rewritten at all.
+`www/news.jemdoc` and the Publications page. It is safe to run as often as you like: a page
+whose content has not changed is not rewritten at all. (It used to refresh a news block on the
+Home page as well; that block is gone, because News has its own page. The generator still
+supports the markers if you want it back.)
 
 How the page is laid out:
 
 * Announcements are grouped by year, newest first.
 * The **two most recent years are shown open**. Every older year is collapsed behind a
   click-to-open row that says how many announcements it holds.
-* Each announcement shows its date (`2026-06`, or `2026-06-01` when the day is known), a short
-  sentence, and a `doi` link where there is one.
-* The Home page repeats the **four newest** announcements, in a block that lives in
-  `www/index.jemdoc` between two `GENERATED latest-news` comment markers. Delete both markers
-  if you would rather write that block by hand, and the generator will leave it alone.
+* **Each announcement is one sentence, with the date inside it:**
+
+  ```
+  “Federated PCA on Grassmann Manifold for Anomaly Detection in IoT Networks” accepted by IEEE INFOCOM 2023 (12/22).
+  ```
+
+  A publication turns into that line by itself — the title in quotes, then the verb, the venue
+  and the year, then the month and year in brackets, then a `doi` link. The verb follows the
+  kind of paper: **accepted by** for a conference, **published in** for a journal or a book
+  chapter, **published by** for a book, **posted to** for a preprint. The year is not written
+  twice, which matters for conference names that already contain it.
+* Because the date is in the sentence, there is no separate date column. Hovering an
+  announcement still shows the full date, from the `title` attribute.
+* An entry with no month in the record simply ends after the venue and the year.
+* Your own `news-extra.txt` lines are dated the same way, as a leading `(MM/YY)`:
+
+  ```
+  (10/26) Three new papers accepted at IEEE ICC 2026.
+  ```
 
 ### 9.2 Refresh the publication list
 
@@ -665,9 +750,10 @@ paper:
 
 What the script does, and what it will not do:
 
-* It groups entries by year, newest first, as one collapsible `<details>` per year with the
-  newest year open. Each entry shows the authors (yours in bold), the title, the type, the
-  venue, volume/issue/pages, the month, and a DOI link.
+* It groups entries by year, newest first, as one collapsible `<details>` per year. The **two
+  most recent years are open** and older years open when you click them — the same rule the
+  News page uses. Each entry shows the authors (yours in bold), the title, the type, the venue,
+  volume/issue/pages, the month, and a DOI link.
 * It drops an arXiv preprint when the same title is already published, so one paper is not
   listed twice.
 * It invents nothing: a field Crossref does not supply is simply left out.
@@ -713,9 +799,11 @@ in exactly the same style, and announced on the News page too.
 * `python tools/update_site.py --offline` rebuilds both generated pages from that file alone,
   with no network access at all — useful for testing one entry.
 
-### 9.3 Add or remove a student
+### 9.3 Add, remove or move a member
 
-File: `www/students.jemdoc`
+File: `www/lab-members.jemdoc` — the lab's Members page, which is where the people of the group
+live. There is no separate Faculty or Students page any more: staff, graduate students,
+undergraduate students and alumni are four sections of this one page.
 
 ```
 - *Full Name* \M PhD, since 2026.\n
@@ -723,33 +811,63 @@ File: `www/students.jemdoc`
   Email: [name@example.edu]
 ```
 
-* To add: copy an existing three-line bullet, **including the `\n`**, and edit it.
+* To add: copy an existing three-line bullet, **including the `\n`**, and edit it. Put students
+  under `== Graduate students` (PhD and Master) or `== Undergraduate students`, staff in the
+  table at the top, and former members under `== Alumni`.
 * To remove: delete all three lines.
 * Keep the two leading spaces in front of `Research:` and `Email:` — they make the file easy to
   scan.
-* When a student leaves, move the bullet to the alumni list and rewrite it as one sentence.
+* When a student leaves, move the bullet to `== Alumni` and rewrite it as one sentence.
+* The page ships with placeholder boxes rather than invented names. Delete a box once the
+  section has real entries: each box is one `~~~ ... ~~~` block.
 
-### 9.4 Add a course, or a dropdown of materials
+### 9.4 Add a course
 
-File: `www/courses.jemdoc`
+Files: `www/courses.jemdoc` (the overview) and one page per course.
 
-A course is a heading plus the same information box the other pages use:
+A course is its own little site: it has a page, and every course page shares the sidebar in
+`www/menu-courses.jemdoc`, so a visitor can hop between courses. To add one:
 
-```
-== Wireless Communications (EE301)
+1. Copy a course page and edit the two values on the first line:
 
-~~~
-{Course information}
-- *Code*: EE301 \M *Level*: Undergraduate \M *Semester*: Spring 2026 \M *Credits*: 3
-- *When*: Monday 09:00--11:00, Building B1, Room 201
+   ```bash
+   cp www/ee301.jemdoc www/ee410.jemdoc
+   ```
 
-*What you will learn:* one or two sentences.
-~~~
-```
+   ```
+   # jemdoc: menu{menu-courses.jemdoc}{ee410.html}, title{EE410}, notime
+   = Antenna Theory (EE410)
+   Graduate · 3 credits
+   ```
+
+2. Give it the three sections every course has — `== Slides`, `== Textbook` — plus
+   `== Course information`, built from the info box the other pages use:
+
+   ```
+   ~~~
+   {Course information}
+   - *Code*: EE410 \M *Level*: Graduate \M *Semester*: Spring 2027 \M *Credits*: 3
+   - *When*: Thursday 09:00--11:00, Building B1, Room 302
+
+   *What you will learn:* one or two sentences.
+   ~~~
+   ```
+
+3. Add it to the course sidebar, `www/menu-courses.jemdoc`:
+
+   ```
+    {{Antenna Theory}} (EE410) [ee410.html]
+   ```
+
+4. Add a card to the overview, `www/courses.jemdoc`, by copying an existing `<li>` block inside
+   the `<ul class="cards">`.
+
+5. Add it to the main sidebar, `www/menu.jemdoc`, if it should be reachable from the Teaching
+   section — and rebuild.
 
 The material files are **not** stored in this repository. They live in a separate GitHub
-repository and are linked from here, so the site stays small. Each group of files is a
-collapsible **dropdown**: a `<details>` element with a `<summary>` title. Because that is raw
+repository and are linked from the course page, so the site stays small. Each group of files is
+a collapsible **dropdown**: a `<details>` element with a `<summary>` title. Because that is raw
 HTML, it goes inside a `~~~` block whose language is `raw`:
 
 ```
@@ -801,44 +919,104 @@ File: `www/awards.jemdoc` — one bullet per item:
 
 ### 9.7 Change the contact details
 
-One place now: the **Contact** box near the top of `www/biography.jemdoc`. The Home page links
-to it rather than repeating it. Inside a box, use `-` bullets so each item gets its own line.
+Two places, and they are the only two:
 
-### 9.8 The CV
+* `www/index.jemdoc` — the **Contact information** section of the Home page: room, email,
+  telephone. This is the one visitors look for.
+* `www/lab-members.jemdoc` — the contact column of the staff table.
 
-The CV link was **removed** from the site, because `www/files/cv.pdf` is only a placeholder. The
-file and the generator are still in place, so publishing a real CV takes two steps:
+The old Biography page held a third copy; it was merged into Home and deleted, so there is one
+less place to keep in step. The prethesis and thesis page (`www/joining.jemdoc`) tells people
+what to send, and links to the Home page rather than repeating the address.
 
-1. Replace `www/files/cv.pdf` with your real CV, keeping the name `cv.pdf`.
-2. Add the link where you want it, for example in "Quick links" on `www/index.jemdoc`:
+### 9.8 Publish a CV, or any other download
+
+There is **no CV on the site at the moment**, and no `www/files/` folder. The placeholder PDF
+that used to sit there has been deleted: nothing linked to it, so it was dead weight. Putting a
+real one up takes two steps.
+
+1. Create the folder and drop the document in it:
+
+   ```bash
+   mkdir www/files
+   ```
+
+   Then save the document as `www/files/cv.pdf`. Keep the name simple — lower case, no spaces.
+
+2. Add the link where you want it. The profile header on `www/index.jemdoc` is the natural
+   place; it already holds the HCMIU, Google Scholar and ORCID links:
 
    ```
-   [files/cv.pdf Curriculum Vitae (PDF)]
+   <li><a href="files/cv.pdf">Curriculum Vitae</a></li>
    ```
+
+3. Rebuild, and check the link works: `python build.py --serve`.
+
+The same recipe covers any download — a poster, a syllabus, a slide deck. `www/files/` is
+copied into the output as `_site/files/`, so `files/your-file.pdf` is the path to link to. The
+folder is optional: the build simply skips it while it does not exist.
+
+> Documents that belong to a **course** are different. Those live in the separate course GitHub
+> repository and are linked by full URL, so this repository stays small — see
+> [§9.4](#94-add-a-course).
 
 ### 9.9 Change the look and feel
 
-File: `www/css/site.css`. All colours are variables at the top:
+File: `www/css/site.css`. It opens with the palette, and those are the values to change:
 
 ```css
 :root {
-  --navy:        #16181d;   /* headings and body text        */
-  --text:        #16181d;   /* normal body text              */
-  --accent:      #17457a;   /* links, current menu entry     */
-  --accent-soft: #eef3f9;   /* barely-there highlight        */
-  --muted:       #4a5160;   /* secondary text                */
-  --faint:       #8b93a1;   /* captions, labels, dates       */
-  --panel:       #f7f8fa;   /* very light fill for code      */
-  --border:      #e6e8ec;   /* hairlines                     */
-  --page-width:  980px;     /* width of the whole layout     */
-  --menu-width:  190px;     /* width of the sidebar column   */
+  --bg:          #FFFFFF;   /* the page                                     */
+  --text:        #000000;   /* body text                                    */
+  --accent:      #527BBD;   /* headings, and the marks under them           */
+  --link:        #224B8D;   /* links in the text                            */
+  --border:      #DDDDDD;   /* hairlines                                    */
+
+  --accent-ink:  #224B8D;   /* links outside body text (same blue)          */
+  --muted:       #333333;   /* secondary text                               */
+  --faint:       #666666;   /* captions and labels                          */
+  --panel:       #F6F6F6;   /* jemdoc's grey: sidebar, code, callouts       */
+  --card:        #FFFFFF;   /* card fill                                    */
+  --menu-link:   #022B6D;   /* links in the sidebar, a deeper blue          */
+  --rule:        #AAAAAA;   /* the rule under a section heading             */
+  --rule-strong: #808080;   /* the rule under the page title and a group    */
 }
 ```
 
-Below that are the fonts (`--font-body`, `--font-head`, `--font-mono`). The design rules are
-written at the top of the file: one narrow column of text, one accent colour, no boxes or
-shadows, and one shared look for every list. The menu is a **sidebar** down the left of the
-page; below 760px it turns into a wrapping row above the text.
+**Those last two carry the page.** jemdoc draws a rule under the page title, under every section
+heading and under every sidebar group label — the site name and "Research"/"Teaching" alike —
+and that is most of what makes its pages look structured rather than plain. Remove them and the
+page goes flat, which is exactly what happened once.
+
+**These are jemdoc's own colours**, which is what Duy H. N. Nguyen's site uses: a white page,
+black text, `#527BBD` for headings and `#224B8D` for links, with the sidebar, the callout boxes
+and the code blocks on jemdoc's grey `#F6F6F6`. Changing the first five re-skins the site; the
+rest are derived and rarely need touching.
+
+The fonts are Georgia throughout (`--font-body` and `--font-head`), which is jemdoc's default
+and the reason the site reads like Duy's. The type sizes follow jemdoc too: the page title is
+`1.65em`, section headings `1.25em`, body text `16px`.
+
+Three more jemdoc details are matched on purpose, because they are what the page is built on:
+
+* a **3px rule** under the page title, a **1px `#AAAAAA` rule** under every `h2`, and a
+  **1px `#808080` rule** under the site name and every sidebar group label;
+* bullets are small **squares**, not round discs (`list-style-type: square`);
+* the sidebar cell is a grey box with a hairline border, not a bare column.
+
+The geometry lives just below: `--menu-width` (175px), and `--page-width`, which is no longer
+used — **the layout is full width**, the way jemdoc and Duy H. N. Nguyen's site are: the grey
+sidebar sits hard against the left edge of the window and the text runs to the right edge. To
+cap the line length on a very wide screen, add a `max-width` to `td#layout-content` — around
+`1100px` keeps the text readable — but that is a departure from jemdoc's own look.
+
+The menu is a **grey sidebar** down the left. Below 760px the two columns stack: the sidebar
+becomes a wrapping row above the text, and the profile header puts its portrait on top of the
+text.
+
+The site name at the top of the menu and the group labels ("Research", "Teaching") share one
+rule, `.menu-category` — in jemdoc they are the same thing, and the name is simply the first of
+them. That is why they look identical.
 
 ### 9.10 Collapse code blocks
 
@@ -873,23 +1051,33 @@ paper.
 
 What is **still demo content**:
 
-- [ ] *Portrait photo* — `www/images/portrait.svg` is still the placeholder illustration.
+- [ ] *Portrait photo* — `www/images/portrait.svg` is still a placeholder illustration, now in
+      the site palette. The note inside the file says how to swap in a real photograph.
 - [ ] *Gallery photos and captions* — `www/images/gallery-1..4.svg` and the `<figure>` blocks in
       `www/gallery.jemdoc`.
-- [ ] *CV* — `www/files/cv.pdf` is a placeholder and is no longer linked from anywhere. See
-      [§9.8](#98-the-cv) if you want to publish a real one.
-- [ ] *Faculty colleagues* — the 2nd, 3rd and 4th table rows in `www/faculty.jemdoc`, plus the
-      visiting professor and the alumnus below the table.
-- [ ] *Students* — every entry in `www/students.jemdoc` (five `student.*@example.edu` people).
-- [ ] *Course material links* — `YOUR-GITHUB-USER/YOUR-COURSE-REPO` in `www/courses.jemdoc`.
+- [ ] *Members* — `www/lab-members.jemdoc` shows one real row (yourself) and no students. The
+      former demo names are kept, commented out, at the bottom of that file.
+- [ ] *Lab text* — `www/lab.jemdoc`, `www/lab-projects.jemdoc` and `www/lab-news.jemdoc` are
+      skeletons. Nothing about the lab that the rest of the site does not already state has
+      been filled in.
+- [ ] *Research interests* — the list on `www/interests.jemdoc` is real, but `layout.md` asks
+      for it split into current and past. The file ends with the template for that.
+- [ ] *Course detail* — the textbook section on each course page, and
+      `YOUR-GITHUB-USER/YOUR-COURSE-REPO` in the material links.
+- [ ] *Group name* — choose one: "Network Optimization and Distributed Learning" is used on the
+      Home and Research Interests pages; the deleted Faculty page said "Wireless Networks and
+      Optimization Group".
 
 Three things were **deliberately left out** because no source could confirm them, rather than
 invented:
 
-- *Office hours* — absent from `www/index.jemdoc` and `www/biography.jemdoc`.
-- *Editorial roles and invited talks* — removed from `www/biography.jemdoc` and
-  `www/awards.jemdoc`; only the verifiable reviewer list remains.
-- *Talks, group news, new students* — `www/news.jemdoc` now lists real publication records only.
+- *Office hours* — not stated on any page.
+- *Teaching history and professional service* — these were sections of the deleted Biography
+  page. Teaching now lives in the course sites, which say what is taught and provide the
+  material, and the service list was dropped on request; only the verifiable reviewer list
+  remains on `www/awards.jemdoc`.
+- *Talks, group news and new students* — `www/news.jemdoc` lists real publication records only,
+  and `www/lab-news.jemdoc` is an empty skeleton for you to fill in.
 
 To find anything left over:
 
@@ -899,7 +1087,15 @@ grep -rn 'example\.edu\|Example \|20XX' www/
 
 (`Select-String -Path www/* -Pattern 'example\.edu|Example '` on Windows.)
 
-The copyright name in the footer lives in `www/mysite.conf` (`[lastupdated]`).
+The **footer** is written by `www/mysite.conf` (`[lastupdated]`) and currently reads
+`Last updated: 2026-09-26` — no name, no copyright line. To put one back, edit that section:
+
+```
+[lastupdated]
+<p>&copy; Assoc. Prof. Phuong Luu Vo &middot; Last updated: |</p>
+```
+
+The `|` is where jemdoc substitutes today's date.
 
 ---
 
@@ -925,7 +1121,7 @@ python -m pytest
       `jemdoc failed` and no warning lines. Any warning names the source line it could not
       parse — almost always a missing blank line or a stray structure character.
 - [ ] **Every source produced a page.** The list of `pages written` has one entry per
-      `www/*.jemdoc` (except `menu.jemdoc`), i.e. 11 with the current content.
+      `www/*.jemdoc` (except the two menus), i.e. 15 with the current content.
 - [ ] **No broken links or images.** Covered automatically by
       `test_every_local_link_and_image_resolves`, which checks every relative `href`/`src`
       against the files on disk. This is what catches a moved asset or a menu entry pointing at
@@ -947,7 +1143,9 @@ python -m pytest
 - [ ] **Visual check** of the pages you touched: `python build.py --serve`, then look at the
       changed pages at both a wide and a narrow window.
 - [ ] **Assets exist** in the output: `.nojekyll`, `css/site.css`,
-      `images/portrait.svg`, `files/cv.pdf` (covered by `test_static_assets_are_copied`).
+      `images/portrait.svg` (covered by `test_static_assets_are_copied`).
+- [ ] **Nothing stale is left over.** If you deleted a file, the build says so under
+      `stale removed`, and `test_a_file_deleted_from_www_disappears_from_the_output` guards it.
 - [ ] **Commit sources only.** `_site/` is generated and ignored — never commit it. The
       published site is rebuilt from `www/` by GitHub Actions, so there is no second copy to
       keep in step.
@@ -958,34 +1156,41 @@ Full run, for reference:
 $ python build.py
 Build finished.
   output folder : D:\Code\phuongluuvo.github.io\_site
-  pages written : 11
+  pages written : 16
   ...
-  assets copied : css/, files/, images/
+  assets copied : css/, images/
 
 $ python -m pytest
-...........................................                              [100%]
-43 passed in 1.52s
+.................................................                         [100%]
+49 passed in 1.80s
 ```
 
 (The exact number grows as checks are added; what matters is that nothing fails.)
 
 ### 10.2 What the test-suite covers
 
-Every `.jemdoc` source produced its `.html` page · identical menu on all pages · each page
-highlights its own menu entry · no broken relative links/images · only external links open a
-new tab · no unescaped `&` · no HTML5 parse errors · every page is valid UTF-8 and non-ASCII
-text survives the build · every page has a `<title>`, an `<h1>`, the stylesheet and a footer ·
-MathJax loaded everywhere · publication years newest-first, every entry links to its DOI, and
-each year summary agrees with the entries listed · placeholder PDFs really are PDFs · the
-generated `.jemdoc` files say that they are generated · the GitHub Actions workflow is valid
-YAML and only ever runs the generator in a way that cannot break the deployment · the two
-generated pages are tracked by git · sources are normalised CRLF → LF.
+Every `.jemdoc` source produced its `.html` page · as many different menus are rendered as there
+are `menu*.jemdoc` files, and pages sharing a menu render it identically · every menu starts
+with the site name pointing home · each page highlights its own menu entry, and only that one ·
+the lab pages show the lab sidebar and the course pages show the course sidebar, neither of them
+leaking the main menu · no broken relative links/images · only external links open a new tab ·
+no unescaped `&` · no HTML5 parse errors · every page is valid UTF-8 and non-ASCII text survives
+the build · every page has a `<title>`, an `<h1>`, the stylesheet and a footer · MathJax loaded
+everywhere · the home page is the profile and nothing else (no news block, no callout) ·
+publication years newest-first, the two newest open, every entry links to its DOI, and each year
+summary agrees with the entries listed · **every SVG image is valid XML**, because a malformed
+one renders as nothing at all · no copied asset is empty · a file deleted from `www/`
+disappears from the output on the next build · the generated
+`.jemdoc` files say that they are generated · the GitHub Actions workflow is valid YAML and only
+ever runs the generator in a way that cannot break the deployment · the two generated pages are
+tracked by git · sources are normalised CRLF → LF.
 
 Another group covers the **generated pages**: the news is grouped by year newest-first, the two
 most recent years are open and the rest are collapsed, every year summary agrees with its
-entries, every announcement has a well-formed date, **every publication appears in the news**,
-the Home-page headlines are the newest announcements, the note at the top of each generated page
-came through jemdoc intact, and `tools/update_site.py` runs end to end with no network access.
+entries, every announcement is one sentence carrying a `(MM/YY)` stamp, **every publication
+appears in the news**, the note at the top of each generated page came through jemdoc intact,
+extra paper links can be added from BibTeX, and `tools/update_site.py` runs end to end with no
+network access.
 
 The tests **build the site into a temporary folder**, so running them never disturbs your
 working tree.
@@ -1096,6 +1301,25 @@ with LF endings.
 The stylesheet is `www/css/site.css` and is copied into `_site/css/` on build. Rebuild, and
 force-reload the browser (<kbd>Ctrl</kbd>+<kbd>F5</kbd>).
 
+**"An image is missing — just a broken-image icon."**
+A malformed SVG renders as nothing, with no build error, no failing link and no warning. The
+usual cause is a **double hyphen inside an XML comment**, which is illegal in XML: the note at
+the top of `www/images/portrait.svg` once contained one and the portrait silently disappeared.
+Rewrite `--` as a single `-`, or delete the comment. `test_the_images_are_valid_svg` catches it.
+
+**"Where do I put a PDF or a PNG?"**
+On a page: `www/images/`, linked as `images/your-file.png`. For visitors to download:
+`www/files/`, linked as `files/your-file.pdf` — create the folder if it is not there. For a
+course: neither, because course material lives in a separate repository and is linked by URL.
+There is a table with the three cases in [§2](#2-folder-structure).
+
+**"I deleted an image or a PDF but it is still in `_site/`."**
+Rebuild. `python build.py` mirrors `www/css/`, `www/images/` and `www/files/`: a file removed
+from `www/` is removed from the output on the next build, and printed under `stale removed`.
+Before that fix the build only ever *added* files, which is why old PNGs and PDFs used to pile
+up in the output folder. If you are looking at the live site instead, the old file disappears
+when CI next runs.
+
 **"There used to be `.html` files in the repository root. Where did they go?"**
 They are generated output and now live in `_site/`, which is gitignored. That keeps the
 repository to sources, tooling and documentation. Build first, then look in `_site/` — see
@@ -1189,10 +1413,9 @@ Read this before making any change.
 
 1. **Never hand-edit generated files.** `build.py` writes the whole site into `_site/`, which
    is gitignored and rebuilt from scratch every time:
-   * `_site/*.html` (11 pages), `_site/css/site.css`, `_site/files/*`, `_site/images/*`,
-   * `_site/.nojekyll`.
+   * `_site/*.html` (16 pages), `_site/css/site.css`, `_site/images/*`, `_site/.nojekyll`.
 
-   Their sources are, respectively: `www/*.jemdoc`, `www/css/site.css`, `www/files/` and
+   Their sources are, respectively: `www/*.jemdoc`, `www/css/site.css` and
    `www/images/`. `www/` is the only place to edit — with two exceptions:
    `www/publications.jemdoc` and `www/news.jemdoc` are both generated by
    `tools/update_site.py`. Never edit those two by hand. To change what they contain, edit your
@@ -1209,8 +1432,9 @@ Read this before making any change.
    file name**, otherwise `test_the_current_menu_item_is_highlighted` fails. Note the matching
    rule in jemdoc: it marks a menu entry current with a **suffix test**
    (`link[-len(current):] == current`), so one page name must never be the tail of another.
-   `for-students.html` also lights up on `students.html` — which is why the For Students page
-   is `www/joining.jemdoc`. Call the page by a name no other page ends with.
+   That is why the lab's news page is `lab-news.html` and the lab menu never links to
+   `news.html`: had it done so, `news.html` would light up whenever you were on `lab-news.html`.
+   Call every page by a name no other page ends with.
 6. **MathJax is configured in exactly one place:** the `[firstbit]` section of
    `www/mysite.conf`. Never add a MathJax `<script>` tag to a page, and never add a second
    configuration block. A duplicated include is a bug, not a feature.
@@ -1232,11 +1456,13 @@ Read this before making any change.
 | Need to change… | Edit |
 | --- | --- |
 | a page's content | `www/<name>.jemdoc` |
-| the menu on every page | `www/menu.jemdoc` |
-| `<head>`, MathJax config, `<title>` suffix, footer | `www/mysite.conf` (`[firstbit]`, `[windowtitle]`, `[lastupdated]`) |
-| colours / fonts / layout | `www/css/site.css` |
+| the sidebar of the main site | `www/menu.jemdoc` |
+| the sidebar inside the Edge AI Lab | `www/menu-lab.jemdoc` |
+| the sidebar inside a course site | `www/menu-courses.jemdoc` |
+| `<head>`, MathJax config, `<title>` suffix, footer, favicon | `www/mysite.conf` (`[firstbit]`, `[windowtitle]`, `[lastupdated]`) |
+| colours / fonts / layout | `www/css/site.css` (the palette is the first block) |
 | the publication list and the news | `tools/update_site.py` (the ORCID iD is at the top) |
-| the build pipeline | `build.py` |
+| which pages exist | `build.py` (it treats any `menu*.jemdoc` as a menu, not a page) |
 | the checks | `tests/test_site.py` |
 | CI / deployment | `.github/workflows/pages.yml` |
 | line-ending policy | `.gitattributes` |
@@ -1245,7 +1471,8 @@ Read this before making any change.
 ### 13.3 How to verify a change did not break other pages
 
 The generated pages share the menu, the `<head>` and the stylesheet, so a change to
-`www/menu.jemdoc`, `www/mysite.conf` or `www/css/site.css` affects **all 11 pages at once**.
+`www/menu.jemdoc`, `www/menu-lab.jemdoc`, `www/mysite.conf` or `www/css/site.css` affects
+**all 15 pages at once**.
 `python build.py` alone does not prove anything; always run both steps:
 
 ```bash
@@ -1275,7 +1502,7 @@ search the output instead:
 
 ```bash
 python build.py
-grep -l 'Your new menu label' _site/*.html      # expect all 11 pages
+grep -l 'Your new menu label' _site/*.html      # expect all 15 pages
 ```
 
 On Windows, `Select-String -Path _site/*.html -Pattern 'Your new menu label'` does the same.
@@ -1315,7 +1542,7 @@ On Windows, `Select-String -Path _site/*.html -Pattern 'Your new menu label'` do
   patches applied to it are listed in [§2](#2-folder-structure).
 * **MathJax** is loaded from the jsDelivr CDN and is licensed under Apache-2.0.
 * Everything else was written for this site: the pages in `www/`, `www/css/site.css`,
-  `build.py`, `tools/update_site.py`, `tools/make_placeholder_pdfs.py` and `tests/test_site.py`.
+  `build.py`, `tools/update_site.py` and `tests/test_site.py`.
 
 ### Where documentation belongs
 

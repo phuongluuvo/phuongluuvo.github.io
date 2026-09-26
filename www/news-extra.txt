@@ -19,6 +19,15 @@
 # not matter. Anything after the date can be plain text, and
 # [a label](https://link) becomes a link.
 #
+# HOW IT READS ON THE PAGE -- the date is shown as a compact (MM/YY) stamp at
+# the start of your sentence, in the same style as the announcements that come
+# from your publications:
+#
+#     (09/26) Three new papers accepted at IEEE ICC 2026.
+#
+# A line with only a year gets no stamp. Only the month and the year are shown,
+# so a full date is worth keeping in this file as a record.
+#
 # EXAMPLES -- uncomment (delete the leading "#") to use:
 #
 # 2026-09-01 | Three new papers accepted at [IEEE ICC 2026](https://icc2026.ieee-icc.org/).
@@ -27,6 +36,6 @@
 # 2025-11-20 | Awarded a two-year research grant by the national foundation.
 #
 # Only the two most recent years are shown in full on the News page; older years
-# are collapsed behind a click. The Home page always shows the four newest items.
+# are collapsed behind a click.
 #
 # After editing, run:  make update

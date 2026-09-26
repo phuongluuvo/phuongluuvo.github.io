@@ -10,13 +10,16 @@ elsewhere.
 
 ## The five rules that matter most
 
-1. **Edit sources in `www/` only.** `www/*.jemdoc` (pages), `www/menu.jemdoc` (shared menu),
-   `www/mysite.conf` (control file: `<head>`, MathJax config, `<title>`, footer),
-   `www/css/site.css`, `www/files/`, `www/images/`.
+1. **Edit sources in `www/` only.** `www/*.jemdoc` (pages), the three sidebars
+   (`www/menu.jemdoc`, `www/menu-lab.jemdoc`, `www/menu-courses.jemdoc`),
+   `www/mysite.conf` (control file: `<head>`, MathJax config, `<title>`, footer, favicon),
+   `www/css/site.css`, `www/images/` (pictures shown on a page) and `www/files/` (documents
+   visitors download — optional, and it does not exist until there is one).
 2. **Never hand-edit generated files.** `build.py` writes the entire site into `_site/` —
-   `_site/*.html`, `_site/css/`, `_site/files/`, `_site/images/` and `.nojekyll`. That folder is
+   `_site/*.html`, `_site/css/`, `_site/images/`, `_site/files/` and `.nojekyll`. That folder is
    gitignored and rebuilt from scratch every time, and every generated page carries a
-   `GENERATED FILE. DO NOT EDIT` comment in its `<head>`.
+   `GENERATED FILE. DO NOT EDIT` comment in its `<head>`. The asset folders are **mirrored**,
+   so a file deleted from `www/` is deleted from the output on the next build.
    **Two source files are also generated:** `www/publications.jemdoc` and `www/news.jemdoc`
    both come from `tools/update_site.py`. To change the publication list, edit the ORCID record
    and run `make update`; for a paper ORCID does not have, paste BibTeX into
@@ -25,12 +28,10 @@ elsewhere.
 3. **After any source change run `python build.py`.** The published site is rebuilt from `www/`
    by CI, so an unbuilt change is an unverified change. Commit **sources only** — `_site/` is
    generated and ignored; never commit it.
-4. **Do not add or remove a page without updating `www/menu.jemdoc`,** and keep each page's own
-   header in sync: the second argument of `menu{menu.jemdoc}{X.html}` must equal that page's
-   `.html` file name. jemdoc marks a menu entry current with a **suffix test**
-   (`link[-len(current):] == current`), so one page name must never be the tail of another —
-   `for-students.html` would also light up on `students.html`, which is why the For Students
-   page is `joining.html`.
+4. **Do not add or remove a page without updating its menu,** and keep each page's own header in
+   sync: the second argument of `menu{menu.jemdoc}{X.html}` must equal that page's `.html` file
+   name. There are three menus — `menu.jemdoc` (main site), `menu-lab.jemdoc` (Edge AI Lab) and
+   `menu-courses.jemdoc` (course pages) — and `build.py` never builds one into a page.
 5. **MathJax is configured in exactly one place** — the `[firstbit]` section of
    `www/mysite.conf`. Never add a MathJax `<script>` to an individual page.
 
@@ -51,7 +52,7 @@ packages listed in `requirements.txt` (pip) or `environment.yml` (conda env `vtl
 
 ## Verifying a change
 
-`www/menu.jemdoc`, `www/mysite.conf` and `www/css/site.css` affect **all 11 pages at once**, so
+The three menus, `www/mysite.conf` and `www/css/site.css` affect **every page at once**, so
 `python build.py` succeeding proves nothing by itself:
 
 ```bash
@@ -63,7 +64,7 @@ If pytest is unavailable, build and search the output instead:
 
 ```bash
 python build.py
-grep -l 'Your new menu label' _site/*.html    # expect all 11 pages
+grep -l 'Your new menu label' _site/*.html    # expect all 16 pages
 ```
 
 The suite (`tests/test_site.py`) catches broken links, a menu entry pointing at a
@@ -74,7 +75,7 @@ block that drifts from the News page, CRLF line endings, and an invalid CI workf
 
 ## Do not
 
-* Rename or move `www/`, `menu.jemdoc` or `mysite.conf`. jemdoc runs inside one staging
+* Rename or move `www/`, any `menu*.jemdoc` or `mysite.conf`. jemdoc runs inside one staging
   directory and resolves every relative path from the site root; that layout is load-bearing.
 * Commit generated output, or remove the `_site/`, `/docs/` or anchored `/*.html`, `/css/`,
   `/files/`, `/images/`, `/.nojekyll` rules from `.gitignore`. This repository holds sources,

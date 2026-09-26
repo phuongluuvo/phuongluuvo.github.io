@@ -154,6 +154,10 @@ def fetch_orcid_works() -> list[dict]:
                 doi = (external.get("external-id-value") or "").strip()
                 break
 
+        # ORCID also carries a URL for most works, but in this record it is
+        # always the same Scopus record page -- 37 identical "link" labels that
+        # add nothing to a DOI. Extra links are therefore opt-in: they come from
+        # www/publications-extra.bib, where you choose them (see BIB_LINKS).
         records.append({
             "title": title,
             "type": summary.get("type") or "other",
@@ -164,6 +168,7 @@ def fetch_orcid_works() -> list[dict]:
                 (summary.get("journal-title") or {})
             ) or "").split()),
             "doi": doi,
+            "links": [],
             "put_code": summary.get("put-code"),
             "source": "orcid",
             "enriched": False,
@@ -296,17 +301,18 @@ def drop_preprint_duplicates(records: list[dict]) -> tuple[list[dict], int]:
     return kept, dropped
 
 
-def format_date(record: dict, with_day: bool = False) -> str:
-    """'2026', '2026-02', or '2026-02-14' when the day is known and wanted."""
+def format_date(record: dict) -> str:
+    """'2026-02' when the month is known, otherwise '2026'.
+
+    This is the precise form shown on the page itself, in the metadata line of a
+    publication. The news feed uses the compact ``short_date`` stamp instead.
+    """
     year = record.get("year")
     if not year:
         return ""
     month = record.get("month")
     if not month or not 1 <= int(month) <= 12:
         return str(year)
-    day = record.get("day")
-    if with_day and day and 1 <= int(day) <= 31:
-        return "%d-%02d-%02d" % (year, int(month), int(day))
     return "%d-%02d" % (year, int(month))
 
 
@@ -340,6 +346,9 @@ def render_entry(record: dict) -> str:
     if record["doi"]:
         bits.append('<a href="https://doi.org/%s" target="blank">doi</a>'
                     % esc(record["doi"]))
+    for link in record.get("links") or []:
+        bits.append('<a href="%s" target="blank">%s</a>'
+                    % (esc(link["href"]), esc(link["label"])))
     if record.get("note"):
         bits.append('<span class="pub-note">%s</span>' % esc(record["note"]))
 
@@ -367,7 +376,7 @@ def build_page(records: list[dict], dropped: int, added: int = 0) -> str:
         entries = by_year[year]
         count = len(entries)
         label = "%d" % count
-        open_attr = " open" if index == 0 else ""
+        open_attr = " open" if index < OPEN_YEARS else ""
         blocks.append('<details class="year"%s>' % open_attr)
         blocks.append('<summary>%d<span class="pub-count">%s %s</span></summary>'
                       % (year, label, "entry" if count == 1 else "entries"))
@@ -394,8 +403,8 @@ HEADER = """# jemdoc: menu{menu.jemdoc}{publications.html}, notime
 Journal articles, conference papers and book chapters, newest first
 
 Generated automatically from my [https://orcid.org/%(orcid)s ORCID record] plus a local BibTeX
-file -- %(note)s. Each year below is a collapsible section; click a year to open it. Entries
-link to their DOI where one exists.
+file -- %(note)s. The two most recent years are shown in full and older years open when you
+click them. Entries link to their DOI, and hand-added ones can also carry a PDF or a talk.
 
 ~~~
 {}{raw}
@@ -447,6 +456,44 @@ BIB_REPLACEMENTS = (
     ("--", "\u2013"),
     ("~", " "),
 )
+
+#: Optional extra links a hand-added BibTeX entry may carry, in the order they are
+#: shown on the Publications page. Put the field in an entry in
+#: www/publications-extra.bib and it appears next to the DOI link:
+#:
+#:     arxiv  = {2401.01234}          -> https://arxiv.org/abs/2401.01234
+#:     pdf    = {https://.../p.pdf}   -> used exactly as written
+#:     slides = {https://.../s.pdf}
+#:     code   = {https://github.com/...}
+#:     video  = {https://...}
+#:     url    = {https://...}         -> shown as "link"
+#:
+#: Values are NOT run through the LaTeX tidy-up, because a URL may contain
+#: characters that tidy-up would rewrite.
+BIB_LINKS = (
+    ("arxiv", "arXiv"),
+    ("pdf", "pdf"),
+    ("slides", "slides"),
+    ("code", "code"),
+    ("video", "video"),
+    ("url", "link"),
+)
+
+
+def bib_links(fields: dict) -> list[dict]:
+    """The optional extra links on one BibTeX entry, ready for render_entry."""
+    links = []
+    for field, label in BIB_LINKS:
+        value = (fields.get(field) or "").strip().replace("{", "").replace("}", "")
+        value = value.strip('"').strip()
+        if not value:
+            continue
+        if field == "arxiv" and not value.lower().startswith("http"):
+            value = "https://arxiv.org/abs/" + value
+        if not value.lower().startswith("http"):
+            continue        # a bare DOI here would be a mistake, so ignore it
+        links.append({"label": label, "href": value})
+    return links
 
 
 def strip_bib_comments(text: str) -> str:
@@ -620,6 +667,7 @@ def bib_entry_to_record(entry: dict):
         "issue": clean_bib_value(fields.get("number", "")),
         "page": clean_bib_value(fields.get("pages", "")),
         "note": clean_bib_value(fields.get("note", "")),
+        "links": bib_links(fields),
         "key": entry["key"],
         "source": "bib",
         "enriched": True,
@@ -687,19 +735,25 @@ HOME_PAGE = os.path.join(ROOT, "www", "index.jemdoc")
 HOME_NEWS_BEGIN = "# BEGIN GENERATED latest-news"
 HOME_NEWS_END = "# END GENERATED latest-news"
 
-#: How many of the newest years keep their items open on the News page.
-NEWS_OPEN_YEARS = 2
+#: How many of the newest years keep their entries open; every older year is
+#: collapsed into a click-to-open dropdown. The same rule is used for the
+#: Publications page and for the News page, so the two behave alike.
+OPEN_YEARS = 2
 
 #: How many items the Home page shows.
 HOME_NEWS_LIMIT = 4
 
-#: Wording used when a publication turns into a news item.
-NEWS_PREFIX = {
-    "journal-article": "Journal paper published in",
-    "conference-paper": "Conference paper published at",
-    "book-chapter": "Book chapter published in",
-    "book": "Book published by",
-    "dissertation": "Thesis published by",
+#: The verb that joins a title to its venue. Every publication announcement has
+#: the same shape, with the month and year in brackets at the end:
+#:
+#:     "Title of the paper" accepted by IEEE INFOCOM 2023 (12/22).
+NEWS_VERB = {
+    "journal-article": "published in",
+    "conference-paper": "accepted by",
+    "book-chapter": "published in",
+    "book": "published by",
+    "dissertation": "published by",
+    "other": "posted to",
 }
 
 #: `[label](https://...)` inside a news-extra.txt line becomes a link.
@@ -744,23 +798,51 @@ def parts_to_text(parts: list[dict]) -> str:
     )
 
 
+def short_date(year: int, month: int) -> str:
+    """December 2022 -> ``12/22``, the compact stamp used in an announcement."""
+    if not year or not month:
+        return ""
+    return "%02d/%02d" % (month, year % 100)
+
+
 def publication_news_item(record: dict) -> dict:
-    """Turn one publication into a news item."""
-    prefix = NEWS_PREFIX.get(record["type"], "Published in")
-    parts = [{"text": prefix + " "}]
-    if record.get("venue"):
-        parts.append({"italic": record["venue"]})
-        parts.append({"text": ": "})
-    parts.append({"text": "\u201c%s\u201d." % record["title"]})
+    """Turn one publication into a news item.
+
+    The shape, and the reason there is no separate date column, is::
+
+        "Title of the paper" accepted by IEEE INFOCOM 2023 (12/22).
+
+    The title comes first in quotes, then the verb, the venue and the year, then
+    the month and year in brackets. A DOI link is appended where there is one.
+    """
+    year = record.get("year") or 0
+    venue = (record.get("venue") or "").strip()
+
+    parts = [
+        {"text": "\u201c%s\u201d " % record["title"]},
+        {"text": NEWS_VERB.get(record["type"], "accepted by") + " "},
+    ]
+
+    if venue:
+        parts.append({"text": venue})
+        # A conference venue usually carries the year already
+        # ("2024 International Conference on ..."); never write it twice.
+        if year and str(year) not in venue:
+            parts.append({"text": " %d" % year})
+    elif year:
+        parts.append({"text": "%d" % year})
+
+    stamp = short_date(year, record.get("month") or 0)
+    parts.append({"text": " (%s)." % stamp if stamp else "."})
+
     if record.get("doi"):
         parts.append({"text": " "})
         parts.append({"link": "https://doi.org/%s" % record["doi"], "label": "doi"})
 
     return {
-        "date_label": format_date(record, with_day=True),
-        "sort": (record.get("year") or 0, record.get("month") or 0,
-                 record.get("day") or 0),
-        "year": record.get("year") or 0,
+        "date_label": format_date(record),
+        "sort": (year, record.get("month") or 0, record.get("day") or 0),
+        "year": year,
         "parts": parts,
         "source": record.get("source", "orcid"),
     }
@@ -796,11 +878,17 @@ def read_extra_news() -> list[dict]:
                 if day:
                     label += "-%02d" % day
 
+            stamp = short_date(year, month)
+            parts = text_to_parts(text)
+            if stamp:
+                # Your own items are dated the same way as the rest of the feed.
+                parts.insert(0, {"text": "(%s) " % stamp})
+
             items.append({
                 "date_label": label,
                 "sort": (year, month, day),
                 "year": year,
-                "parts": text_to_parts(text),
+                "parts": parts,
                 "source": "manual",
             })
     return items
@@ -818,8 +906,14 @@ def build_news_items(records: list[dict], manual: list[dict]) -> list[dict]:
 
 
 def render_news_item(item: dict) -> str:
-    return ('<li><span class="news-date">%s</span> <span class="news-text">%s</span></li>'
-            % (html.escape(item["date_label"]), render_parts(item["parts"])))
+    """One announcement.
+
+    There is no separate date column: the date is part of the sentence, which is
+    the shape the site owner asked for and how Duy H. N. Nguyen's news reads. The
+    full date is still there on hover, in the ``title`` attribute.
+    """
+    return '<li title="%s">%s</li>' % (html.escape(item["date_label"]),
+                                       render_parts(item["parts"]))
 
 
 NEWS_HEADER = """# jemdoc: menu{menu.jemdoc}{news.html}, notime
@@ -855,7 +949,7 @@ def build_news_page(items: list[dict]) -> str:
         listing.extend(render_news_item(entry) for entry in entries)
         listing.append('</ul>')
 
-        if index < NEWS_OPEN_YEARS:
+        if index < OPEN_YEARS:
             blocks.append('<h2 class="news-year">%d</h2>' % year)
             blocks.extend(listing)
         else:
@@ -868,7 +962,7 @@ def build_news_page(items: list[dict]) -> str:
     if items:
         note = ("%d announcements across %d years. The %d most recent years are shown "
                 "in full; older years open when you click them."
-                % (len(items), len(years), min(NEWS_OPEN_YEARS, len(years))))
+                % (len(items), len(years), min(OPEN_YEARS, len(years))))
     else:
         note = "No announcements yet."
     # Careful: jemdoc treats /.../ as italics, so this line must contain no
@@ -1041,7 +1135,7 @@ def main() -> int:
 
     home = sync_home_news(news_items)
     if home is None:
-        print("Home page: the latest-news markers are missing, so it was left alone.")
+        print("Home page: no latest-news markers, so the Home page was left alone.")
     else:
         count, changed = home
         print("%s Home page latest-news block (%d items)."

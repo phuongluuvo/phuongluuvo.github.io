@@ -1,0 +1,23 @@
+# ---------------------------------------------------------------------------
+# EDGE AI LAB NAVIGATION MENU  (www/menu-lab.jemdoc)
+#
+# The lab pages include THIS menu instead of www/menu.jemdoc, so the sidebar
+# changes inside the lab without touching the rest of the site.
+#
+# Same rules as the main menu:
+#   * a line WITHOUT brackets is a coloured section heading;
+#   * a line with brackets is a link:  Visible text [target-file.html]
+#
+# "Main site" is the way back. The page heading at the top of every page also
+# links home, so a visitor is never stranded.
+#
+# Careful: jemdoc marks the current entry with a SUFFIX test, so one page name
+# must never be the tail of another -- that is why the lab's news page is
+# lab-news.html and not news.html. See guide.md §6.4.
+# ---------------------------------------------------------------------------
+Phuong Luu Vo [index.html]
+Edge AI Lab
+ Home [lab.html]
+ Members [lab-members.html]
+ Projects [lab-projects.html]
+ Lab news [lab-news.html]

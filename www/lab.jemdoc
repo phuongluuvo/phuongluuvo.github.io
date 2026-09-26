@@ -1,0 +1,51 @@
+# jemdoc: menu{menu-lab.jemdoc}{lab.html}, title{Edge AI Lab}, notime
+= Edge AI Lab
+The research group of Assoc. Prof. Phuong Luu Vo
+
+The Edge AI Lab works on the algorithms behind networked intelligence: how computation is split
+between a device and the edge, how learning survives when the data cannot be pooled, and how
+the network underneath decides what is possible. It is the home of the
+/Network Optimization and Distributed Learning/ group at the School of Computer Science and
+Engineering, International University -- Vietnam National University Ho Chi Minh City.
+
+== What we work on
+
+- Semantic communication and edge intelligence
+- Federated and distributed learning under limited communication
+- Deep reinforcement learning for network control
+- Resource allocation, caching and adaptive streaming
+- Optimization and game theory for shared resources
+
+See [interests.html Research Interests] for the longer version, and
+[publications.html Publications] for the papers.
+
+== People
+
+The lab is made up of the academic staff and the students of the group.
+
+- [lab-members.html Members] -- academic staff, graduate and undergraduate students, and
+  alumni.
+
+== Projects and funding
+
+- [lab-projects.html Projects] -- what is running now and what has finished.
+- [awards.html Awards & Grants] -- the grants, prizes and the patent behind them.
+
+== Openings
+
+I am looking for motivated students for *prethesis*, *thesis* and *internship* projects. See
+[joining.html Prethesis and Thesis] for the topics, what I expect, and how to get in touch.
+
+== Lab news
+
+Announcements about the group -- new members, defended theses, accepted papers, talks.
+
+[lab-news.html Lab news]
+
+# ---------------------------------------------------------------------------
+# NOTE -- this page is a skeleton built from what the rest of the site already
+# states: the group's name, its host school, and the research interests on the
+# ORCID record and the HCMIU faculty page. Anything about the lab that is not on
+# those pages -- a founding date, member names, equipment, collaborations -- has
+# been left out rather than invented. Add those facts as you have them.
+# ---------------------------------------------------------------------------

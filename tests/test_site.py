@@ -68,11 +68,17 @@ def site(tmp_path_factory):
 
 @pytest.fixture(scope="session")
 def page_names():
-    """The .html names that the sources should produce."""
+    """The .html names that the sources should produce.
+
+    A ``www/menu*.jemdoc`` file is *included* by the pages that use it rather
+    than built into a page of its own, so it is not one of these -- the same
+    rule build.py applies.
+    """
+    module = load_build_module()
     return sorted(
         name[: -len(".jemdoc")] + ".html"
         for name in os.listdir(SRC)
-        if name.endswith(".jemdoc") and name != "menu.jemdoc"
+        if name.endswith(".jemdoc") and not module.is_menu_file(name)
     )
 
 
@@ -139,28 +145,111 @@ def test_static_assets_are_copied(site):
     for relative in (
         "css/site.css",
         "images/portrait.svg",
-        "files/cv.pdf",
         ".nojekyll",
     ):
         assert (site / relative).is_file(), "missing asset: %s" % relative
+
+
+def test_a_file_deleted_from_www_disappears_from_the_output(tmp_path):
+    """The output is made to *mirror* www/, not merely added to.
+
+    build.py copied the asset folders with shutil.copytree, which writes and
+    overwrites but never deletes. A picture or a PDF removed from www/images/ or
+    www/files/ therefore sat in the output folder for ever, and every later build
+    left it there -- which is how the stale PNGs and PDFs piled up.
+    """
+    module = load_build_module()
+    out = tmp_path / "site"
+    module.build(str(out))
+
+    leftover = out / "images" / "deleted-long-ago.png"
+    leftover.write_bytes(b"stale")
+    ghost = out / "files"
+    ghost.mkdir(exist_ok=True)
+    (ghost / "old.pdf").write_bytes(b"%PDF-1.4 stale")
+
+    module.build(str(out))
+
+    assert not leftover.exists(), "a stale image survived the rebuild"
+    assert not ghost.exists(), (
+        "www/files/ is gone, so its output copy should be gone too"
+    )
+    assert (out / "images" / "portrait.svg").is_file(), "a live asset was removed"
 
 
 # --------------------------------------------------------------------------- #
 # the shared navigation menu
 # --------------------------------------------------------------------------- #
 
-def test_every_page_has_the_same_menu(site, page_names):
-    menus = {}
+def test_pages_sharing_a_menu_render_it_identically(site, page_names):
+    """Every page that includes the same menu must render the same links.
+
+    There is one menu for the main site (www/menu.jemdoc) and one for the Edge
+    AI Lab pages (www/menu-lab.jemdoc), so the number of distinct rendered menus
+    must equal the number of www/menu*.jemdoc files: no more, and no fewer.
+    """
+    groups = {}
     for name in page_names:
         soup = soup_of(site, name)
         menu = soup.find(id="layout-menu")
         assert menu is not None, "%s has no menu" % name
-        menus[name] = [a.get("href") for a in menu.find_all("a")]
+        key = tuple(a.get("href") for a in menu.find_all("a"))
+        groups.setdefault(key, []).append(name)
 
-    reference = menus[page_names[0]]
-    for name, links in menus.items():
-        assert links == reference, "%s has a different menu than %s" % (
-            name, page_names[0],
+    expected = len([
+        name for name in os.listdir(SRC)
+        if name.endswith(".jemdoc") and name.startswith("menu")
+    ])
+    assert len(groups) == expected, (
+        "expected %d different menus, found %d: %s"
+        % (expected, len(groups), [sorted(pages) for pages in groups.values()])
+    )
+    for links, pages in groups.items():
+        assert links, "the menu used by %s has no links" % pages
+
+
+def test_the_lab_pages_use_the_lab_menu(site):
+    """The lab has its own sidebar, and it stays inside the lab."""
+    for name in ("lab.html", "lab-members.html", "lab-projects.html", "lab-news.html"):
+        links = [a.get("href") for a in soup_of(site, name).select("#layout-menu a")]
+        assert "lab.html" in links, "%s has no link back to the lab home" % name
+        assert "publications.html" not in links, (
+            "%s is a lab page but shows the main site's menu" % name
+        )
+
+    main = [a.get("href") for a in soup_of(site, "index.html").select("#layout-menu a")]
+    assert "lab.html" in main, "the main menu has no Edge AI Lab entry"
+    assert "lab-news.html" not in main, "the main menu leaked the lab menu"
+
+
+def test_the_course_pages_share_one_sidebar(site):
+    """Each course is a little site of its own: one sidebar, listing them all."""
+    for name in ("ee301.html", "ee502.html", "research-methods.html"):
+        links = [a.get("href") for a in soup_of(site, name).select("#layout-menu a")]
+        assert "courses.html" in links, (
+            "%s has no way back to the course list" % name
+        )
+        assert "publications.html" not in links, (
+            "%s is a course page but shows the main site's menu" % name
+        )
+
+
+def test_every_menu_starts_with_the_site_name_linking_home(site, page_names):
+    """There is no "Home" entry: the first line of every menu is the site name,
+    and it is the link home."""
+    for name in page_names:
+        menu = soup_of(site, name).select("#layout-menu .menu-item")
+        assert menu, "%s has an empty menu" % name
+
+        first = menu[0].find("a")
+        assert first is not None, "%s: the first menu entry is not a link" % name
+        assert first.get("href") == "index.html", (
+            "%s: the first menu entry should link to the home page" % name
+        )
+        # jemdoc replaces spaces in menu labels with non-breaking spaces.
+        label = first.get_text(strip=True).replace("\xa0", " ")
+        assert label == "Phuong Luu Vo", (
+            "%s: the first menu entry should be the site name, not %r" % (name, label)
         )
 
 
@@ -170,20 +259,23 @@ def test_menu_contains_the_expected_entries(site):
     # jemdoc replaces spaces in menu labels with non-breaking spaces.
     labels = [a.get_text(strip=True).replace("\xa0", " ") for a in menu.find_all("a")]
     for expected in (
-        "Biography", "News", "Faculty", "For Students", "Publications",
-        "Courses",
+        "Phuong Luu Vo", "News", "Awards & Grants", "Edge AI Lab",
+        "Research Interests", "Publications", "Gallery", "Courses",
+        "Prethesis and Thesis",
     ):
         assert expected in labels, "menu entry %r is missing" % expected
-    assert any("PhD" in label for label in labels), "no PhD/Master students entry"
-    assert any("Awards" in label for label in labels), "no Awards entry"
+
+    # These pages were merged away, so they must not be advertised any more.
+    for gone in ("Biography", "Faculty", "For Students", "Home"):
+        assert gone not in labels, "menu entry %r should be gone" % gone
 
 
 def test_the_current_menu_item_is_highlighted(site, page_names):
-    """A page highlights its own menu entry.
+    """A page highlights its own menu entry, and only that one.
 
-    index.html and mathjax-test.html are deliberately not menu entries (the
-    Home page is a menu *category*, and the MathJax test page is a utility
-    page), so for those nothing must be highlighted.
+    mathjax-test.html is deliberately not a menu entry -- it is a utility page --
+    so nothing must be highlighted when you are on it. The site name is a menu
+    entry now, so the home page highlights it like any other page would.
     """
     for name in page_names:
         soup = soup_of(site, name)
@@ -325,10 +417,27 @@ def test_mathjax_test_page_has_inline_and_display_equations(site):
     )
 
 
-def test_home_page_has_an_equation(site):
-    text = text_of(site, "index.html")
-    assert r"\(" in text, "the home page lost its inline equation"
-    assert "text-align:center" in text, "the home page lost its display equation"
+def test_home_page_is_the_profile_and_nothing_else(site):
+    """Home merges the old Home and Biography pages: a hero, About, Contact.
+
+    News has its own page, teaching lives in the course sites, and research lives
+    on the Research Interests page, so none of those belongs here.
+    """
+    soup = soup_of(site, "index.html")
+
+    assert soup.select_one(".hero"), "the home page lost its profile header"
+
+    sections = [h.get_text(strip=True) for h in soup.select("#layout-content h2")]
+    assert sections == ["About", "Contact information"], (
+        "the home page sections changed: %s" % sections
+    )
+
+    assert not soup.select("#layout-content ul.news"), (
+        "news has its own page and should not be repeated on the home page"
+    )
+    assert not soup.select("#layout-content .infoblock"), (
+        "the student-recruitment box was removed from the home page"
+    )
 
 
 # --------------------------------------------------------------------------- #
@@ -393,6 +502,56 @@ def test_publication_year_summaries_agree_with_their_entries(site):
         )
 
 
+def test_orcid_entries_link_to_their_doi_and_nothing_else(site):
+    """Extra links (pdf, arXiv, slides, code) are opt-in, taken from
+    www/publications-extra.bib. A paper imported from ORCID stays clean: one DOI."""
+    soup = soup_of(site, "publications.html")
+    offenders = []
+    for entry in soup.select('ul.pubs > li[data-source="orcid"]'):
+        labels = [a.get_text(strip=True) for a in entry.select(".pub-meta a")]
+        if labels != ["doi"]:
+            title = entry.select_one(".pub-title").get_text(strip=True)[:48]
+            offenders.append((title, labels))
+    assert not offenders, (
+        "ORCID entries should carry only their DOI: %s" % offenders[:5]
+    )
+
+
+def test_extra_links_can_be_added_from_bibtex():
+    """arxiv/pdf/slides/code/video/url on a hand-added entry become links."""
+    module = load_update_module()
+    assert module.bib_links({}) == []
+
+    assert module.bib_links({"arxiv": "{2401.01234}"}) == [
+        {"label": "arXiv", "href": "https://arxiv.org/abs/2401.01234"}
+    ]
+    assert module.bib_links({"pdf": "https://example.org/p.pdf"}) == [
+        {"label": "pdf", "href": "https://example.org/p.pdf"}
+    ]
+    # The order is fixed by BIB_LINKS, and a field that is not a URL is ignored
+    # rather than turned into a broken link. `url` is shown as "link".
+    assert [l["label"] for l in module.bib_links(
+        {"url": "https://a", "code": "https://b", "slides": "10.1000/x"}
+    )] == ["code", "link"]
+
+
+def test_publications_open_the_two_newest_years(site):
+    """The current year and the one before it are expanded; the rest collapse.
+
+    This is the same rule the News page uses, so the two pages behave alike.
+    """
+    soup = soup_of(site, "publications.html")
+    sections = soup.select("details.year")
+    assert len(sections) > 2, "expected several publication years"
+
+    assert all(s.has_attr("open") for s in sections[:2]), (
+        "the two newest years should be open"
+    )
+    assert not any(s.has_attr("open") for s in sections[2:]), (
+        "only the two newest years should be open"
+    )
+
+
 # --------------------------------------------------------------------------- #
 # news
 # --------------------------------------------------------------------------- #
@@ -455,31 +614,48 @@ def test_news_year_summaries_agree_with_their_entries(site):
         )
 
 
-def test_every_news_item_has_a_date_and_they_run_newest_first(site):
+def test_every_news_item_is_one_sentence_carrying_its_date(site):
+    """Announcements read like this, with the date inside the sentence:
+
+        "Title of the paper" accepted by IEEE INFOCOM 2023 (12/22).
+
+    There is no separate date column, so the date has to be in the text.
+    """
     soup = soup_of(site, "news.html")
     items = soup.select("ul.news > li")
     assert len(items) > 20, (
         "expected the generated news list, found only %d announcements" % len(items)
     )
 
-    years = []
+    stamped = 0
     for item in items:
-        date = item.select_one(".news-date")
-        assert date is not None, (
-            "an announcement has no date: %s" % item.get_text(strip=True)[:60]
+        assert not item.select_one(".news-date"), (
+            "the date belongs in the sentence, not in its own column"
         )
-        label = date.get_text(strip=True)
-        assert NEWS_DATE_RE.match(label), "bad announcement date %r" % label
-        assert item.select_one(".news-text") is not None, (
-            "announcement %r has no text" % label
-        )
-        years.append(int(label[:4]))
 
-    assert years == sorted(years, reverse=True), (
-        "announcements are not newest-first: %s" % years
+        text = flat(item.get_text(" "))
+        assert text.endswith(".") or "doi" in text, (
+            "an announcement should be one sentence: %r" % text[:80]
+        )
+
+        match = re.search(r"\((\d{2})/(\d{2})\)\.", text)
+        if match:
+            stamped += 1
+            assert 1 <= int(match.group(1)) <= 12, (
+                "bad month in the stamp of %r" % text[:80]
+            )
+
+    assert stamped > 10, (
+        "expected most announcements to carry a (MM/YY) stamp, found %d" % stamped
     )
-    assert any(len(d.get_text(strip=True)) > 4 for d in soup.select(".news-date")), (
-        "no announcement shows a month, although the publications have months"
+
+
+def test_news_runs_newest_first(site):
+    """Every announcement carries its full date for reference, and they descend."""
+    dates = [item.get("title") for item in soup_of(site, "news.html").select("ul.news > li")]
+    assert dates and all(dates), "every announcement should record its date"
+    assert dates == sorted(dates, reverse=True), (
+        "announcements are not newest-first: %s" % dates[:8]
     )
 
 
@@ -500,22 +676,6 @@ def test_every_publication_becomes_a_news_item(site):
     )
 
 
-def test_home_page_latest_news_matches_the_news_page(site):
-    home = soup_of(site, "index.html")
-    news = soup_of(site, "news.html")
-
-    headlines = [flat(i.get_text(" ")) for i in home.select("ul.news > li")]
-    listed = [flat(i.get_text(" ")) for i in news.select("ul.news > li")]
-
-    assert headlines, "the home page has no latest-news block"
-    assert len(headlines) <= 4, (
-        "the home page shows %d headlines; keep it to a handful" % len(headlines)
-    )
-    assert headlines == listed[:len(headlines)], (
-        "the home-page headlines are not the newest announcements"
-    )
-
-
 # --------------------------------------------------------------------------- #
 # the generator (tools/update_site.py), tested without any network access
 # --------------------------------------------------------------------------- #
@@ -533,15 +693,21 @@ def load_update_module():
     return module
 
 
-def test_the_date_shows_the_month_and_day_when_they_are_known():
+def test_the_date_shows_the_month_when_it_is_known():
     module = load_update_module()
-    assert module.format_date({"year": 2026, "month": 0, "day": 0}) == "2026"
-    assert module.format_date({"year": 2026, "month": 6, "day": 0}) == "2026-06"
-    assert module.format_date({"year": 2026, "month": 6, "day": 1}) == "2026-06"
-    assert module.format_date({"year": 2026, "month": 6, "day": 1}, with_day=True) == (
-        "2026-06-01"
-    )
+    assert module.format_date({"year": 2026, "month": 0}) == "2026"
+    assert module.format_date({"year": 2026, "month": 6}) == "2026-06"
+    assert module.format_date({"year": 2026, "month": 13}) == "2026"
     assert module.format_date({"year": 0}) == ""
+
+
+def test_the_announcement_stamp_is_month_then_year():
+    """December 2022 -> (12/22), the stamp inside an announcement."""
+    module = load_update_module()
+    assert module.short_date(2022, 12) == "12/22"
+    assert module.short_date(2026, 6) == "06/26"
+    assert module.short_date(2026, 0) == "", "no month means no stamp"
+    assert module.short_date(0, 6) == ""
 
 
 def test_news_extra_items_are_parsed(tmp_path):
@@ -596,7 +762,7 @@ def test_the_generator_runs_end_to_end_without_any_network_access():
     assert result.returncode == 0, "the generator failed:\n%s" % result.stderr
     assert "= Publications" in result.stdout, "no publication page was rendered"
     assert "= News" in result.stdout, "no news page was rendered"
-    assert "<li>" in result.stdout, "the news page has no announcements"
+    assert '<ul class="news">' in result.stdout, "the news page has no announcements"
 
 
 def test_news_extra_ships_with_every_line_commented_out():
@@ -699,14 +865,39 @@ def test_the_generated_sources_say_that_they_are_generated():
 # the placeholder documents
 # --------------------------------------------------------------------------- #
 
-def test_placeholder_pdfs_are_valid_pdf_files(site):
-    pdfs = sorted((site / "files").glob("*.pdf"))
-    assert pdfs, "no placeholder PDFs were generated"
-    for path in pdfs:
-        data = path.read_bytes()
-        assert data.startswith(b"%PDF-"), "%s is not a PDF" % path.name
-        assert data.rstrip().endswith(b"%%EOF"), "%s is truncated" % path.name
-        assert len(data) > 300, "%s looks too small to be valid" % path.name
+def test_every_copied_asset_has_content(site):
+    """A zero-byte image or download is an invisible failure: the file is linked,
+    and it exists, so no link check notices that it is truncated.
+
+    (This replaced a test for the placeholder PDFs, which were deleted along with
+    the CV link. It now covers whatever is in css/, images/ and files/ -- and
+    passes when files/ does not exist.)
+    """
+    empty = [
+        str(path.relative_to(site))
+        for folder in ("css", "images", "files")
+        if (site / folder).is_dir()
+        for path in (site / folder).rglob("*")
+        if path.is_file() and path.stat().st_size == 0
+    ]
+    assert not empty, "these assets are empty: %s" % empty
+
+
+def test_the_images_are_valid_svg(site):
+    """A malformed SVG renders as a broken-image icon and nothing else: no build
+    error, no failed link, no test failure. This was a real bug -- a note added
+    to www/images/portrait.svg contained a double hyphen inside an XML comment,
+    which is illegal, and the portrait silently disappeared."""
+    import xml.etree.ElementTree as ElementTree
+
+    images = sorted((site / "images").glob("*.svg"))
+    assert images, "no SVG images were copied into the output"
+
+    for path in images:
+        try:
+            ElementTree.parse(path)
+        except ElementTree.ParseError as error:
+            pytest.fail("%s is not valid XML/SVG: %s" % (path.name, error))
 
 
 # --------------------------------------------------------------------------- #

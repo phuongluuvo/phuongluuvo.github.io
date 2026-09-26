@@ -1,138 +1,54 @@
 # jemdoc: menu{menu.jemdoc}{courses.html}, notime
 = Courses
-Course information, lecture slides, and materials
+Course information, lecture slides and textbooks
 
-Material files are **not** stored in this repository. They live in a separate GitHub repository
-and are linked from here, so this site stays small and the files can be updated on their own.
-Each group of materials is a collapsible section -- click a title to open or close it.
-
-== Wireless Communications (EE301)
-
-~~~
-{Course information}
-- *Code*: EE301 \M *Level*: Undergraduate \M *Semester*: Spring 2026 \M *Credits*: 3
-- *When*: Monday 09:00--11:00, Building B1, Room 201
-- *Office hours*: Tuesday 14:00--16:00, or by appointment
-
-*What you will learn:* how a wireless link works, from path loss and fading to the capacity of
-a multi-user system; and how to formulate and solve a simple resource allocation problem.
-~~~
+Each course has its own page, with the course information, the slides and the textbook in one
+place. Material files are **not** stored in this repository: they live in a separate GitHub
+repository and are linked from the course page, so this site stays small and the files can be
+updated on their own.
 
 ~~~
 {}{raw}
-<details class="materials">
-<summary>Lecture slides</summary>
-<ul>
-<li><a href="https://raw.githubusercontent.com/YOUR-GITHUB-USER/YOUR-COURSE-REPO/main/ee301/lecture-01.pdf" target="blank">Lecture 1 &ndash; Introduction and path loss (PDF)</a></li>
-<li><a href="https://raw.githubusercontent.com/YOUR-GITHUB-USER/YOUR-COURSE-REPO/main/ee301/lecture-02.pdf" target="blank">Lecture 2 &ndash; Fading and diversity (PDF)</a></li>
-<li><a href="https://raw.githubusercontent.com/YOUR-GITHUB-USER/YOUR-COURSE-REPO/main/ee301/lecture-03.pdf" target="blank">Lecture 3 &ndash; Capacity and resource allocation (PDF)</a></li>
-<li><a href="https://raw.githubusercontent.com/YOUR-GITHUB-USER/YOUR-COURSE-REPO/main/ee301/lecture-04.pdf" target="blank">Lecture 4 &ndash; Multi-user systems (PDF)</a></li>
+<ul class="cards">
+  <li>
+    <p class="card-title"><a href="ee301.html">Wireless Communications (EE301)</a></p>
+    <p class="card-meta">Undergraduate &middot; Spring 2026 &middot; 3 credits</p>
+    <p class="card-meta">How a wireless link works, from path loss and fading to the capacity
+      of a multi-user system.</p>
+  </li>
+  <li>
+    <p class="card-title"><a href="ee502.html">Convex Optimization for Engineers (EE502)</a></p>
+    <p class="card-meta">Graduate &middot; Autumn 2025 &middot; 3 credits</p>
+    <p class="card-meta">Convex sets and functions, duality, and how to recognise and solve the
+      optimization problems that appear in communications.</p>
+  </li>
+  <li>
+    <p class="card-title"><a href="research-methods.html">Research Methods Seminar</a></p>
+    <p class="card-meta">Master and PhD &middot; Every semester &middot; 1 credit</p>
+    <p class="card-meta">Reading a paper critically, writing a technical report, giving a talk,
+      and using Git and LaTeX for your thesis.</p>
+  </li>
 </ul>
-</details>
-
-<details class="materials">
-<summary>Assignments and solutions</summary>
-<ul>
-<li><a href="https://raw.githubusercontent.com/YOUR-GITHUB-USER/YOUR-COURSE-REPO/main/ee301/assignment-01.pdf" target="blank">Assignment 1 (PDF)</a></li>
-<li><a href="https://raw.githubusercontent.com/YOUR-GITHUB-USER/YOUR-COURSE-REPO/main/ee301/assignment-01-solutions.pdf" target="blank">Assignment 1 &ndash; solutions (PDF)</a></li>
-<li><a href="https://raw.githubusercontent.com/YOUR-GITHUB-USER/YOUR-COURSE-REPO/main/ee301/assignment-02.pdf" target="blank">Assignment 2 (PDF)</a></li>
-<li><a href="https://raw.githubusercontent.com/YOUR-GITHUB-USER/YOUR-COURSE-REPO/main/ee301/assignment-02-solutions.pdf" target="blank">Assignment 2 &ndash; solutions (PDF)</a></li>
-</ul>
-</details>
-
-<details class="materials">
-<summary>Reading list and syllabus</summary>
-<ul>
-<li><a href="https://raw.githubusercontent.com/YOUR-GITHUB-USER/YOUR-COURSE-REPO/main/ee301/syllabus.pdf" target="blank">Syllabus and reading list (PDF)</a></li>
-<li><a href="https://raw.githubusercontent.com/YOUR-GITHUB-USER/YOUR-COURSE-REPO/main/ee301/formula-sheet.pdf" target="blank">Formula sheet (PDF)</a></li>
-</ul>
-</details>
-
-<details class="materials">
-<summary>Exams and past papers</summary>
-<ul>
-<li><a href="https://raw.githubusercontent.com/YOUR-GITHUB-USER/YOUR-COURSE-REPO/main/ee301/midterm-2026.pdf" target="blank">Midterm, Spring 2026 (PDF)</a></li>
-<li><a href="https://raw.githubusercontent.com/YOUR-GITHUB-USER/YOUR-COURSE-REPO/main/ee301/final-2026.pdf" target="blank">Final exam, Spring 2026 (PDF)</a></li>
-</ul>
-</details>
 ~~~
 
-== Convex Optimization for Engineers (EE502)
+== Supervision
 
-~~~
-{Course information}
-- *Code*: EE502 \M *Level*: Graduate \M *Semester*: Autumn 2025 \M *Credits*: 3
-- *When*: Wednesday 14:00--16:00, Building B1, Room 405
-
-*What you will learn:* convex sets and functions, duality, and how to recognise and solve the
-optimization problems that appear in communications and signal processing.
-~~~
-
-~~~
-{}{raw}
-<details class="materials">
-<summary>Materials</summary>
-<ul>
-<li><a href="https://raw.githubusercontent.com/YOUR-GITHUB-USER/YOUR-COURSE-REPO/main/ee502/syllabus.pdf" target="blank">Syllabus and reading list (PDF)</a></li>
-<li><a href="https://raw.githubusercontent.com/YOUR-GITHUB-USER/YOUR-COURSE-REPO/main/ee502/lecture-01.pdf" target="blank">Lecture 1 &ndash; Convex sets and functions (PDF)</a></li>
-</ul>
-</details>
-~~~
-
-== Research Methods Seminar
-
-~~~
-{Course information}
-- *Level*: Master and PhD \M *Semester*: Every semester \M *Credits*: 1
-
-*What you will learn:* how to read a paper critically, how to write a technical report, how to
-give a seminar talk, and how to use Git and LaTeX for your thesis.
-~~~
-
-~~~
-{}{raw}
-<details class="materials">
-<summary>Materials</summary>
-<ul>
-<li><a href="https://raw.githubusercontent.com/YOUR-GITHUB-USER/YOUR-COURSE-REPO/main/seminar/seminar-plan.pdf" target="blank">Seminar plan and schedule (PDF)</a></li>
-</ul>
-</details>
-~~~
+I supervise *prethesis*, *thesis* and *internship* projects, and a weekly seminar runs for the
+group. See [joining.html Prethesis and Thesis] for the topics on offer and how to get in touch.
 
 # ---------------------------------------------------------------------------
-# HOW TO EDIT THIS PAGE
+# TEMPLATE -- to add a course:
+#   1. create www/<course>.jemdoc using ee301.jemdoc as the pattern;
+#   2. add its line to www/menu-courses.jemdoc;
+#   3. add a card below;
+#   4. add the course to www/menu.jemdoc if it should appear on the main site too.
 #
-# 1. Replace every occurrence of
-#        YOUR-GITHUB-USER/YOUR-COURSE-REPO
-#    with the user and repository that hosts your course files, e.g.
-#        phuongluuvo/course-materials
-#    Use your editor's "replace all" -- it appears once per file link.
+# A card is one <li> block. Keep class="cards" on the <ul> and the
+# card-title / card-meta classes on the paragraphs -- the stylesheet needs them.
 #
-# 2. Two ways to link a file in another repository:
-#      * the raw file, which downloads or opens directly:
-#            https://raw.githubusercontent.com/USER/REPO/main/FOLDER/file.pdf
-#      * the GitHub page for the file, which shows a preview first:
-#            https://github.com/USER/REPO/blob/main/FOLDER/file.pdf
-#
-# 3. To add a dropdown, copy this block and change the title and the links.
-#    Leave a blank line before and after the ~~~
-#
-# ~~~
-# {}{raw}
-# <details class="materials">
-# <summary>Title of the group</summary>
-# <ul>
-# <li><a href="https://example.com/file.pdf" target="blank">Label of the file (PDF)</a></li>
-# </ul>
-# </details>
-# ~~~
-#
-# 4. To add a whole course, copy an entire == section above. The course
-#    information box is a normal jemdoc info block (~~~ ... ~~~), not HTML.
-#
-# 5. Keep target="blank" on every external link: the test-suite requires it,
-#    and it makes the file open in a new tab instead of replacing your site.
-#
-# 6. Write &amp; for a literal ampersand and &ndash; for a dash inside the HTML
-#    blocks; the stylesheet picks up class="materials" automatically.
+#   <li>
+#     <p class="card-title"><a href="newcourse.html">Course title (CODE)</a></p>
+#     <p class="card-meta">Level &middot; Semester &middot; N credits</p>
+#     <p class="card-meta">One sentence on what the course covers.</p>
+#   </li>
 # ---------------------------------------------------------------------------

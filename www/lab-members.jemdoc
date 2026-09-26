@@ -1,0 +1,79 @@
+# jemdoc: menu{menu-lab.jemdoc}{lab-members.html}, title{Members}, notime
+= Members
+The people in the Edge AI Lab
+
+The lab is led by Assoc. Prof. Phuong Luu Vo. We supervise graduate and undergraduate students
+jointly, so feel free to write to whoever works closest to your interests. See
+[joining.html Prethesis and Thesis] for the projects on offer.
+
+~~~
+{Academic staff}{table}{faculty}
+*Name* | *Position* | *Research area* | *Contact* ||
+Phuong Luu Vo | Associate Professor (lab leader) | Distributed learning, deep reinforcement learning, wireless and mobile networking, IoT | [vtlphuong@hcmiu.edu.vn] ||
+~~~
+
+== Graduate students
+
+PhD and Master students, newest first.
+
+~~~
+{No students listed yet}
+Add one line per student below, then remove this box. Students are listed by the year they
+started.
+~~~
+
+== Undergraduate students
+
+Students working on a prethesis, thesis or internship project with the group.
+
+~~~
+{No students listed yet}
+Add one line per student below, then remove this box.
+~~~
+
+== Alumni
+
+Where former members went after leaving the group.
+
+~~~
+{No alumni listed yet}
+Add one line per former member below, then remove this box.
+~~~
+
+# ---------------------------------------------------------------------------
+# TEMPLATE -- one student is three lines. The "\n" at the end of a line forces a
+# line break; "\M" prints the small separator dot. Copy this under the right
+# heading, or use it to replace the placeholder box above.
+#
+# - *Full Name* \M PhD, since 2026.\n
+#   Research: topic in one sentence.\n
+#   Email: [name@example.edu]
+#
+# Undergraduate entries usually carry the project and its year instead:
+#
+# - *Full Name* \M Undergraduate thesis, 2026.\n
+#   Research: topic in one sentence.
+#
+# Alumni entries say what they did and where they went:
+#
+# - *Full Name* \M Ph.D. 2026, now at Example Company. Thesis on distributed
+#   resource allocation in dense networks.
+#
+# To add a member of staff, copy one row into the table at the top -- keep the
+# DOUBLE pipes at the end of the row:
+#
+# New Person | Lecturer | Research area | [new.person@example.edu] ||
+#
+# The rows below were the site's demo content. They were taken off the page
+# because they describe people who do not exist; keep them only as a reminder of
+# the format.
+#
+# Le Minh Duc | Senior Lecturer | Network economics, energy-efficient communications | [duc.le@example.edu] ||
+# Pham Thu Ha | Lecturer | Signal processing for large antenna arrays, RIS | [ha.pham@example.edu] ||
+# Hoang Quoc Bao | Lecturer | Queueing theory, performance analysis of 5G/6G systems | [bao.hoang@example.edu] ||
+#
+# - *Prof. Example Name* \M Example Institute.\n
+#   Visiting professor during the 2026 spring semester.
+#
+# - *Dr. Example Alumnus* \M Ph.D. 2024, now at Example Company.
+# ---------------------------------------------------------------------------

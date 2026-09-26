@@ -1,23 +1,28 @@
 # ---------------------------------------------------------------------------
 # SHARED NAVIGATION MENU  (www/menu.jemdoc)
 #
-# This ONE file controls the menu on EVERY page.
-#   * A line WITHOUT brackets is a grey section heading (e.g. "Research Group").
+# This ONE file controls the menu on EVERY page of the main site.
+#   * The FIRST line is the site name, and it is the link to the home page.
+#   * A line WITHOUT brackets is a coloured section heading (e.g. "Research").
 #   * A line with brackets is a link:   Visible text [target-file.html]
 #   * Put the text of a long label inside {{double braces}} if you do not want
 #     it to be forced onto one line, e.g.   {{PhD / Master students}} [x.html]
 #   * Menu order = order in this file. Keep it in sync with the pages.
+#
+# The Edge AI Lab and each course have their own sidebar:
+#   www/menu-lab.jemdoc  and  www/menu-courses.jemdoc
+#
+# Careful: jemdoc marks the current entry with a SUFFIX test, so one page name
+# must never be the tail of another. See guide.md §6.4.
 # ---------------------------------------------------------------------------
-Home
- Biography [biography.html]
+Phuong Luu Vo [index.html]
  News [news.html]
-Research Group
- Faculty [faculty.html]
- {{PhD / Master students}} [students.html]
- {{For Students}} [joining.html]
- Gallery [gallery.html]
-Research
- Publications [publications.html]
  Awards & Grants [awards.html]
+Research
+ Edge AI Lab [lab.html]
+ {{Research Interests}} [interests.html]
+ Publications [publications.html]
+ Gallery [gallery.html]
 Teaching
  Courses [courses.html]
+ {{Prethesis and Thesis}} [joining.html]

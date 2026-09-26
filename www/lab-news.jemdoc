@@ -1,0 +1,34 @@
+# jemdoc: menu{menu-lab.jemdoc}{lab-news.html}, notime
+= Lab news
+New members, defended theses, accepted papers, talks and visitors
+
+Announcements about the group. The site owner writes these by hand -- unlike the
+[news.html main News page], nothing here is generated.
+
+== This year
+
+~~~
+{No announcements yet}
+Add the first one below, then rebuild with *python build.py*.
+~~~
+
+== Earlier
+
+# ---------------------------------------------------------------------------
+# TEMPLATE -- one line per announcement, newest first. Dates are written the
+# same way as everywhere else on the site: YYYY-MM-DD when you know the day,
+# YYYY-MM when you only know the month, YYYY when you know neither.
+#
+# == 2027
+#
+# - *2027-03-14* \M Two papers accepted at the International Conference on
+#   Communications. Congratulations to the co-authors.
+# - *2027-01-09* \M Welcome to a new Master student joining the group this term.
+#
+# == 2026
+#
+# - *2026-11-02* \M Invited talk at the Vietnam School of Information Theory.
+#
+# A new year gets a new "== 20XX" block at the TOP. \M prints the small
+# separator dot and is optional.
+# ---------------------------------------------------------------------------

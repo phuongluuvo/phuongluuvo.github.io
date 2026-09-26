@@ -4,14 +4,18 @@
 build.py -- build the website of Assoc. Prof. Phuong Luu Vo.
 
 WHAT IT DOES
-    1. Collects every ``www/*.jemdoc`` file (except the shared ``menu.jemdoc``).
+    1. Collects every ``www/*.jemdoc`` file that is a page: `mysite.conf` and
+       every ``menu*.jemdoc`` are skipped, because a menu is included by the
+       pages that use it rather than built into one of its own.
     2. Copies them plus ``www/mysite.conf`` into a temporary staging folder,
        normalising line endings to LF. (jemdoc is sensitive to Windows CRLF
        line endings, so this step makes the build work the same everywhere.)
     3. Runs ``tools/jemdoc`` on every page, which produces ``*.html``.
     4. Copies the generated HTML plus the static folders
        (``css/``, ``files/``, ``images/``) into the output folder, and writes the
-       ``.nojekyll`` marker that stops GitHub Pages from running Jekyll.
+       ``.nojekyll`` marker that stops GitHub Pages from running Jekyll. The
+       static folders are mirrored, so a file you delete from ``www/`` also
+       disappears from the output.
 
 USAGE
     python build.py                  build the site into ``_site/`` (default)
@@ -64,12 +68,28 @@ def read_text_lf(path: str) -> str:
         return handle.read().replace("\r\n", "\n").replace("\r", "\n")
 
 
+def is_menu_file(name: str) -> bool:
+    """True for a ``www/menu*.jemdoc`` file, e.g. menu.jemdoc or menu-lab.jemdoc.
+
+    Every page includes exactly one menu, and the lab pages use a different one,
+    so the sidebar changes inside the lab without touching the rest of the site.
+    """
+    return name.startswith("menu") and name.endswith(".jemdoc")
+
+
 def find_pages() -> list[str]:
-    """Return the names of all .jemdoc pages, alphabetically."""
+    """Return the names of all .jemdoc pages, alphabetically.
+
+    A menu file is *included* by the pages that use it, so it is not a page
+    itself. There is more than one: www/menu.jemdoc for the main site and
+    www/menu-lab.jemdoc for the Edge AI Lab pages, whose sidebar is different.
+    """
     pages = [
         name
         for name in sorted(os.listdir(SRC))
-        if name.endswith(".jemdoc") and name not in NOT_A_PAGE
+        if name.endswith(".jemdoc")
+        and name not in NOT_A_PAGE
+        and not is_menu_file(name)
     ]
     if not pages:
         sys.exit("error: no .jemdoc pages found in %s" % SRC)
@@ -124,17 +144,51 @@ def stage_sources(staging: str, pages: list[str]) -> None:
             handle.write(text)
 
 
-def copy_assets(outdir: str) -> list[str]:
-    """Copy css/, files/ and images/ from www/ to the output folder."""
-    copied = []
+def copy_assets(outdir: str) -> tuple[list[str], list[str]]:
+    """Mirror css/, files/ and images/ from www/ into the output folder.
+
+    The output is made to *match* the source, not merely added to: a file you
+    delete from ``www/images/`` or ``www/files/`` is deleted from the output as
+    well. Copying alone is not enough -- ``shutil.copytree`` adds and overwrites
+    but never removes, so a picture or a PDF taken out of ``www/`` used to sit in
+    the output folder for ever, and every later build left it there.
+
+    Returns ``(copied, removed)``, both in report form such as "images/old.png".
+    """
+    copied: list[str] = []
+    removed: list[str] = []
+
     for name in ASSET_DIRS:
         source = os.path.join(SRC, name)
-        if not os.path.isdir(source):
-            continue
         target = os.path.join(outdir, name)
+
+        if not os.path.isdir(source):
+            # The whole folder is gone from www/: so is its output copy.
+            if os.path.isdir(target):
+                removed.extend(_list_files(target, name))
+                shutil.rmtree(target)
+            continue
+
+        wanted = set(_list_files(source, ""))
+        if os.path.isdir(target):
+            for relative in _list_files(target, ""):
+                if relative not in wanted:
+                    os.remove(os.path.join(target, relative))
+                    removed.append("%s/%s" % (name, relative.replace(os.sep, "/")))
+
         shutil.copytree(source, target, dirs_exist_ok=True)
         copied.append(name + "/")
-    return copied
+
+    return copied, removed
+
+
+def _list_files(folder: str, prefix: str) -> list[str]:
+    """Every file under *folder*, as paths relative to it."""
+    found = []
+    for root, _dirs, files in os.walk(folder):
+        for entry in files:
+            found.append(os.path.relpath(os.path.join(root, entry), folder))
+    return found
 
 
 def clean(outdir: str, pages: list[str]) -> None:
@@ -187,11 +241,22 @@ def build(outdir: str) -> None:
             os.remove(path)
             stale.append(name)
 
-    assets = copy_assets(outdir)
+    assets, stale_assets = copy_assets(outdir)
+    stale.extend(stale_assets)
 
     # GitHub Pages must not run Jekyll over the output.
     with open(os.path.join(outdir, ".nojekyll"), "w", encoding="utf-8") as handle:
         handle.write("")
+
+    # A file an earlier version of this build wrote into the output root and no
+    # longer produces. `CNAME` went away when the custom domain did; a stale one
+    # left behind in the output folder is confusing, and on a branch deploy it
+    # would still be served.
+    for name in ("CNAME",):
+        path = os.path.join(outdir, name)
+        if not os.path.isfile(os.path.join(ROOT, name)) and os.path.isfile(path):
+            os.remove(path)
+            stale.append(name)
 
     print("Build finished.")
     print("  output folder : %s" % outdir)

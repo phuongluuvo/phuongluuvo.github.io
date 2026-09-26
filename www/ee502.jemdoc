@@ -1,0 +1,50 @@
+# jemdoc: menu{menu-courses.jemdoc}{ee502.html}, title{EE502}, notime
+= Convex Optimization for Engineers (EE502)
+Graduate · 3 credits
+
+~~~
+{Course information}
+- *Code*: EE502 \M *Level*: Graduate \M *Semester*: Autumn 2025 \M *Credits*: 3
+- *When*: Wednesday 14:00--16:00, Building B1, Room 405
+
+*What you will learn:* convex sets and functions, duality, and how to recognise and solve the
+optimization problems that appear in communications and signal processing.
+~~~
+
+== Slides
+
+~~~
+{}{raw}
+<details class="materials" open>
+<summary>Lecture slides</summary>
+<ul>
+<li><a href="https://raw.githubusercontent.com/YOUR-GITHUB-USER/YOUR-COURSE-REPO/main/ee502/lecture-01.pdf" target="blank">Lecture 1 &ndash; Convex sets and functions (PDF)</a></li>
+</ul>
+</details>
+~~~
+
+== Textbook
+
+~~~
+{Main textbook}
+Add the title, the authors, the edition, the publisher and the year here, and link to the
+publisher's page or to the library record. Nothing is invented on this page: until you fill this
+in, the section stays a reminder.
+~~~
+
+== Reading list
+
+~~~
+{}{raw}
+<details class="materials">
+<summary>Syllabus and reading list</summary>
+<ul>
+<li><a href="https://raw.githubusercontent.com/YOUR-GITHUB-USER/YOUR-COURSE-REPO/main/ee502/syllabus.pdf" target="blank">Syllabus and reading list (PDF)</a></li>
+</ul>
+</details>
+~~~
+
+# ---------------------------------------------------------------------------
+# HOW TO EDIT THIS PAGE -- see the notes at the bottom of www/ee301.jemdoc; they
+# apply to every course page.
+# ---------------------------------------------------------------------------

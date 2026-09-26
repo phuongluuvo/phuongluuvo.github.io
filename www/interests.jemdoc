@@ -1,0 +1,45 @@
+# jemdoc: menu{menu.jemdoc}{interests.html}, notime
+= Research Interests
+The questions the group keeps coming back to
+
+My work combines optimization, network economics and machine learning. The common thread is that
+a network is a shared resource, so almost every interesting question is an optimization question
+-- and increasingly one that has to be answered from data rather than from a closed-form
+solution.
+
+== What we work on
+
+- *Distributed computing and distributed learning.* Splitting a computation across nodes that
+  cannot share their raw data, and paying for whatever has to be communicated.
+- *Machine learning and deep reinforcement learning for networks.* Learning control policies
+  where a model of the system is unavailable or too expensive to keep accurate.
+- *Wireless and mobile networking, and the Internet of Things.* Resource allocation in
+  interference-limited, energy-limited, and intermittently connected systems.
+- *Semantic communication and edge intelligence.* Sending what the receiver needs rather than
+  every bit, and putting the inference where the data is.
+- *Content caching, adaptive bit-rate streaming, and multipath congestion control.* Where to
+  place content and how to deliver it when several paths are available.
+- *Network optimization, game theory, and network utility maximization.* The shared toolkit
+  behind all of the above.
+
+== Where this shows up
+
+- [publications.html Publications] -- the papers that came out of this line of work.
+- [lab.html Edge AI Lab] -- the group, its projects and its news.
+- [joining.html Prethesis and Thesis] -- the projects on offer, and how to apply.
+
+# ---------------------------------------------------------------------------
+# TEMPLATE -- www/layout.md asks for these interests to be grouped into
+# "Current" and "Past". The list above is what could be verified from the ORCID
+# record and the HCMIU faculty page; deciding which of those lines is current
+# and which is finished is a judgement only the site owner can make. When you
+# have that split, replace the "What we work on" section with:
+#
+# == Current
+#
+# - ...
+#
+# == Past
+#
+# - ...
+# ---------------------------------------------------------------------------
