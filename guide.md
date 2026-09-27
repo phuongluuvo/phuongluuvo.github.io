@@ -542,7 +542,7 @@ Lines starting with `#` are comments.
 
 | Section | Controls |
 | --- | --- |
-| `[firstbit]` | Everything from `<!DOCTYPE html>` to the GoatCounter `<script>` — the whole `<head>`. |
+| `[firstbit]` | The whole `<head>`: `<!DOCTYPE html>`, the metadata, the Literata font link, the MathJax loader, the counter script. |
 | `[defaultcss]` | The stylesheet link (`css/site.css`). |
 | `[doctitle]` | The `<h1>` markup (currently a link back to the home page). |
 | `[windowtitle]` | The browser-tab title, `Page name · Phuong Luu Vo`. |
@@ -569,10 +569,15 @@ The result is a footer like `Last updated: 2026-09-27 · 1,234 visits`.
 
 Until step 2 is done the script simply fails to load: the pages work and no count is shown.
 Nothing about counting is ever allowed to break a page — if the fetch fails, because of an
-adblocker or no network, the span stays empty and the footer just shows the date.
+adblocker or no network, the span stays empty and the footer just shows the date. A footer that
+is still empty once all three steps are done usually means nobody has reached the site yet: **a
+site that 404s counts nothing** (see [§11](#11-deployment)).
 
-Two things worth knowing:
+Three things worth knowing:
 
+* **A brand-new account shows `0 visits`.** GoatCounter answers `404` for a total it has no data
+  for yet, and the page reports that as zero rather than leaving the footer blank, so the counter
+  can be seen working before the first visitor arrives. Every other failure stays silent.
 * **The number is cached for up to four hours**, so it refreshes by itself but not instantly.
   That is GoatCounter's cache, not a bug in the page.
 * **Your own visits are counted too.** GoatCounter's *Skip my own pageviews* setting, or the
@@ -1030,6 +1035,34 @@ block whose language is `raw`:
 ~~~
 ```
 
+**Two lists side by side — English and Vietnamese, say.** jemdoc has no column syntax of its own,
+so this is a `columns` div with one `div` per column. The stylesheet fits as many columns as the
+window allows and folds them into one on a phone, so the same markup works everywhere:
+
+```
+~~~
+{}{raw}
+<div class="columns">
+<div>
+<h3>English</h3>
+<ul>
+<li><a href="%%IT545%%/lec1.pdf" target="blank">Lecture 1</a></li>
+</ul>
+</div>
+<div>
+<h3>Tiếng Việt</h3>
+<ul>
+<li><a href="%%IT545-VI%%/lec1.pdf" target="blank">Bài 1</a></li>
+</ul>
+</div>
+</div>
+~~~
+```
+
+Two languages can be one repository on two branches, which is what two `[materials]` lines are
+for — `%%IT545%%` and `%%IT545-VI%%`. `www/teaching/it545.jemdoc` does exactly this and is the
+working example to copy.
+
 Rules that keep it working:
 
 * `target="blank"` is **required** on every external link. The test-suite checks it, and it
@@ -1136,9 +1169,35 @@ black text, `#527BBD` for headings and `#224B8D` for links, with the sidebar, th
 and the code blocks on jemdoc's grey `#F6F6F6`. Changing the first five re-skins the site; the
 rest are derived and rarely need touching.
 
-The fonts are Georgia throughout (`--font-body` and `--font-head`), which is jemdoc's default
-and the reason the site reads like Duy's. The type sizes follow jemdoc too: the page title is
-`1.65em`, section headings `1.25em`, body text `16px`.
+The fonts come from **Literata**, loaded from Google Fonts in the `[firstbit]` section of
+`www/mysite.conf`, with `Georgia` and then `Times New Roman` behind it as fallbacks. That is
+`--font-body` and `--font-head` at the top of `www/css/site.css`.
+
+Georgia is jemdoc's own font — and Duy H. N. Nguyen's — but **it has no Vietnamese glyphs**. A
+Vietnamese word therefore came out in two typefaces on one line: the browser rendered the plain
+letters in Georgia and fetched a second font, per character, for `ệ`, `ậ` and the rest of
+Latin Extended Additional. Literata covers Latin and Vietnamese in one typeface and sits close
+to Georgia, so the site still reads the way it did. The type sizes follow jemdoc as before: the
+page title is `1.65em`, section headings `1.25em`, body text `16px`.
+
+**To change the font**, exactly two places have to agree:
+
+1. the family name in the `fonts.googleapis.com` stylesheet link in `[firstbit]` of
+   `www/mysite.conf`;
+2. `--font-body` and `--font-head` in `www/css/site.css`.
+
+Keep the local serifs after it in both tokens. If the Google Fonts request is blocked or offline
+the page silently falls back to them, and Vietnamese then comes from Times New Roman, which does
+have those glyphs. `Noto Serif`, `Lora`, `Literata`, `Source Serif 4` and `Merriweather` all
+carry Vietnamese; change the family in those two places and rebuild. Two details in the link are
+not decoration: it asks for each weight and style separately, and the ampersand in it is written
+as `&amp;`, because a bare `&` is invalid HTML and `test_no_bare_ampersands` rejects it.
+
+> Google Fonts is a request to a third party, which sits a little oddly beside the
+> privacy-friendly counter in [§6.7](#67-visitor-counting). To drop it, download the two or three
+> `.woff2` files you need, put them in `www/css/fonts/` — the build copies `www/css/` as it is —
+> replace the stylesheet link with `@font-face` rules of your own, and keep the OFL licence file
+> beside them.
 
 Three more jemdoc details are matched on purpose, because they are what the page is built on:
 
@@ -1378,9 +1437,13 @@ Watch runs under the **Actions** tab; a run can also be started by hand with **R
 Repository → **Settings** → **Pages** → **Build and deployment** → **Source** →
 **GitHub Actions**.
 
-> **This is not optional.** The generated HTML is no longer committed, so if the Pages source
-> is still set to "Deploy from a branch" the live site will stop updating. Set the source to
-> **GitHub Actions** once, then push.
+> **This is not optional.** The generated HTML is not committed, so if the Pages source is still
+> set to "Deploy from a branch", GitHub looks for `index.html` in the repository root, finds only
+> sources, and serves **404 for every page** — "There isn't a GitHub Pages site here" or a plain
+> "does not contain the requested file", including for the home page. The repository looks
+> correct and the Actions run is green, which is what makes it confusing: the build and the
+> deployment both succeed, there is simply no HTML in the branch for *branch* mode to publish.
+> Set the source to **GitHub Actions** once, then push.
 
 ### Deploying from a branch instead
 

@@ -45,8 +45,13 @@
 
   --page-width:  1000px;    /* kept for reference; the layout is full width  */
   --menu-width:  175px;     /* width of the sidebar column                  */
-  --font-body:   Georgia, "Times New Roman", Times, serif;
-  --font-head:   Georgia, "Times New Roman", Times, serif;
+  /* Literata is loaded from Google Fonts in [firstbit] of www/mysite.conf, and
+     comes first because Georgia, jemdoc's own font, has no Vietnamese glyphs:
+     "Tiếng Việt" used to render in two different typefaces on one line. The
+     local serifs stay in the stack, so the site survives the font not loading;
+     Vietnamese then comes from Times New Roman, which does have those glyphs. */
+  --font-body:   Literata, Georgia, "Times New Roman", Times, serif;
+  --font-head:   Literata, Georgia, "Times New Roman", Times, serif;
   --font-mono:   ui-monospace, SFMono-Regular, Menlo, Consolas,
                  "Liberation Mono", monospace;
 }
@@ -609,6 +614,26 @@ details.year > ul.news { margin-bottom: 12px; }
 .hero-bio { margin: 16px 0 0; font-size: 0.95rem; color: var(--muted); }
 
 /* ----------------------------------------------------------------- cards -- */
+/* Two or more blocks side by side, e.g. the English and Vietnamese slides of a
+   course. Any number of columns; they fold into one on a narrow window.
+   Markup:
+     <div class="columns">
+       <div><h3>English</h3><ul>..</ul></div>
+       <div><h3>Tiếng Việt</h3><ul>..</ul></div>
+     </div> */
+
+.columns {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 0 26px;
+  margin: 0 0 1.6em;
+}
+
+/* A column heading sits tight to the top of its column, and the list does not
+   leave a gap before the next column begins. */
+.columns > div > :first-child { margin-top: 0; }
+.columns > div > ul { margin-bottom: 0.6em; }
+
 /* Flat panels for courses, lab projects, collaborators. Markup:
      <ul class="cards">
        <li><p class="card-title">..</p><p class="card-meta">..</p></li>
