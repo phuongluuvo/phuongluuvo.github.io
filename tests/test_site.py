@@ -585,6 +585,39 @@ def test_every_page_has_a_title_and_the_stylesheet(site, page_names):
 # MathJax
 # --------------------------------------------------------------------------- #
 
+def test_the_visitor_counter_is_wired_into_every_page(site, page_names):
+    """GoatCounter needs three things on every page: the tracking script, the
+    span beside the footer date, and the small fetch that fills it in.
+
+    All three are written in `www/mysite.conf`, and a jemdoc section ends at the
+    first BLANK line -- one stray blank line silently drops everything after it,
+    with no build error and no broken link to notice. That happened twice while
+    this was being written, which is why it is checked here.
+    """
+    for name in page_names:
+        text = text_of(site, name)
+        assert 'data-goatcounter="https://' in text, (
+            "%s: the tracking script is missing from the <head>" % name
+        )
+        assert "gc.zgo.at/count.js" in text, "%s: count.js is not loaded" % name
+        assert 'id="visitor-count"' in text, (
+            "%s: nothing for the counter to be written into" % name
+        )
+        assert "/counter/TOTAL.json" in text, (
+            "%s: the count is never fetched" % name
+        )
+
+        # The same account code has to be in both places, or the tracking and
+        # the displayed number come from different sites. Only the two real
+        # URLs count: the comment mentions goatcounter.com as well.
+        codes = set(re.findall(r'data-goatcounter="https://([A-Za-z0-9-]+)\.', text))
+        codes |= set(re.findall(r"https://([A-Za-z0-9-]+)\.goatcounter\.com/counter/", text))
+        assert len(codes) == 1, (
+            "%s: %d different GoatCounter codes in use (%s)"
+            % (name, len(codes), ", ".join(sorted(codes)))
+        )
+
+
 def test_mathjax_is_loaded_on_every_page(site, page_names):
     for name in page_names:
         text = text_of(site, name)

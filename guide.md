@@ -542,11 +542,50 @@ Lines starting with `#` are comments.
 
 | Section | Controls |
 | --- | --- |
-| `[firstbit]` | Everything from `<!DOCTYPE html>` to the MathJax `<script>` — the whole `<head>`. |
+| `[firstbit]` | Everything from `<!DOCTYPE html>` to the GoatCounter `<script>` — the whole `<head>`. |
 | `[defaultcss]` | The stylesheet link (`css/site.css`). |
 | `[doctitle]` | The `<h1>` markup (currently a link back to the home page). |
 | `[windowtitle]` | The browser-tab title, `Page name · Phuong Luu Vo`. |
-| `[lastupdated]` | The footer line. |
+| `[lastupdated]` | The footer line, and the visitor count that is written into it. |
+
+### 6.7 Visitor counting
+
+GitHub Pages records nothing you can read, so the site counts visits with **GoatCounter**
+(<https://www.goatcounter.com>) — free for a site like this, no cookies, no personal data, so no
+consent banner is needed. Both parts live in `www/mysite.conf`:
+
+* `[firstbit]` loads `count.js`, which records each pageview.
+* `[lastupdated]` has a `<span id="visitor-count">` beside the date, and a few lines of
+  JavaScript that fetch the **site total** and write it in. GoatCounter calls that total `TOTAL`.
+
+The result is a footer like `Last updated: 2026-09-27 · 1,234 visits`.
+
+**To switch it on, three things:**
+
+1. Make an account and note your **site code** — the part before `.goatcounter.com`.
+2. Replace `YOURCODE` in **both** places in `www/mysite.conf`, then rebuild.
+3. In GoatCounter, turn **on** "Allow adding visitor counts on your website". It is off by
+   default, and while it is off the footer count stays empty even though visits are recorded.
+
+Until step 2 is done the script simply fails to load: the pages work and no count is shown.
+Nothing about counting is ever allowed to break a page — if the fetch fails, because of an
+adblocker or no network, the span stays empty and the footer just shows the date.
+
+Two things worth knowing:
+
+* **The number is cached for up to four hours**, so it refreshes by itself but not instantly.
+  That is GoatCounter's cache, not a bug in the page.
+* **Your own visits are counted too.** GoatCounter's *Skip my own pageviews* setting, or the
+  `allow_local` option, is how you keep your own browsing out of the figures.
+
+Everything is site-wide: the three lines that make it work are in the one conf file, so there is
+nothing per page and nothing to remember when you add a page.
+
+> **Careful when editing `[firstbit]` or `[lastupdated]`.** A section ends at the first blank
+> line, and one stray blank line silently drops everything after it — the counter, or the whole
+> `</head>`. An HTML comment must also contain no double hyphen (`--`), which makes the page
+> invalid. `test_the_visitor_counter_is_wired_into_every_page` checks that the three pieces
+> reached all 13 pages.
 
 ---
 
