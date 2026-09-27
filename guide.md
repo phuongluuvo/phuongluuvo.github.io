@@ -550,38 +550,33 @@ Lines starting with `#` are comments.
 
 ### 6.7 Visitor counting
 
-GitHub Pages records nothing you can read, so the site counts visits with **GoatCounter**
-(<https://www.goatcounter.com>) — free for a site like this, no cookies, no personal data, so no
-consent banner is needed. Both parts live in `www/mysite.conf`:
+GitHub Pages records nothing you can read, so the site counts visits with **Busuanzi**
+(<https://ibruce.info>) — a free public counter with **no account, no signup, and no setting to
+switch on**. That last part is why it is here: the counters that came before it would show
+nothing at all until an account existed and a dashboard option had been turned on, which is a
+lot of ceremony for one number in the footer. Both parts live in `www/mysite.conf`:
 
-* `[firstbit]` loads `count.js`, which records each pageview.
-* `[lastupdated]` has a `<span id="visitor-count">` beside the date, and a few lines of
-  JavaScript that fetch the **site total** and write it in. GoatCounter calls that total `TOTAL`.
+* `[firstbit]` loads `busuanzi.pure.mini.js`.
+* `[lastupdated]` has two hidden spans beside the date, and Busuanzi fills them in and reveals
+them itself.
 
-The result is a footer like `Last updated: 2026-09-27 · 1,234 visits`.
+The result is a footer like `Last updated: 2026-09-27 · 1,234 visits · 567 visitors`.
 
-**To switch it on, three things:**
-
-1. Make an account and note your **site code** — the part before `.goatcounter.com`.
-2. Replace `YOURCODE` in **both** places in `www/mysite.conf`, then rebuild.
-3. In GoatCounter, turn **on** "Allow adding visitor counts on your website". It is off by
-   default, and while it is off the footer count stays empty even though visits are recorded.
-
-Until step 2 is done the script simply fails to load: the pages work and no count is shown.
-Nothing about counting is ever allowed to break a page — if the fetch fails, because of an
-adblocker or no network, the span stays empty and the footer just shows the date. A footer that
-is still empty once all three steps are done usually means nobody has reached the site yet: **a
-site that 404s counts nothing** (see [§11](#11-deployment)).
+**There is nothing to set up.** No code to replace, no option to turn on: it starts counting the
+first time a page is served from the site's real address.
 
 Three things worth knowing:
 
-* **A brand-new account shows `0 visits`.** GoatCounter answers `404` for a total it has no data
-  for yet, and the page reports that as zero rather than leaving the footer blank, so the counter
-  can be seen working before the first visitor arrives. Every other failure stays silent.
-* **The number is cached for up to four hours**, so it refreshes by itself but not instantly.
-  That is GoatCounter's cache, not a bug in the page.
-* **Your own visits are counted too.** GoatCounter's *Skip my own pageviews* setting, or the
-  `allow_local` option, is how you keep your own browsing out of the figures.
+* **The figures are the whole website's, not one page's** — which is what the footer shows.
+  Busuanzi counts per website, so a copy opened from `localhost` or from a file is a separate,
+  empty pile and says nothing about the real figures.
+* **The service can be slow, and it can be blocked.** It is one free host, and an unreachable
+  counter is a normal thing rather than a fault. Both cases look the same in the footer: the
+  spans stay hidden and the date is left bare, because Busuanzi hides them again if it has no
+  number. A visitor can never see an error, or an empty gap, because of the counter.
+* **It is a third party**, and it sees the address of each page that is viewed. It sets no
+  cookies. If that is not acceptable, delete the two pieces and the footer shows the date and
+  nothing else — no page depends on the counter, and nothing else has to change.
 
 Everything is site-wide: the three lines that make it work are in the one conf file, so there is
 nothing per page and nothing to remember when you add a page.
@@ -1193,8 +1188,8 @@ carry Vietnamese; change the family in those two places and rebuild. Two details
 not decoration: it asks for each weight and style separately, and the ampersand in it is written
 as `&amp;`, because a bare `&` is invalid HTML and `test_no_bare_ampersands` rejects it.
 
-> Google Fonts is a request to a third party, which sits a little oddly beside the
-> privacy-friendly counter in [§6.7](#67-visitor-counting). To drop it, download the two or three
+> Google Fonts is a request to a third party, and a second one on every page beside the counter
+> in [§6.7](#67-visitor-counting). To drop it, download the two or three
 > `.woff2` files you need, put them in `www/css/fonts/` — the build copies `www/css/` as it is —
 > replace the stylesheet link with `@font-face` rules of your own, and keep the OFL licence file
 > beside them.

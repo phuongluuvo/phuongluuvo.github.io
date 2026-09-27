@@ -586,35 +586,43 @@ def test_every_page_has_a_title_and_the_stylesheet(site, page_names):
 # --------------------------------------------------------------------------- #
 
 def test_the_visitor_counter_is_wired_into_every_page(site, page_names):
-    """GoatCounter needs three things on every page: the tracking script, the
-    span beside the footer date, and the small fetch that fills it in.
+    """Busuanzi needs two things on every page: the script that asks it for the
+    site totals, and the two spans beside the footer date that it fills in.
 
-    All three are written in `www/mysite.conf`, and a jemdoc section ends at the
+    Both are written in `www/mysite.conf`, and a jemdoc section ends at the
     first BLANK line -- one stray blank line silently drops everything after it,
-    with no build error and no broken link to notice. That happened twice while
-    this was being written, which is why it is checked here.
+    with no build error and no broken link to notice. That happened while this
+    was being written, which is why it is checked here. The same goes for a
+    double hyphen in the HTML comment, which makes the page invalid.
+
+    This counter was chosen for needing no account and no setting to switch on,
+    so a placeholder left in the page would defeat the point of it.
     """
     for name in page_names:
         text = text_of(site, name)
-        assert 'data-goatcounter="https://' in text, (
-            "%s: the tracking script is missing from the <head>" % name
+        assert "busuanzi.pure.mini.js" in text, (
+            "%s: the counter script is missing from the <head>" % name
         )
-        assert "gc.zgo.at/count.js" in text, "%s: count.js is not loaded" % name
-        assert 'id="visitor-count"' in text, (
-            "%s: nothing for the counter to be written into" % name
+        assert "busuanzi.ibruce.info" in text, (
+            "%s: the counter script is not fetched from busuanzi" % name
         )
-        assert "/counter/TOTAL.json" in text, (
-            "%s: the count is never fetched" % name
-        )
+        for kind in ("site_pv", "site_uv"):
+            assert 'id="busuanzi_value_%s"' % kind in text, (
+                "%s: nothing for the %s total to be written into" % (name, kind)
+            )
+            # Hidden until Busuanzi has a number, so a service that is blocked or
+            # down leaves the footer as the bare date rather than an empty gap.
+            assert 'id="busuanzi_container_%s" style="display:none"' % kind in text, (
+                "%s: the %s counter is not hidden until it has a value" % (name, kind)
+            )
 
-        # The same account code has to be in both places, or the tracking and
-        # the displayed number come from different sites. Only the two real
-        # URLs count: the comment mentions goatcounter.com as well.
-        codes = set(re.findall(r'data-goatcounter="https://([A-Za-z0-9-]+)\.', text))
-        codes |= set(re.findall(r"https://([A-Za-z0-9-]+)\.goatcounter\.com/counter/", text))
-        assert len(codes) == 1, (
-            "%s: %d different GoatCounter codes in use (%s)"
-            % (name, len(codes), ", ".join(sorted(codes)))
+        # Nothing may still be wired to the account-based counter this replaced,
+        # and no placeholder may be left behind: this one needs no setup at all.
+        assert "goatcounter" not in text.lower(), (
+            "%s: still wired to GoatCounter" % name
+        )
+        assert "YOURCODE" not in text, (
+            "%s: a placeholder is still in the page" % name
         )
 
 
