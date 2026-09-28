@@ -1,0 +1,30 @@
+# jemdoc: menu{menu.jemdoc}{algorithm-optimization.html}, title{Algorithm Optimization}, notime
+
+= Algorithm Optimization
+
+Level: Graduate
+
+*What you will learn:*
+
+- The theoretical foundations of linear programming and convex optimization.
+- How these techniques apply to logistics, economics, and engineering.
+- First-order and second-order algorithms for solving optimization problems.
+- Practical methods including gradient descent, stochastic gradient descent, proximal gradient descent, Newton methods, and accelerated gradient descent.
+
+== Slides
+
+~~~
+{}{raw}
+<ul>
+<li><a href="%%ALGORITHM-OPTIMIZATION%%/lec1.pdf" download>Lecture 1 &ndash; Linear Programming and ILP</a></li>
+<li><a href="%%ALGORITHM-OPTIMIZATION%%/lec2.pdf" download>Lecture 2 &ndash; Convex Sets and Convex Functions</a></li>
+<li><a href="%%ALGORITHM-OPTIMIZATION%%/lec3.pdf" download>Lecture 3 &ndash; Convex Problems</a></li>
+<li><a href="%%ALGORITHM-OPTIMIZATION%%/lec4.pdf" download>Lecture 4 &ndash; Regression</a></li>
+<li><a href="%%ALGORITHM-OPTIMIZATION%%/lec5.pdf" download>Lecture 5 &ndash; First-order Algorithms</a></li>
+<li><a href="%%ALGORITHM-OPTIMIZATION%%/lec6.pdf" download>Lecture 6 &ndash; Duality</a></li>
+<li><a href="%%ALGORITHM-OPTIMIZATION%%/lec7.pdf" download>Lecture 7 &ndash; Duality Decomposition</a></li>
+<li><a href="%%ALGORITHM-OPTIMIZATION%%/lec8.pdf" download>Lecture 8 &ndash; Robust Optimization</a></li>
+<li><a href="%%ALGORITHM-OPTIMIZATION%%/lec9.pdf" download>Lecture 9 &ndash; Distributed Learning</a></li>
+<li><a href="%%ALGORITHM-OPTIMIZATION%%/lec10.pdf" download>Lecture 10 &ndash; Second-order methods</a></li>
+</ul>
+~~~

@@ -67,12 +67,13 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Refresh the generated pages from ORCID
-        # Best effort. The generated www/publications.jemdoc and www/news.jemdoc
-        # are committed, so if ORCID or Crossref is unreachable -- or answers
-        # only partially -- the committed copies are used and the deployment
-        # still goes ahead.
-        run: python tools/update_site.py || echo "::warning::Could not refresh the generated pages; using the committed copies."
+      - name: Refresh the generated Publications page from ORCID
+        # Best effort. The generated www/research/publications.jemdoc is
+        # committed, so if ORCID or Crossref is unreachable -- or answers only
+        # partially -- the committed copy is used and the deployment still goes
+        # ahead. Nothing else is generated: the news on the Home page is
+        # hand-written.
+        run: python tools/update_site.py || echo "::warning::Could not refresh the generated Publications page; using the committed copy."
 
       - name: Generate the HTML from the .jemdoc sources
         run: python build.py --out _site

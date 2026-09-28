@@ -57,7 +57,7 @@ OUTPUT_DIR = os.path.join(ROOT, "_site")
 NOT_A_PAGE = {"menu.jemdoc", CONF}
 
 #: Folders in www/ that are copied verbatim to the output folder.
-ASSET_DIRS = ("css", "files", "images")
+ASSET_DIRS = ("css", "files", "images", "pdf")
 
 #: Appears in the <head> of every page this build writes (see the banner in
 #: www/mysite.conf). Used to recognise -- and only then delete -- stale output
@@ -65,15 +65,14 @@ ASSET_DIRS = ("css", "files", "images")
 GENERATED_MARKER = "GENERATED FILE"
 
 #: A page writes %%NAME%% where it wants the address that NAME stands for in the
-#: [materials] section of www/mysite.conf, e.g. %%IT545%%/lec1.pdf. That is how a
-#: course keeps its lecture notes in a repository of its own without the address
-#: appearing anywhere in the page.
+#: [materials] section of www/mysite.conf, e.g. %%IT545%%/lec1.pdf. That keeps the
+#: address in one place: moving the files never touches a page.
 MATERIALS_TOKEN = re.compile(r"%%([A-Za-z0-9_-]+)%%")
 MATERIALS_SECTION = "[materials]"
 
 #: Folders inside www/ that are copied to the output rather than searched for
 #: pages, so a .jemdoc file dropped in one of them is not built.
-ASSET_DIRS: tuple[str, ...] = ("css", "files", "images")
+ASSET_DIRS: tuple[str, ...] = ("css", "files", "images", "pdf")
 
 
 # --------------------------------------------------------------------------- #

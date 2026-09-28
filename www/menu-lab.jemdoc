@@ -8,16 +8,19 @@
 #   * a line WITHOUT brackets is a coloured section heading;
 #   * a line with brackets is a link:  Visible text [target-file.html]
 #
-# "Main site" is the way back. The page heading at the top of every page also
-# links home, so a visitor is never stranded.
+# The first line is the site name and links to the main site, exactly as in
+# www/menu.jemdoc, so the two sidebars are built the same way. "Home" is the
+# main site's home page too, and "Edge AI Lab" is the lab's own. The page
+# heading at the top of every page also links home, so a visitor is never
+# stranded.
 #
 # Careful: jemdoc marks the current entry with a SUFFIX test, so one page name
 # must never be the tail of another -- that is why the lab's news page is
-# lab-news.html and not news.html. See guide.md §6.4.
+# lab-news.html. See guide.md §6.4.
 # ---------------------------------------------------------------------------
-Phuong Luu Vo [index.html]
+Home [index.html]
 Edge AI Lab
- Home [lab.html]
+ Overview [lab.html]
  Members [lab-members.html]
  Projects [lab-projects.html]
  News [lab-news.html]

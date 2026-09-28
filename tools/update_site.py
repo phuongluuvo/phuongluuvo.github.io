@@ -1,34 +1,35 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-update_site.py -- regenerate the two generated pages from their sources.
+update_site.py -- regenerate the publications page from its source.
 
 WHAT IT DOES
     1. Reads the list of works from the public ORCID API of *one* ORCID iD.
     2. Optionally enriches every work that has a DOI with the authoritative
        metadata from Crossref (full author list, journal, volume, issue, pages,
-       month). This is what makes the page complete rather than "title + year".
+       and the publication date, which is taken from the DOI in preference to
+       ORCID). This is what makes the page complete rather than "title + year".
     3. Drops arXiv/preprint duplicates of a work that is already published.
     4. Merges anything pasted into ``www/publications-extra.bib`` -- the place to
        put a paper that ORCID does not have. Duplicates are skipped.
-    5. Writes ``www/publications.jemdoc``: one collapsible section per year,
-       newest first, each entry ending in a DOI link.
-    6. Writes ``www/news.jemdoc``: every publication becomes an announcement, and
-       anything typed into ``www/data/news-extra.txt`` is added on top. The two most
-       recent years are shown in full, older years are collapsed.
-    7. Refreshes the "Latest news" block of the Home page, but only when the
-       GENERATED markers are present in ``www/index.jemdoc``.
+    5. Writes ``www/research/publications.jemdoc``: one section per kind of work
+       (journal articles, conference papers, book chapters), newest first inside
+       each, every entry led by its date and ending in a DOI link.
+
+That is the only file it writes. The News list on the Home page is hand-written
+-- one ``- MM/YYYY: text`` bullet per announcement in ``www/home/index.jemdoc``
+-- so nothing here generates it or keeps it in step. See guide.md section 9.1.
 
 Nothing is written when the result would be worse than what is already there:
 see MIN_KEEP_RATIO.
 
-The generated files are committed, so the site still builds with no network.
-Run this script when you want to refresh them.
+The generated page is committed, so the site still builds with no network.
+Run this script when you publish something.
 
 USAGE
     python tools/update_site.py                  # ORCID + Crossref (normal)
     python tools/update_site.py --no-crossref    # ORCID only, fast
-    python tools/update_site.py --offline        # only the local extra files
+    python tools/update_site.py --offline        # only the local extra file
     python tools/update_site.py --dry-run        # print, write nothing
     python tools/update_site.py --force          # write even a much shorter list
 
@@ -96,6 +97,19 @@ TYPE_LABELS = {
 
 #: Types that are never treated as "published" when looking for duplicates.
 PREPRINT_TYPES = {"other", "preprint"}
+
+#: The page is one section per kind of work, in this order. The split follows
+#: ORCID's own work type, so an entry lands in the right section on its own and
+#: nothing has to be kept in step by hand.
+#: A group with nothing in it is left out of the page, and a type ORCID adds
+#: later that no group names still reaches the page -- in the last group, rather
+#: than quietly vanishing from it.
+GROUPS = (
+    ("Journal articles", ("journal-article",)),
+    ("Conference papers", ("conference-paper",)),
+    ("Book chapters", ("book-chapter",)),
+    ("Other work", ("preprint", "other", "book", "report", "dissertation")),
+)
 
 #: The name highlighted in the author list on the page.
 OWN_SURNAMES = {"vo"}
@@ -188,7 +202,7 @@ def _int(value):
 # --------------------------------------------------------------------------- #
 
 def enrich_from_crossref(record: dict) -> None:
-    """Fill in authors, venue, volume, issue, pages and month from Crossref."""
+    """Fill in authors, venue, volume, issue, pages and the date from Crossref."""
     if not record["doi"]:
         return
     payload = get_json(CROSSREF_API % urllib.parse.quote(record["doi"]))
@@ -217,26 +231,30 @@ def enrich_from_crossref(record: dict) -> None:
     record["issue"] = (message.get("issue") or "").strip()
     record["page"] = (message.get("page") or "").strip()
 
-    # ORCID's year is authoritative for this record. Only fill in the month and
-    # day, and only from a Crossref date that agrees on the year, so that a
-    # "first published online" date can never move a paper to another year.
-    candidates = []
+    # The DOI decides the date, and the MOST PRECISE date wins. A Springer book
+    # chapter shows why: its `published-print` date is the book's year -- often
+    # the year after the chapter appeared -- and carries no month, while
+    # `published-online` and `issued` hold the real day. Reading print first
+    # showed such a chapter as "(2027)"; reading the most precise date shows
+    # "(07/2026)". A tie goes to the earlier key, so print is preferred when it
+    # is just as precise as the alternatives.
+    #
+    # ORCID used to decide instead, and the month was only taken from Crossref
+    # when the two agreed on the year -- so a wrong ORCID year stayed wrong and
+    # the month was thrown away with it. ORCID's date is now only the fallback:
+    # for a record with no DOI, one Crossref does not have, or one where Crossref
+    # carries no date at all.
+    best = None
     for key in ("published-print", "published-online", "issued", "published"):
         parts = ((message.get(key) or {}).get("date-parts") or [[]])[0]
-        if parts and parts[0]:
-            candidates.append(parts)
-    if candidates:
-        if record["year"] is None:
-            record["year"] = candidates[0][0]
-        for parts in candidates:
-            if parts[0] != record["year"]:
-                continue
-            if record["month"] is None and len(parts) > 1:
-                record["month"] = parts[1]
-            if record["day"] is None and len(parts) > 2:
-                record["day"] = parts[2]
-            if record["month"] is not None:
-                break
+        if not parts or not parts[0]:
+            continue
+        if best is None or len(parts) > len(best):
+            best = parts
+    if best is not None:
+        record["year"] = best[0]
+        record["month"] = best[1] if len(best) > 1 else None
+        record["day"] = best[2] if len(best) > 2 else None
 
     record["enriched"] = True
 
@@ -301,23 +319,33 @@ def drop_preprint_duplicates(records: list[dict]) -> tuple[list[dict], int]:
     return kept, dropped
 
 
-def format_date(record: dict) -> str:
-    """'2026-02' when the month is known, otherwise '2026'.
+def date_label(record: dict) -> str:
+    """'(06/2026)', or '(2027)' when only the year is known.
 
-    This is the precise form shown on the page itself, in the metadata line of a
-    publication. The news feed uses the compact ``short_date`` stamp instead.
+    The date leads every entry on the page. It is written the same way as the
+    date of a news line on the Home page, so a date reads the same wherever it
+    appears on the site.
     """
     year = record.get("year")
     if not year:
         return ""
     month = record.get("month")
     if not month or not 1 <= int(month) <= 12:
-        return str(year)
-    return "%d-%02d" % (year, int(month))
+        return "(%d)" % year
+    return "(%02d/%d)" % (int(month), year)
 
 
-def render_entry(record: dict) -> str:
-    """One <li> of publication markup."""
+def render_entry(record: dict, show_type: bool = True) -> str:
+    """One <li> of publication markup: a single reference line.
+
+    The date comes first, so the page reads as one column of dates with the
+    newest at the top -- which is the point of putting it there. Then the
+    authors, the title, what kind of work it is, where it appeared, and the
+    links.
+
+    *show_type* is turned off by build_page for a section that holds one kind of
+    work only, where the heading has already said it.
+    """
     esc = html.escape
 
     authors = record.get("authors")
@@ -340,9 +368,6 @@ def render_entry(record: dict) -> str:
         # 970-973 -> 970-973 with an en dash, but only between digits.
         page = re.sub(r"(?<=\d)-(?=\d)", "\u2013", record["page"])
         bits.append("pp. %s" % esc(page))
-    date = format_date(record)
-    if date:
-        bits.append(date)
     if record["doi"]:
         bits.append('<a href="https://doi.org/%s" target="blank">doi</a>'
                     % esc(record["doi"]))
@@ -354,37 +379,55 @@ def render_entry(record: dict) -> str:
 
     type_label = TYPE_LABELS.get(record["type"], "Publication")
     source = record.get("source", "orcid")
-    lines = ['<li data-source="%s">' % source]
+
+    parts = ['<span class="pub-date">%s</span>' % esc(date_label(record))]
     if rendered:
-        lines.append('<p class="pub-authors">%s</p>' % rendered)
-    lines.append('<p class="pub-title">%s</p>' % esc(record["title"]))
+        parts.append('<span class="pub-authors">%s.</span>' % rendered)
+    parts.append('<span class="pub-title">\u201c%s\u201d</span>'
+                 % esc(record["title"]))
+    if show_type:
+        parts.append('<span class="pub-type">%s</span>' % esc(type_label))
     if bits:
-        lines.append('<p class="pub-meta"><span class="pub-type">%s</span> %s</p>'
-                     % (esc(type_label), ", ".join(bits)))
-    lines.append("</li>")
-    return "\n".join(lines)
+        parts.append(", ".join(bits) + ".")
+
+    return ('<li data-source="%s"><p class="pub-ref">%s</p></li>'
+            % (source, " ".join(parts)))
+
+
+def group_of(record: dict) -> str:
+    """The section a work belongs to: its own type, or the catch-all group."""
+    for title, types in GROUPS:
+        if record["type"] in types:
+            return title
+    return GROUPS[-1][0]
 
 
 def build_page(records: list[dict], dropped: int, added: int = 0) -> str:
-    """Render the whole www/publications.jemdoc file."""
-    by_year: dict[int, list[dict]] = {}
-    for record in sorted(records, key=sort_key):
-        by_year.setdefault(record.get("year") or 0, []).append(record)
+    """Render the whole www/research/publications.jemdoc file.
 
+    One section per kind of work, each newest first: journal articles, then
+    conference papers, then book chapters. The page was a single list with the
+    kind of work repeated on every line, and before that a row of collapsible
+    years; the date leading every entry does that job without making the reader
+    open anything to read a title.
+    """
+    ordered = sorted(records, key=sort_key)
     blocks = []
-    for index, year in enumerate(sorted(by_year, reverse=True)):
-        entries = by_year[year]
-        count = len(entries)
-        label = "%d" % count
-        open_attr = " open" if index < OPEN_YEARS else ""
-        blocks.append('<details class="year"%s>' % open_attr)
-        blocks.append('<summary>%d<span class="pub-count">%s %s</span></summary>'
-                      % (year, label, "entry" if count == 1 else "entries"))
-        blocks.append('<ul class="pubs">')
-        blocks.extend(render_entry(entry) for entry in entries)
-        blocks.append('</ul>')
-        blocks.append('</details>')
-
+    for title, types in GROUPS:
+        members = [record for record in ordered if group_of(record) == title]
+        if not members:
+            continue
+        # The kind of work is repeated on the entry only where the section holds
+        # more than one kind. Under "Conference papers" a CONFERENCE label on
+        # every line is noise, and the heading has already said it -- but in the
+        # catch-all group the heading says nothing about the entry, so there the
+        # label stays. This is decided by the section, not by how many entries
+        # happened to land in it: one preprint is still a preprint.
+        show_type = len(types) > 1
+        entries = "\n".join(render_entry(record, show_type=show_type)
+                            for record in members)
+        blocks.append('<h2>%s</h2>\n<ul class="pubs">\n%s\n</ul>'
+                      % (html.escape(title), entries))
     return HEADER + "\n".join(blocks) + FOOTER
 
 
@@ -703,286 +746,6 @@ def merge_records(records: list[dict], extras: list[dict]) -> tuple[list[dict], 
 
 
 # --------------------------------------------------------------------------- #
-# the news feed
-# --------------------------------------------------------------------------- #
-# News comes from two places:
-#   * every publication on the Publications page becomes a news item, so a paper
-#     that arrives through ORCID, or that you paste into publications-extra.bib,
-#     shows up in the news by itself;
-#   * anything you type into www/data/news-extra.txt -- grants, talks, new students.
-#
-# The two most recent years are shown in full; older years are collapsed.
-
-NEWS_INPUT = os.path.join(ROOT, "www", "data", "news-extra.txt")
-NEWS_OUTPUT = os.path.join(ROOT, "www", "home", "news.jemdoc")
-HOME_PAGE = os.path.join(ROOT, "www", "home", "index.jemdoc")
-
-#: Markers around the "Latest news" block on the Home page. The block is only
-#: rewritten when both markers are present, so deleting them stops the sync.
-HOME_NEWS_BEGIN = "# BEGIN GENERATED latest-news"
-HOME_NEWS_END = "# END GENERATED latest-news"
-
-#: How many of the newest years keep their entries open; every older year is
-#: collapsed into a click-to-open dropdown. The same rule is used for the
-#: Publications page and for the News page, so the two behave alike.
-OPEN_YEARS = 2
-
-#: How many items the Home page shows.
-HOME_NEWS_LIMIT = 4
-
-#: The verb that joins a title to its venue. Every publication announcement has
-#: the same shape, with the month and year in brackets at the end:
-#:
-#:     "Title of the paper" accepted by IEEE INFOCOM 2023 (12/22).
-NEWS_VERB = {
-    "journal-article": "published in",
-    "conference-paper": "accepted by",
-    "book-chapter": "published in",
-    "book": "published by",
-    "dissertation": "published by",
-    "other": "posted to",
-}
-
-#: `[label](https://...)` inside a news-extra.txt line becomes a link.
-NEWS_LINK_RE = re.compile(r"\[([^\]]+)\]\((https?://[^)\s]+)\)")
-
-#: One news-extra.txt line: `2026-10-01 | Some announcement`.
-NEWS_LINE_RE = re.compile(r"^\s*(\d{4})(?:-(\d{1,2}))?(?:-(\d{1,2}))?\s*\|(.*)$")
-
-
-def text_to_parts(text: str) -> list[dict]:
-    """Split plain text into display parts, turning `[label](url)` into a link."""
-    parts, position = [], 0
-    for match in NEWS_LINK_RE.finditer(text):
-        if match.start() > position:
-            parts.append({"text": text[position:match.start()]})
-        parts.append({"link": match.group(2), "label": match.group(1)})
-        position = match.end()
-    if position < len(text):
-        parts.append({"text": text[position:]})
-    return parts or [{"text": text}]
-
-
-def render_parts(parts: list[dict]) -> str:
-    """Render parts as HTML, escaping everything that came from the outside."""
-    out = []
-    for part in parts:
-        if "text" in part:
-            out.append(html.escape(part["text"]))
-        elif "italic" in part:
-            out.append("<i>%s</i>" % html.escape(part["italic"]))
-        else:
-            out.append('<a href="%s" target="blank">%s</a>'
-                       % (html.escape(part["link"]), html.escape(part["label"])))
-    return "".join(out)
-
-
-def parts_to_text(parts: list[dict]) -> str:
-    """Flatten parts to plain text, for sorting ties and for the console."""
-    return "".join(
-        part.get("text") or part.get("italic") or part.get("label") or ""
-        for part in parts
-    )
-
-
-def short_date(year: int, month: int) -> str:
-    """December 2022 -> ``12/22``, the compact stamp used in an announcement."""
-    if not year or not month:
-        return ""
-    return "%02d/%02d" % (month, year % 100)
-
-
-def publication_news_item(record: dict) -> dict:
-    """Turn one publication into a news item.
-
-    The shape, and the reason there is no separate date column, is::
-
-        "Title of the paper" accepted by IEEE INFOCOM 2023 (12/22).
-
-    The title comes first in quotes, then the verb, the venue and the year, then
-    the month and year in brackets. A DOI link is appended where there is one.
-    """
-    year = record.get("year") or 0
-    venue = (record.get("venue") or "").strip()
-
-    parts = [
-        {"text": "\u201c%s\u201d " % record["title"]},
-        {"text": NEWS_VERB.get(record["type"], "accepted by") + " "},
-    ]
-
-    if venue:
-        parts.append({"text": venue})
-        # A conference venue usually carries the year already
-        # ("2024 International Conference on ..."); never write it twice.
-        if year and str(year) not in venue:
-            parts.append({"text": " %d" % year})
-    elif year:
-        parts.append({"text": "%d" % year})
-
-    stamp = short_date(year, record.get("month") or 0)
-    parts.append({"text": " (%s)." % stamp if stamp else "."})
-
-    if record.get("doi"):
-        parts.append({"text": " "})
-        parts.append({"link": "https://doi.org/%s" % record["doi"], "label": "doi"})
-
-    return {
-        "date_label": format_date(record),
-        "sort": (year, record.get("month") or 0, record.get("day") or 0),
-        "year": year,
-        "parts": parts,
-        "source": record.get("source", "orcid"),
-    }
-
-
-def read_extra_news() -> list[dict]:
-    """Read www/data/news-extra.txt: one ``YYYY-MM-DD | text`` item per line."""
-    if not os.path.isfile(NEWS_INPUT):
-        return []
-
-    items = []
-    with open(NEWS_INPUT, "r", encoding="utf-8") as handle:
-        for number, raw in enumerate(handle, start=1):
-            line = raw.strip()
-            if not line or line.startswith("#"):
-                continue
-            match = NEWS_LINE_RE.match(line)
-            if not match:
-                print("  ! news-extra.txt line %d has no 'YYYY-MM-DD |' date; skipped"
-                      % number, file=sys.stderr)
-                continue
-
-            year = int(match.group(1))
-            month = int(match.group(2) or 0)
-            day = int(match.group(3) or 0)
-            text = match.group(4).strip()
-            if not text:
-                continue
-
-            label = "%04d" % year
-            if month:
-                label += "-%02d" % month
-                if day:
-                    label += "-%02d" % day
-
-            stamp = short_date(year, month)
-            parts = text_to_parts(text)
-            if stamp:
-                # Your own items are dated the same way as the rest of the feed.
-                parts.insert(0, {"text": "(%s) " % stamp})
-
-            items.append({
-                "date_label": label,
-                "sort": (year, month, day),
-                "year": year,
-                "parts": parts,
-                "source": "manual",
-            })
-    return items
-
-
-def build_news_items(records: list[dict], manual: list[dict]) -> list[dict]:
-    """Publication items plus manual items, newest first."""
-    items = [publication_news_item(r) for r in records if r.get("year")]
-    items.extend(manual)
-    items.sort(key=lambda item: (
-        tuple(-value for value in item["sort"]),
-        parts_to_text(item["parts"]).lower(),
-    ))
-    return items
-
-
-def render_news_item(item: dict) -> str:
-    """One announcement.
-
-    There is no separate date column: the date is part of the sentence, which is
-    the shape the site owner asked for and how Duy H. N. Nguyen's news reads. The
-    full date is still there on hover, in the ``title`` attribute.
-    """
-    return '<li title="%s">%s</li>' % (html.escape(item["date_label"]),
-                                       render_parts(item["parts"]))
-
-
-NEWS_HEADER = """# jemdoc: menu{menu.jemdoc}{news.html}, notime
-# GENERATED by tools/update_site.py -- do not edit this file by hand.
-# Announcements come from the publication list; add your own in www/data/news-extra.txt.
-= News
-
-~~~
-{}{raw}
-"""
-
-NEWS_FOOTER = """
-~~~
-"""
-
-
-def build_news_page(items: list[dict]) -> str:
-    """Render the whole www/news.jemdoc file."""
-    by_year: dict[int, list[dict]] = {}
-    for item in items:
-        by_year.setdefault(item["year"], []).append(item)
-    years = sorted(by_year, reverse=True)
-
-    blocks = []
-    for index, year in enumerate(years):
-        entries = by_year[year]
-        count = len(entries)
-
-        listing = ['<ul class="news">']
-        listing.extend(render_news_item(entry) for entry in entries)
-        listing.append('</ul>')
-
-        if index < OPEN_YEARS:
-            blocks.append('<h2 class="news-year">%d</h2>' % year)
-            blocks.extend(listing)
-        else:
-            blocks.append('<details class="year">')
-            blocks.append('<summary>%d<span class="pub-count">%d %s</span></summary>'
-                          % (year, count, "entry" if count == 1 else "entries"))
-            blocks.extend(listing)
-            blocks.append('</details>')
-
-    if items:
-        # The count is reported on the console when the page is written; the
-        # page itself carries no note, so a visitor sees only the announcements.
-        pass
-
-    return NEWS_HEADER + "\n".join(blocks) + NEWS_FOOTER
-
-
-def sync_home_news(items: list[dict]):
-    """Rewrite the marked "Latest news" block on the Home page.
-
-    Returns ``(items, changed)``, or None when the markers are absent -- in which
-    case the Home page is left completely alone.
-    """
-    if not os.path.isfile(HOME_PAGE):
-        return None
-    with open(HOME_PAGE, "r", encoding="utf-8") as handle:
-        text = handle.read()
-
-    start = text.find(HOME_NEWS_BEGIN)
-    end = text.find(HOME_NEWS_END)
-    if start < 0 or end < 0 or end < start:
-        return None
-
-    count = len(items[:HOME_NEWS_LIMIT])
-    body = ["~~~", "{}{raw}", '<ul class="news">']
-    body.extend(render_news_item(item) for item in items[:HOME_NEWS_LIMIT])
-    body.append("</ul>")
-    body.append("~~~")
-
-    updated = (text[:start + len(HOME_NEWS_BEGIN)] + "\n"
-               + "\n".join(body) + "\n" + text[end:])
-    if updated == text:
-        return count, False
-    with open(HOME_PAGE, "w", encoding="utf-8", newline="\n") as handle:
-        handle.write(updated)
-    return count, True
-
-
-# --------------------------------------------------------------------------- #
 # output helpers
 # --------------------------------------------------------------------------- #
 
@@ -1093,31 +856,14 @@ def main() -> int:
         return 1
 
     page = build_page(records, dropped, added)
-    news_items = build_news_items(records, read_extra_news())
-    news_page = build_news_page(news_items)
 
     if args.dry_run:
         sys.stdout.write(page)
-        sys.stdout.write("\n" + "-" * 72 + "\n\n")
-        sys.stdout.write(news_page)
         return 0
 
     changed = write_text(OUTPUT, page)
     print("%s %s (%d entries)" % ("Wrote" if changed else "Unchanged",
                                   os.path.relpath(OUTPUT, ROOT), len(records)))
-
-    changed = write_text(NEWS_OUTPUT, news_page)
-    print("%s %s (%d announcements)" % ("Wrote" if changed else "Unchanged",
-                                        os.path.relpath(NEWS_OUTPUT, ROOT),
-                                        len(news_items)))
-
-    home = sync_home_news(news_items)
-    if home is None:
-        print("Home page: no latest-news markers, so the Home page was left alone.")
-    else:
-        count, changed = home
-        print("%s Home page latest-news block (%d items)."
-              % ("Wrote" if changed else "Unchanged", count))
     return 0
 
 

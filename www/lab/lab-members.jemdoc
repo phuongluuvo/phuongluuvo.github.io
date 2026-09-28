@@ -1,32 +1,43 @@
 # jemdoc: menu{menu-lab.jemdoc}{lab-members.html}, title{Members}, notime
-= Members
+=== Principal Investigator
 
-- *Assoc. Prof. Phuong Luu Vo* (Principal Investigator)
-    -- Distributed Learning, Wireless and Mobile Networking, IoT
+- *Assoc. Prof. Phuong Luu Vo* — ''Distributed Learning, Wireless and Mobile
+  Networking, IoT''
 
-- *Dr. Toan-Van Nguyen*
-    -- Wireless Communications, Artificial Intelligence, Signal Processing, Wireless Security
+=== Co-Advisors
 
-- *Assoc. Prof. Tung Kieu* 
-    -- Data Mining, Data Management, Machine Learning, Spatio-Temporal Data, Time Series Analysis
+- *Dr. Toan-Van Nguyen* — ''Wireless Communications, Artificial Intelligence,
+  Signal Processing, Wireless Security'' \n vannguyentoan@gmail.com
 
-- *Msc. Nguyen Thuy An*
-    -- QLoRA, LoRA
+- *Assoc. Prof. Tung Kieu* — ''Data Mining, Data Management,
+  Machine Learning, Spatio-Temporal Data, Time Series Analysis'' \n tungkvt@cs.aau.dk
 
-- *Msc. Nguyen Trung Nghia*
+=== Members
 
-== Graduate students
+- *Nguyen Thuy An, M.Sc.* — ''LoRA / QLoRA''
+- *Nguyen Trung Nghia, M.Sc.*
 
-- *Nguyen Phuoc Gia Bao* (Master, K22)
-- *Nghia Nguyen* (Master, K22)
+=== Graduate Students
 
-== Undergraduate students
+- *Nguyen Phuoc Gia Bao* (M.Sc., K22)
+- *Nghia Nguyen* (M.Sc., K22)
+
+=== Undergraduate Students
 
 - *Thai Quang Tinh* (K22)
-    -- *Thesis Defended 2026:* "Secure Semantic Communication with Adversarial Training and Active Eavesdropper"
+    -- Thesis: ''Secure Semantic Communication with Adversarial Training and
+       Active Eavesdropper''
 
 - *Dang Dang Khoi* (K22)
-    -- *Thesis Defended 2026:* "Efficient and Privacy-Aware Multimodal Semantic Communication via Federated Learning and LoRA FineTuning"
+    -- Thesis: ''Efficient and Privacy-Aware Multimodal Semantic Communication
+       via Federated Learning and LoRA Fine-Tuning''
 
 - *Dang Danh Huong* (K22)
-    -- *Thesis Defended 2026:* "Residual-Guided Adaptive Multi-Round Multi-Task Learning for Semantic Communications"
+    -- Thesis: ''Residual-Guided Adaptive Multi-Round Multi-Task Learning for
+       Semantic Communications''
+
+=== Alumni
+
+- *Ngo Luu Tan Hung* (K21)
+
+- *Nguyen Huy Thanh* (K21)

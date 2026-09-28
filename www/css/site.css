@@ -44,7 +44,12 @@
   /* ---- geometry -------------------------------------------------------- */
 
   --page-width:  1000px;    /* kept for reference; the layout is full width  */
-  --menu-width:  175px;     /* width of the sidebar column                  */
+  /* Wide enough for the longest menu label ("Algorithm Optimization", 196px at
+     the menu's size) plus its 16px indent and the sidebar's own padding. jemdoc
+     turns the spaces in a plain label into non-breaking spaces, so a label never
+     wraps by itself -- it would overflow instead, which is why this has to be
+     measured rather than guessed. */
+  --menu-width:  245px;     /* width of the sidebar column                  */
   /* Literata is loaded from Google Fonts in [firstbit] of www/mysite.conf, and
      comes first because Georgia, jemdoc's own font, has no Vietnamese glyphs:
      "Tiếng Việt" used to render in two different typefaces on one line. The
@@ -58,11 +63,23 @@
 
 /* ---------------------------------------------------------------- basics -- */
 
-html { -webkit-text-size-adjust: 100%; }
+html {
+  height: 100%;
+  -webkit-text-size-adjust: 100%;
+}
 
+/* The page fills the window, not just the space its words need. A short page
+   used to stop where its text stopped, so the grey sidebar and the footer ran
+   only as far as the content did and every short page looked half-finished.
+   A column of flex makes #tlayout grow to the height of the window (and past it
+   when the text is long); the table row stretches with the table, and that is
+   what makes the sidebar full height. No padding here: it would push the page
+   one scrollbar taller than the window. The cells carry their own padding. */
 body {
   margin: 0;
-  padding: 0 0 8px;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
   background: var(--bg);
   color: var(--text);
   font-family: var(--font-body);
@@ -76,6 +93,7 @@ body {
    against the left edge, and so do we: the page is edge to edge, with the grey
    sidebar running the full height. Below 760px the two cells stack. */
 #tlayout {
+  flex: 1 1 auto;
   width: 100%;
   max-width: none;
   margin: 0;
@@ -86,22 +104,53 @@ td#layout-menu {
   width: var(--menu-width);
   vertical-align: top;
   padding: 8px 10px 10px;
-  background: var(--panel);   /* jemdoc's grey bar, running the full height */  border: 1px solid var(--border);}
-
-td#layout-content {
-  vertical-align: top;
-  padding: 8px 20px 12px;
+  background: var(--panel);   /* jemdoc's grey bar, running the full height */
+  border: 1px solid var(--border);
 }
+
+/* The content cell is also the footer's containing block, because the footer is
+   pinned to its bottom (see #footer below). The padding at the bottom is the
+   room the footer sits in: a page's own padding does not apply to an absolutely
+   positioned child, so it has to be reserved here. */
+td#layout-content {
+  position: relative;
+  vertical-align: top;
+  padding: 8px 20px 60px;
+}
+
+/* ---------------------------------------------------------------- footer -- */
+/* jemdoc ends every page with this footer; the line inside it is written in the
+   [lastupdated] section of www/mysite.conf. It is pinned to the bottom of the
+   content cell, which is the bottom of the page, so the date closes a short
+   page in the same place it closes a long one instead of floating in the
+   middle with white space under it. */
+#footer {
+  position: absolute;
+  left: 20px;
+  right: 20px;
+  bottom: 14px;
+  margin: 0;
+  padding-top: 0.7em;
+  border-top: 1px solid var(--border);
+  color: var(--faint);
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+#footer p { margin: 0; }
 
 /* ----------------------------------------------------------------- menu -- */
 /* The site name and the group labels ("Research", "Teaching") are one style:
    jemdoc's .menu-category, which is what Duy H. N. Nguyen's menu uses. Each one
    is bold, and carries a rule under it that runs the width of the sidebar --
-   that line is what gives the sidebar its structure. The name is simply the
-   first of them, and it happens to be a link home. */
+   that line is what gives the sidebar its structure.
 
-.menu-category,
-#layout-menu > .menu-item:first-child a {
+   The name is the first of them, and it is deliberately NOT a link: the "Home"
+   entry under it is the way home, exactly as on the lab pages, which have no
+   name at all. So nothing here may depend on the first menu ITEM being the
+   name -- it is "Home". */
+
+.menu-category {
   display: block;
   margin: 0.8em 0 0;
   padding: 0.2em 0 0.1em;
@@ -135,8 +184,6 @@ td#layout-content {
 
 /* The name sits at the top of the menu, above everything else, and lines up
    with the group labels rather than with the links under them. */
-#layout-menu > .menu-item:first-child { margin-bottom: 4px; }
-#layout-menu > .menu-item:first-child a:hover { color: var(--accent-ink); }
 
 /* --------------------------------------------------------------- headings -- */
 
@@ -393,8 +440,9 @@ pre .error    { color: #b03030; font-weight: 600; }
 }
 
 /* ---------------------------------------------------- collapsible sections -- */
-/* One style for every dropdown in the site: the publication years, and the
-   material lists on the Courses page. */
+/* One style for every dropdown in the site. Nothing uses it at the moment --
+   the publication years were the last -- but this is what a page gets if it
+   wraps a long list in <details>, which is how such a list can be collapsed. */
 
 details {
   margin: 0;
@@ -426,13 +474,11 @@ details[open] > summary::before { content: "▾"; }
 details > summary:hover { color: var(--accent-ink); }
 
 /* ------------------------------------------------------------------ pubs -- */
-
-.pub-count {
-  margin-left: 0.7em;
-  font-size: 0.78rem;
-  font-weight: 400;
-  color: var(--faint);
-}
+/* One reference per line, the date leading it: the page reads as a single column
+   of dates with the newest at the top, so nothing has to be opened before a
+   title can be read. The rule down the left of each entry is what separates them
+   at this density -- a margin alone was not enough once the year headings were
+   gone. */
 
 ul.pubs {
   margin: 0 0 22px;
@@ -441,35 +487,37 @@ ul.pubs {
 }
 
 ul.pubs > li {
-  margin: 0 0 17px;
-  padding: 0;
+  margin: 0 0 15px;
+  padding: 0 0 0 12px;
+  border-left: 2px solid var(--border);
 }
 
 ul.pubs > li::marker { content: none; }
 
-.pub-authors {
+.pub-ref {
   margin: 0;
-  font-size: 0.86rem;
-  color: var(--muted);
-  line-height: 1.5;
-}
-
-.pub-title {
-  margin: 2px 0 3px;
-  font-size: 0.97rem;
-  line-height: 1.5;
-}
-
-.pub-meta {
-  margin: 0;
-  font-size: 0.85rem;
-  color: var(--faint);
+  font-size: 0.92rem;
   line-height: 1.55;
 }
 
+/* The date is given a fixed width so the references line up under one another
+   as a column, which is the whole point of putting it first. */
+.pub-date {
+  display: inline-block;
+  min-width: 4.7em;
+  margin-right: 0.45em;
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.pub-authors { color: var(--muted); }
+
+.pub-title { font-weight: 700; }
+
 .pub-type {
   display: inline-block;
-  margin-right: 0.6em;
+  margin-left: 0.5em;
   font-size: 0.68rem;
   font-weight: 650;
   letter-spacing: 0.07em;
@@ -489,33 +537,8 @@ details.materials > summary {
 details.materials ul { margin: 0 0 16px; }
 
 /* ------------------------------------------------------------------ news -- */
-/* One announcement per line, already a whole sentence: the date sits inside it,
-   in brackets, so there is no separate date column. A year label heads an open
-   year; older years sit behind a dropdown with the same "N entries" counter as
-   the publication years. */
-
-h2.news-year {
-  margin: 1.3em 0 0.3em;
-  padding: 0 0 0.15em;
-  font-size: 1.1em;
-  font-weight: 700;
-  color: var(--accent);
-}
-
-ul.news {
-  margin: 0 0 1.4em;
-  padding: 0;
-  list-style: none;
-}
-
-ul.news > li {
-  margin: 0;
-  padding: 7px 0;
-}
-
-ul.news > li::marker { content: none; }
-
-details.year > ul.news { margin-bottom: 12px; }
+/* The news is a plain list on the Home page, one announcement per line with the
+   date written into the sentence, so it needs no styling of its own. */
 
 /* ------------------------------------------------------------ equations -- */
 
@@ -682,6 +705,103 @@ details.year > ul.news { margin-bottom: 12px; }
 /* A short lead-in before a page's first section. */
 .lede { margin: 0 0 1.3em; font-size: 1.02rem; }
 
+/* ----------------------------------------------------------------- blog -- */
+/* A post is one chapter of the book, written from its LaTeX source by
+   tools/latex_to_page.py: the prose is the page's own text, and the mathematics
+   is left as LaTeX for MathJax, so it can be selected, searched, and read at
+   whatever size the reader likes. The figures are the images the source names. */
+
+.post-meta {
+  margin: 0 0 1.6em;
+  padding-bottom: 0.8em;
+  border-bottom: 1px solid var(--border);
+  color: var(--faint);
+  font-size: 0.88rem;
+}
+
+/* A numbered display equation: MathJax centres the formula and the number sits
+   out to the right, the way the book sets it. */
+.equation {
+  position: relative;
+  margin: 1.3em 0;
+}
+
+.eq-number {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+/* A figure, and the caption the source put under it. */
+figure {
+  margin: 1.6em 0;
+  text-align: center;
+}
+
+figure img { max-width: 100%; height: auto; }
+
+figcaption {
+  margin-top: 0.5em;
+  color: var(--faint);
+  font-size: 0.85rem;
+  text-align: left;
+}
+
+/* A pseudocode listing: one statement per line, indented by its nesting. */
+.algorithm {
+  margin: 1.5em 0;
+  padding: 14px 16px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+
+.alg-title { margin: 0 0 0.6em; font-weight: 700; }
+
+.alg { margin: 0.15em 0; font-size: 0.92rem; line-height: 1.5; }
+
+.alg-comment { color: var(--faint); font-style: italic; }
+
+/* A table from a chapter, and its caption. */
+table.data {
+  margin: 1.6em 0;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+}
+
+table.data th,
+table.data td {
+  padding: 5px 14px 5px 0;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+}
+
+table.data caption {
+  margin-top: 0.5em;
+  color: var(--faint);
+  font-size: 0.85rem;
+  text-align: left;
+}
+
+/* The numbered reference list at the end of a chapter. */
+ol.refs { margin: 0 0 1.5em; padding-left: 1.4em; }
+
+ol.refs li { margin-bottom: 0.5em; font-size: 0.92rem; }
+
+/* A figure the source names but whose file is not in www/files/blog/. */
+.missing-figure {
+  margin: 1.4em 0;
+  padding: 12px 14px;
+  background: var(--panel);
+  border: 1px dashed var(--border);
+  color: var(--faint);
+  font-size: 0.88rem;
+}
+
+
 /* ------------------------------------------------------------ responsive -- */
 
 @media (max-width: 760px) {
@@ -696,10 +816,18 @@ details.year > ul.news { margin-bottom: 12px; }
     padding: 10px 14px 6px;
   }
 
-  td#layout-content { padding: 6px 14px 10px; }
+  /* The sidebar is a strip above the text now, so the two cells no longer share
+     a height and the footer's containing block moves up to the table, which does
+     fill the window. The date therefore still closes a short page at the bottom
+     of the screen. The room reserved for the footer stays on the cell: the last
+     line of the page would sit under it otherwise. */
+  #tlayout { position: relative; }
 
-  .menu-category,
-  #layout-menu > .menu-item:first-child { margin: 6px 14px 6px 0; }
+  td#layout-content { position: static; padding: 6px 14px 52px; }
+
+  #footer { left: 14px; right: 14px; bottom: 12px; }
+
+  .menu-category { margin: 6px 14px 6px 0; }
 
   .menu-item a {
     display: inline-block;
@@ -724,6 +852,12 @@ details.year > ul.news { margin-bottom: 12px; }
   body { padding: 0; font-size: 11pt; }
 
   td#layout-menu { display: none; }
+
+  /* On paper the footer belongs after the last line, not pinned to the bottom
+     of the sheet, and nothing may be reserved for it. */
+  td#layout-content { padding-bottom: 0; }
+
+  #footer { position: static; left: auto; right: auto; bottom: auto; }
 
   a { color: inherit; text-decoration: none; }
 

@@ -1,0 +1,37 @@
+# jemdoc: menu{menu.jemdoc}{regression-analysis.html}, title{Regression Analysis}, notime
+
+= Regression Analysis
+
+Level: Graduate
+
+*What you will learn:*
+
+- Simple and multiple linear regression
+- Least squares fitting and interpretation of coefficients
+- Variable selection and model comparison
+- Regression diagnostics and residual analysis
+- Regularization: ridge and lasso
+- Applying the methods to real datasets
+
+== Slides
+
+~~~
+{}{raw}
+<ul>
+<li><a href="%%REGRESSION-ANALYSIS%%/lec1.pdf" download>Lecture 1 - Some Basic Results in Probability and
+Statistics</a></li>
+<li><a href="%%REGRESSION-ANALYSIS%%/lec2.pdf" download>Lecture 2 - Simple linear regression</a></li>
+<li><a href="%%REGRESSION-ANALYSIS%%/lec3.pdf" download>Lecture 3 - Simple Linear Regression II - Inferences</a></li>
+<li><a href="%%REGRESSION-ANALYSIS%%/lec4.pdf" download>Lecture 4 - Matrix approach for simple regression mode</a></li>
+<li><a href="%%REGRESSION-ANALYSIS%%/lec5.pdf" download>Lecture 5 - Multiple linear regression</a></li>
+<li><a href="%%REGRESSION-ANALYSIS%%/lec6.pdf" download>Lecture 6 - Diagnostics I</a></li>
+<li><a href="%%REGRESSION-ANALYSIS%%/lec7.pdf" download>Lecture 7 - Remedial measures
+Transformations and weighted least square</a></li>
+<li><a href="%%REGRESSION-ANALYSIS%%/lec8.pdf" download>Lecture 8 - Diagnostics II</a></li>
+<li><a href="%%REGRESSION-ANALYSIS%%/lec9.pdf" download>Lecture 9 - Regression Models for Quantitative and
+Qualitative Predictors</a></li>
+<li><a href="%%REGRESSION-ANALYSIS%%/lec10.pdf" download>Lecture 10 - Model Selection and Validation</a></li>
+<li><a href="%%REGRESSION-ANALYSIS%%/lec11.pdf" download>Lecture 11 - Maximum Likelihood Method, Logistic
+Regression, and Generalized linear model</a></li>
+</ul>
+~~~

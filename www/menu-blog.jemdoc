@@ -1,0 +1,24 @@
+# ---------------------------------------------------------------------------
+# BLOG NAVIGATION MENU  (www/menu-blog.jemdoc)
+#
+# The blog pages include THIS menu instead of www/menu.jemdoc, exactly as the lab
+# pages include www/menu-lab.jemdoc. Clicking *Blog* on the main site lands you in the
+# blog, with this sidebar, and "Home" takes you back out.
+#
+# Same rules as the main menu:
+#   * a line WITHOUT brackets is a coloured section heading;
+#   * a line with brackets is a link:  Visible text [target-file.html]
+#
+# TO ADD A POST: add one line under the Blog heading below, then see guide.md
+# §9.12 for the page itself.
+#
+# Careful: jemdoc marks the current entry with a SUFFIX test, so one page name
+# must never be the tail of another. See guide.md §6.4.
+# ---------------------------------------------------------------------------
+Home [index.html]
+Blog
+ Bài toán quy hoạch tuyến tính [chap1.html]
+ Hàm lồi [chap2.html]
+ Bài toán tối ưu lồi [chap3.html]
+ Các giải thuật bậc một [chap4.html]
+ Lý thuyết đối ngẫu [chap5.html]

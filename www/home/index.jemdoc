@@ -1,12 +1,10 @@
 # jemdoc: menu{menu.jemdoc}{index.html}, title{Home}, notime
-= Phuong Luu Vo (Võ Thị Lưu Phương)
-
 ~~~
 {}{raw}
 <div class="hero">
-  <img src="images/portrait.jpg" alt="Portrait of Phuong Luu Vo" />
+  <img src="images/portrait.jpg" alt="Portrait of Phuong Vo" />
   <div class="hero-body">
-    <p class="hero-name"><a href="index.html">Phuong Luu Vo, Ph.D.</a></p>
+    <p class="hero-name"><a href="index.html">Vo Thi Luu Phuong, Ph.D.</a></p>
     <p class="hero-role">Associate Professor</p>
     <p class="hero-org"><a href="https://it.hcmiu.edu.vn/user/vtlphuong/" target="blank">School of Computer Science and Engineering</a>,
       <a href="https://hcmiu.edu.vn/" target="blank">International University</a> &mdash;
@@ -27,20 +25,50 @@
 </div>
 ~~~
 
-== About
+= About
 
-- International University, Vietnam National University Ho Chi Minh City
-  -- Head of IT Department (present)
-  -- Researcher (2007 -- present), School of Computer Science and Engineering
+- International University, Vietnam National University Ho Chi Minh City (2007 -- present)
+  -- Head of IT Department
+  -- Researcher, School of Computer Science and Engineering
 - Industry (1998 -- 2007)
 - Education
   -- 01\/2009 -- 01\/2014: Ph.D., Computer Engineering, Kyung Hee University, Korea
   -- 01\/2000 -- 01\/2003: M.Sc., Telecommunications, HCMC University of Technology, Vietnam
   -- 01\/1994 -- 01\/1999: B.Eng., Electronics and Telecommunications, HCMC University of Technology, Vietnam
 
+#= News
+
+# One announcement per line, newest first, in exactly this shape:
+#
+#     - MM/YYYY: what happened.
+#
+# Nothing here is generated and nothing is sorted for you: the page shows these
+# lines in the order they are written, so keep the newest at the top. Add a new
+# one by adding a line here and running:  python build.py
+# See guide.md section 9.1.
+
+= Awards 
+- *2018* \M Outstanding Scientific Publication Award for Individual, academic year 2017--2018,
+  VNU-HCM.
+- *1996* \M Third prize, National Mechanical Olympic Competition (Hydraulics).
+
+= Patent
+- "Method for managing width of window in multi-path TCP," Korean Intellectual Property Office
+  (KIPO).
+
+# ---------------------------------------------------------------------------
+# TEMPLATE -- add an entry with one bullet line, e.g.:
+# - *2027* \M Award or grant description in one sentence.
+#
+# NOTE: this list was built from the ORCID record
+# (https://orcid.org/0000-0003-3909-4385) and the HCMIU faculty page
+# (https://it.hcmiu.edu.vn/user/vtlphuong/). The "invited talks" section that shipped
+# with the demo was removed because none of it could be verified -- add yours back
+# here as they happen.
+# ---------------------------------------------------------------------------
+
 == Contact information
 
-Room 610, International University, Block 6, Linh Trung Ward,\n
-Thu Duc District, Ho Chi Minh City, Vietnam\n
+Room A1.610, International University, Quarter 9, Linh Xuan Ward, Ho Chi Minh City\n
 *Email*: [vtlphuong@hcmiu.edu.vn]\n
 *Telephone*: (028) 37244270, ext. 3232

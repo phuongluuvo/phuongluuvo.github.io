@@ -11,34 +11,40 @@ elsewhere.
 ## The five rules that matter most
 
 1. **Edit sources in `www/` only.** Pages live in subfolders that say what they are for —
-   `www/home/`, `www/research/`, `www/teaching/`, `www/lab/`, `www/misc/` — alongside the two
-   sidebars (`www/menu.jemdoc`, `www/menu-lab.jemdoc`), `www/mysite.conf` (control file:
+   `www/home/`, `www/blog/`, `www/research/`, `www/teaching/`, `www/lab/`, `www/misc/` — alongside the two
+   sidebars (`www/menu.jemdoc`, `www/menu-lab.jemdoc`, `www/menu-blog.jemdoc`),
+   `www/mysite.conf` (control file:
    `<head>`, MathJax config, `<title>`, footer, favicon, the `[materials]` list),
    `www/css/site.css`, `www/images/` (pictures shown on a page), `www/files/` (documents
-   visitors download — optional, and it does not exist until there is one) and `www/data/`
-   (the two files you edit by hand: announcements and extra BibTeX).
+   visitors download), `www/pdf/` (the PDFs the site displays — blog posts and lecture slides)
+   and `www/data/` (the one file you edit by hand: extra BibTeX).
 
    **The subfolders are organisation only.** Every page is built to the top of `_site/`, so
    `www/teaching/it545.jemdoc` is served as `it545.html` and moving a page between folders
    costs nothing — no link, no menu entry. Two pages may therefore not share a file name; the
    build refuses and says which two collide.
 2. **Never hand-edit generated files.** `build.py` writes the entire site into `_site/` —
-   `_site/*.html`, `_site/css/`, `_site/images/`, `_site/files/` and `.nojekyll`. That folder is
+   `_site/*.html`, `_site/css/`, `_site/images/`, `_site/files/`, `_site/pdf/` and `.nojekyll`.
+   That folder is
    gitignored and rebuilt from scratch every time, and every generated page carries a
    `GENERATED FILE. DO NOT EDIT` comment in its `<head>`. The asset folders are **mirrored**,
    so a file deleted from `www/` is deleted from the output on the next build.
-   **Two source files are also generated:** `www/research/publications.jemdoc` and `www/home/news.jemdoc`
-   both come from `tools/update_site.py`. To change the publication list, edit the ORCID record
-   and run `make update`; for a paper ORCID does not have, paste BibTeX into
-   `www/data/publications-extra.bib`; for an announcement that is not a paper, write it in
-   `www/data/news-extra.txt`. Never edit a generated `.jemdoc` by hand.
+   **One source file is also generated:** `www/research/publications.jemdoc` comes from
+   `tools/update_site.py`. To change the publication list, edit the ORCID record and run
+   `make update`; for a paper ORCID does not have, paste BibTeX into
+   `www/data/publications-extra.bib`. Never edit a generated `.jemdoc` by hand. The news is
+   **not** generated: it is a hand-written list in the `== News` section of
+   `www/home/index.jemdoc`, one `- MM/YYYY: text` line per announcement.
 3. **After any source change run `python build.py`.** The published site is rebuilt from `www/`
    by CI, so an unbuilt change is an unverified change. Commit **sources only** — `_site/` is
    generated and ignored; never commit it.
 4. **Do not add or remove a page without updating its menu,** and keep each page's own header in
    sync: the second argument of `menu{menu.jemdoc}{X.html}` must equal that page's `.html` file
    name. There are two menus — `menu.jemdoc` (the main site, including the course pages) and
-   `menu-lab.jemdoc` (the Edge AI Lab) — and `build.py` never builds one into a page.
+   `menu-lab.jemdoc` (the Edge AI Lab) and `menu-blog.jemdoc` (the blog) — and `build.py` never
+   builds one into a page. A label
+   stays on one row, so `--menu-width` in `www/css/site.css` has to be wide enough for the
+   longest of them; two entries must never point at the same page.
 5. **MathJax is configured in exactly one place** — the `[firstbit]` section of
    `www/mysite.conf`. Never add a MathJax `<script>` to an individual page.
 
@@ -50,7 +56,7 @@ python build.py --out docs       # build into a different folder
 python build.py --serve          # build + preview at http://localhost:8000
 python build.py --clean          # delete the generated *.html
 make verify                      # build to _site/ + run the full test-suite
-make update                      # refresh the generated pages from ORCID, then build
+make update                      # refresh the Publications page from ORCID, then build
 python -m pytest                 # run only the tests (needs the "vtlp" env)
 ```
 
@@ -77,13 +83,14 @@ grep -l 'Your new menu label' _site/*.html    # expect all 16 pages
 The suite (`tests/test_site.py`) catches broken links, a menu entry pointing at a
 renamed page, a page that fails to highlight itself, a bare `&`, malformed HTML, invalid UTF-8
 (or a code-page lookalike character), a missing stylesheet or `<h1>`, missing MathJax, a
-malformed publication list, a publication that never reaches the News page, a Home-page news
-block that drifts from the News page, CRLF line endings, and an invalid CI workflow.
+malformed publication list, a news line on the Home page that loses its `MM/YYYY:` shape, CRLF
+line endings, and an invalid CI workflow.
 
 ## Do not
 
-* Rename or move `www/` itself, either sidebar, `mysite.conf`, or the asset folders (`css/`,
-  `images/`, `files/`). jemdoc runs inside one staging directory and resolves every relative
+* Rename or move `www/` itself, a sidebar, `mysite.conf`, or the asset folders (`css/`,
+  `images/`, `files/`, `pdf/`). jemdoc runs inside one staging directory and resolves every
+  relative
   path from the site root, so that layout is load-bearing. Moving a *page* between the
   subfolders, or into one, is fine and costs nothing.
 * Commit generated output, or remove the `_site/`, `/docs/` or anchored `/*.html`, `/css/`,

@@ -5,9 +5,8 @@
 #   make clean      delete the generated .html files
 #   make test       run the test-suite
 #   make verify     rebuild into _site/ and then run the test-suite
-#   make update     refresh the generated pages from ORCID, then rebuild
+#   make update     refresh the generated Publications page from ORCID, then rebuild
 #   make publications   alias of "make update"
-#   make news           alias of "make update"
 #
 # You do NOT need make: every target is a one-line command that you can also
 # type directly, e.g.  python build.py
@@ -18,7 +17,7 @@
 PYTHON ?= python
 OUT    ?= _site
 
-.PHONY: all build site serve clean test verify update publications news
+.PHONY: all build site serve clean test verify update publications
 
 all: build
 
@@ -44,12 +43,11 @@ verify:
 	$(PYTHON) build.py --out _site
 	$(PYTHON) -m pytest
 
-# Refresh both generated pages -- Publications and News -- from the ORCID
-# record, www/publications-extra.bib and www/news-extra.txt, then rebuild.
-# Needs network access. Commit the regenerated www/*.jemdoc files.
+# Refresh the generated Publications page from the ORCID record and
+# www/data/publications-extra.bib, then rebuild. Needs network access.
+# Commit the regenerated www/research/publications.jemdoc.
 update:
 	$(PYTHON) tools/update_site.py
 	$(PYTHON) build.py
 
 publications: update
-news: update

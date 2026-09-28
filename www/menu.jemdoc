@@ -3,26 +3,30 @@
 #
 # This ONE file controls the menu on EVERY page of the main site.
 #   * The FIRST line is the site name, and it is the link to the home page.
+#     There is no separate "Home" entry: the site name IS the way home.
 #   * A line WITHOUT brackets is a coloured section heading (e.g. "Research").
 #   * A line with brackets is a link:   Visible text [target-file.html]
-#   * Put the text of a long label inside {{double braces}} if you do not want
-#     it to be forced onto one line, e.g.   {{PhD / Master students}} [x.html]
+#   * A label is kept on ONE row -- jemdoc turns its spaces into non-breaking
+#     spaces -- so the sidebar must be wide enough for the longest of them.
+#     That is what --menu-width in www/css/site.css is for. Put a label in
+#     {{double braces}} only if you want it allowed to wrap instead.
 #   * Menu order = order in this file. Keep it in sync with the pages.
 #
 # The Edge AI Lab has a sidebar of its own: www/menu-lab.jemdoc.
-# The course pages use THIS menu, like every other page of the main site.
 #
 # Careful: jemdoc marks the current entry with a SUFFIX test, so one page name
-# must never be the tail of another. See guide.md §6.4.
+# must never be the tail of another, and two entries must never point at the
+# same page. See guide.md §6.4.
 # ---------------------------------------------------------------------------
-Phuong Luu Vo [index.html]
- News [news.html]
- Awards & Grants [awards.html]
+ Phuong Vo
+ Home [index.html]
+ Blog [chap1.html]
 Research
  Lab [lab.html]
- {{Research Interests}} [interests.html]
+ Interests [interests.html]
  Publications [publications.html]
  #Gallery [gallery.html]
 Teaching
- {{IT545}} [it545.html]
- {{Thesis}} [joining.html]
+ Algorithm Optimization [algorithm-optimization.html]
+ Regression Analysis [regression-analysis.html]
+ Thesis [joining.html]

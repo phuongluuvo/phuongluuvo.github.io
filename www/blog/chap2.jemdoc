@@ -1,0 +1,238 @@
+# jemdoc: menu{menu-blog.jemdoc}{chap2.html}, title{Hàm lồi}, notime
+# Written by tools/latex_to_page.py from www/files/blog/chuong 2 - ham loi.tex -- edit it, or fix the .tex
+# and run the tool again, which overwrites this file.
+
+#= Hàm lồi
+
+~~~
+{}{raw}
+<div class="post">
+<p class="post-meta">Chương 2 · Tác giả: Võ Thị Lưu Phương · Email: vtlphuong@hcmiu.edu.vn</p>
+<h2>Tập lồi</h2>
+<p>Tập $C$ trong không gian bấy kỳ được gọi là lồi nếu và chỉ nếu cho bất kỳ hai điểm $x_1, x_2 \in C$ và số thực $\theta \in [0,1]$, điểm $\theta x_1 + (1-\theta) x_2$ cũng thuộc $C$ (xem Hình 1).</p>
+<p>Định nghĩa có thể được mở rộng ra cho $n$ điểm $x_1, \ldots, x_n \in C$. Tập $C$ là lồi nếu và chỉ nếu $\theta_1 x_1 + \ldots + \theta_n x_n \in C$ với bất kỳ $n$ số thực $\theta_1, \ldots, \theta_n \in [0,1]$, $\theta_1 + \ldots + \theta_n = 1$.</p>
+<figure id="fig-1"><img src="images/blog/chap2-chap2_convex-noncovex-set_v2.png" alt="Hình 1" style="max-width:359px" /><figcaption>Hình 1: Hình mình họa tập lồi (trái) và tập không lồi (phải) trong không gian 2D.</figcaption></figure>
+<p>Lưu ý, điểm $\theta x_1 + (1-\theta) x_2$ được gọi là <i>kết hợp tuyến tính</i> (linear combination) của hai điểm $x_1$ và $x_2$. trong mặt phẳng 2D điểm $\theta x_1 + (1-\theta) x_2$ là một điểm nằm trong đoạn thẳng nối hai điểm $x_1$ và $x_2$. Khi $\theta$ biến thiên từ 0 đến 1, tập các điểm $\theta x_1 + (1-\theta) x_2$ cũng chính là đoạn thẳng nối $x_1$ và $x_2$ với $\theta = 0$ chính là điểm $x_2$ và $\theta=1$ là điểm $x_1$. Khi mở rộng khái niệm trên cho nhiều điểm $x_1, \ldots, x_n$ thì ta có khái niệm convex hull, tập hợp các điểm là kết hợp tuyến tính của $n$ điểm $x_1, \ldots, x_n$:</p>
+<p class="equation">$$\begin{aligned}\mathrm{conv} C = \{\theta_1 x_1 + \ldots + \theta_n x_n, \forall \theta_i \geq 0, \theta_1+\ldots+\theta_n = 1\}.\end{aligned}$$<span class="eq-number">(1)</span></p>
+<p></p>
+<figure id="fig-2"><img src="images/blog/chap2-chap2_line-convexhull.png" alt="Hình 2" style="max-width:359px" /><figcaption>Hình 2: Hình mình họa đoạn thẳng (trái) và tập convex hull (phải) trong không gian 2D.</figcaption></figure>
+<p>Các tập cơ bản như $\mathbf{R}^n$, $\mathbf{R}^n+ = \{x | x \in \mathbf{R}^n, x\geq 0\}$ là các tập lồi.</p>
+<p>Một số phép biển đổi bảo toàn tính lồi của tập hợp như sau:</p>
+<ul>
+<li>Giao của hai tập lồi là một tập lồi.
+</li>
+<li>
+ Ảnh của một tập lồi $S$ cho bởi một hàm tuyến tính $f(x) = Ax+b$, $f(S)$ cũng là một tập lồi:
+ <p class="equation">$$\begin{aligned}f(S) = \{f(x) | x\in S\}.\end{aligned}$$<span class="eq-number">(2)</span></p>
+</li>
+<li>
+ <i>Nửa không gian</i> (half space) định nghĩa bởi $a^T x \leq b$, $x \in \mathbf{R}^n$ là một tập lồi.
+ <figure id="fig-3"><img src="images/blog/chap2-chap2_halfspace.png" alt="Hình 3" style="max-width:265px" /><figcaption>Hình 3: Nửa không gian tạo bởi $a^Tx \leq b$.</figcaption></figure>
+</li>
+<li><i>Đa điện</i> (polyhedron) được định nghĩa là tập hợp giao bởi các nửa không gian và siêu phẳng là tập lồi
+ <p class="equation">$$\begin{aligned}\mathbf{P} = \{x | A x \leq b, C x  = d \}.\end{aligned}$$<span class="eq-number">(3)</span></p>
+</li>
+</ul>
+<h2>Hàm lồi</h2>
+<h3>Định nghĩa</h3>
+<p>Hàm số $f$ từ $\mathbf{R} \rightarrow \mathbf{R}$ là hàm lồi nếu miền xác định của $f$, $\mathrm{dom}f$ là một tập lồi và với hai vector bất kỳ $x, y \in \mathrm{dom}f$, ta có</p>
+<p class="equation">$$\begin{aligned}f(\theta x + (1-\theta) y) \leq \theta f(x) + (1- \theta) f(y), \forall \theta \in [0,1].\end{aligned}$$<span class="eq-number">(4)</span></p>
+<p>Hình 4 biểu diễn hàm lồi trong hệ trục $(x, f(x))$. Nếu hàm $f$ là hàm lồi thì các giá trị của $f$ trong đoạn $[x, y]$ luôn nhỏ hơn (nằm dưới) đoạn thẳng nối hai điểm $(x, f(x))$ và $(y, f(y))$.</p>
+<figure id="fig-4"><img src="images/blog/chap2-chap2_convexfunc.png" alt="Hình 4" style="max-width:302px" /><figcaption>Hình 4: Hình minh họa hàm lồi trong không gian 2D.</figcaption></figure>
+<p>Hàm $f$ được gọi là lồi chặt nếu bất đẳng thức ? là dấu $&lt;$ cho mọi $\theta \in (0,1)$. Hàm lõm (concave) được định nghĩa ngược lại với hàm lồi. Một hàm số $f$ là lõm nếu $-f$ là một hàm lồi.</p>
+<p>Một hàm số có thể vữa không lồi, vừa không lõm trên một tập xác định. Ví dụ hàm $f(x) = x^3$ không lồi và không lõm trên $\mathbf{R}$, tuy nhiên $f$ lồi trên tập số thực dương và lỏm trên tập số thực âm.</p>
+<p>Ví dụ, ta có thể chứng minh hàm tuyến tính có dạng $f(x)=a^Tx+b$ là hàm lồi và cũng là hàm lõm theo định nghĩa. Mọi hàm norm đều là hàm lồi (bài tập).</p>
+<p>{</p>
+<h3>Ghi chú: Norm</h3>
+<p><i>Norms</i> (ký hiệu là $\|x\|$) thường được dùng như một ước lượng độ dài của một vector $x$. Khoảng cách giữa hai vector $x$ và $y$ được tính là $\|x-y\|$.</p>
+<p>Hàm norm $f: \mathbb{R}^n \rightarrow \mathbb{R}$ được định nghĩa phải có những tính chất sau:</p>
+<ul>
+<li>$f(x) \geq 0, \forall x \in \mathbb{R}^n$
+</li>
+<li>$f(x) = 0$ chỉ với $x = 0$ (tính xác định - definite)
+</li>
+<li>$f(tx) = |t|f(x)$ với mọi $x \in \mathbb{R}^n$ and $t \in \mathbb{R}$ (tính đồng nhất - homogeneous)
+</li>
+<li>$f(x+y) \leq f(x) + f(y)$.
+</li>
+</ul>
+<p>Một số các hàm norm thông dụng như sau:</p>
+<ul>
+<li>$\ell_1$-norm (tổng trị tuyệt đối):
+ <p class="equation">$$\begin{aligned}\|x\|_1 = |x_1| + |x_2| + \ldots + |x_n|.\end{aligned}$$<span class="eq-number">(5)</span></p>
+</li>
+<li>$\ell_\infty$-norm hay còn gọi Chebyshev:
+ <p class="equation">$$\begin{aligned}\|x\|_\infty = \max\{|x_1|, |x_2|, \ldots , |x_n|\}.\end{aligned}$$<span class="eq-number">(6)</span></p>
+</li>
+<li>$\ell_2$-norm hay còn gọi Euclidean norm:
+ <p class="equation">$$\begin{aligned}\|x\|_2 = (x^T x)^{1/2} = (x_1^2 + x_2^2 + \ldots + x_n^2)^{1/2}.\end{aligned}$$<span class="eq-number">(7)</span></p>
+</li>
+<li>$\ell_p$-norm, $p &gt; 1$:
+ <p class="equation">$$\begin{aligned}\|x\|_p = (x_1^p + x_2^p + \ldots + x_n^p)^{1/p}.\end{aligned}$$<span class="eq-number">(8)</span></p>
+</li>
+<li>Norm toàn phương (quadratic norm): cho ma trận $P$ xác định dương,
+ <p class="equation">$$\begin{aligned}\|x\|_P = (x^T P x)^{1/2} = \|P^{1/2} x\|_2.\end{aligned}$$<span class="eq-number">(9)</span></p>
+</li>
+</ul>
+<p>}</p>
+<h3>Điều kiện bậc một</h3>
+<p>Giả sử hàm số $f$ khả vi (Hàm số khả vi tại điểm $x$ nếu nó tồn tại đạo hàm tại điểm đó.) tại mọi điểm trong miền xác định của nó $\mathrm{dom} f$. Hàm $f$ lồi nếu và chỉ nếu tập $\mathrm{dom} f$ lồi và</p>
+<p class="equation">$$f(y) \geq f(x) + \nabla f(x)^T (y-x), \forall x, y \in \mathrm{dom} f.$$<span class="eq-number">(10)</span></p>
+<p>Ý nghĩa đằng sau bất đẳng thức này được thể hiện trong Hình 5. Hàm lồi luôn nằm trên tiếp tuyến của hàm số tại bất kỳ điểm $x$ nào.</p>
+<figure id="fig-5"><img src="images/blog/chap2-chap2_firstordercond.png" alt="Hình 5" style="max-width:302px" /><figcaption>Hình 5: Điều kiện bậc một để một hàm số là lồi khi $f(y) \geq f(x) + \nabla f(x)^T (y-x)$ cho mọi điểm $x, y$.</figcaption></figure>
+<p>Tương tự như vậy, điều kiện bậc một để một hàm số là lõm khi tập xác định $\mathrm{dom} f$ lồi và bất phương trình</p>
+<p class="equation">$$f(y) \leq f(x) + \nabla f(x)^T (y-x)$$<span class="eq-number">(11)</span></p>
+<p>đúng cho mọi điểm $x, y \in \mathrm{dom} f$.</p>
+<p>Hàm số được gọi là <i>lồi chặt</i> (strictly convex) hay <i>lõm chặt</i> (strictly concave) nếu các bất phương trình 10 và 11 không có dấu bằng.</p>
+<h3>Điều kiện bậc hai</h3>
+<p>Giả sử hàm $f$ có tồn tại đạo hàm bậc hai tại mọi điểm trong $\mathrm{dom} f$. Hàm $f$ lồi nếu và chỉ nếu ma trận Hessian là xác định dương.</p>
+<p class="equation">$$\nabla^2 f(x) \geq 0, \forall x \in \mathrm{dom} f.$$<span class="eq-number">(12)</span></p>
+<p>{</p>
+<h3>Ghi chú: Ma trận xác định dương</h3>
+<p>Một ma trận $A \in \mathbf{R}^{n \times n}$ là xác định dương (positive semidefinite), ký hiệu là $A \geq 0$, nếu $x^T A x \geq 0$ với mọi vector $x \in \mathbf{R}^{n}$. Trong trường hợp $x^T A x &gt;0$ với mọi $x$, ma trận $A$ được gọi là xác định dương chặt (positive definite).</p>
+<p>Khái niệm về ma trận xác định âm (negative semidefinite) và xác định âm chặt (negative definite) là tương tự, chỉ có đổi dấu $\geq, &gt;$ thành $\leq, &lt;$.</p>
+<p>Một số tính chất của ma trận bán xác định dương như sau:</p>
+<ul>
+<li>Một ma trận đối xứng là xác định dương nếu và chỉ nếu tất cả các <i>giá trị riêng</i> (eigenvalue) của nó là số thực không âm.
+</li>
+<li>Một ma trận có thể vừa không xác định dương và cũng không xác định âm.
+</li>
+<li>Nếu $A$ và $B$ là những ma trận xác đinh dương thì $A+B$ cũng xác định dương. Nếu $A$ hay $B$ xác định dương chặt thì $A+B$ xác định dương chặt.
+</li>
+<li>Nếu $A$ xác định dương thì các phần tử trên đường chéo chính là số không âm.
+</li>
+</ul>
+<p>}</p>
+<p>Ta có thể chứng minh các hàm số sau là hàm lồi hoặc lõm bằng cách kiểm tra đạo hàm bậc hai:</p>
+<ul>
+<li>Hàm mũ $f(x) = e^{ax}, x \in \mathbf{R}$ lồi với mọi $a \in \mathbf{R}$ vì $f''(x) = a^2 e^{ax}$.
+</li>
+<li>Hàm lũy thừa $f(x) = x^a$ lồi trên tập số thực dương khi $a\geq 1$ hoặc $a \leq 0$, và lõm khi $0 \leq a \leq 1$ vì $f''(x) = a(a-1)x^{a-2} \geq 0$ khi $a\geq 1$ hoặc $a \leq 0$ và ngược lại.
+</li>
+<li>Hàm logarit $f(x) = \log(x)$ lõm trên tập số thực dương vì $f''(x) = -1/x^2 &lt;0$.
+</li>
+<li>Hàm entropy $f(x) = -x\log (x)$ là hàm lõm trên tập số thực dương.
+</li>
+<li>Hàm log-sum-exp $LSE(x_1,...,x_n) = \log(\sum_{i=1}^n e^{x_i})$ là hàm lồi.
+ <p class="equation">$$\begin{aligned}\nabla^2 f(x) = \frac{1}{1^Tz} diag(z) - \frac{1}{(1^z)^2}zz^T \succeq 0\end{aligned}$$<span class="eq-number">(13)</span></p>
+ trong đó $z_k = exp(x_k)$. (Vui lòng xem chứng minh ma trận $v^T\nabla^2 f(x)v$ xác định dương với mọi $v$ trong sách [1].)
+</li>
+</ul>
+<h3>Hàm toàn phương</h3>
+<p>Hàm $f(x_1, x_2) = 10 x_1^2 + x_2^2$, trong đó $x_1, x_2 \in \mathbf{R}$ là hàm lồi bởi vì $\nabla^2 f = \begin{bmatrix}&amp;10 &amp; 0 \\&amp;0 &amp;1 \end{bmatrix}$ là ma trận xác định dương.</p>
+<p>Hàm toàn phương tổng quát có dạng</p>
+<p class="equation">$$f(x) = (1/2) x^T P x + q^T x + r,$$<span class="eq-number">(14)</span></p>
+<p>trong đó $x, q$ là các vector $n$ chiều, $P$ là ma trận đối xứng bậc $n$, và $r$ là số thực.</p>
+<p>Ta có, $\nabla f(x) = Px + q$ và $\nabla^2 f(x) = P$. Do đó, hàm toàn phương $f(x)$ lồi nếu và chỉ nếu $P$ là ma trận xác định dương.</p>
+<h2>Một số tính chất của hàm lồi</h2>
+<h3>Tổng các hàm lồi</h3>
+<p>Cho $w_1,...,w_m$ là các số thực không âm. Nếu $f_1(x),...,f_n(x)$ là các hàm lồi thì</p>
+<p class="equation">$$\begin{aligned}f(x) &amp;= w_1 f_1(x) + \ldots + w_m f_m(x).\end{aligned}$$<span class="eq-number">(15)</span></p>
+<p>lồi. Mở rộng ra, ta có</p>
+<p class="equation">$$\begin{aligned}g(x) &amp;= \int_A w(y)f(x, y) dy,\end{aligned}$$<span class="eq-number">(16)</span></p>
+<p>là hàm lồi nếu $f(x)$ lồi và $w(y) \geq 0, \forall y \in A$.</p>
+<h3>Biến đổi tuyến tính</h3>
+<p>Giả sử $g(x) = f(Ax + b)$, trong đó $A \in \mathbb{R}^{n \times m}, b \in \mathbb{R}^n$.</p>
+<p>Nếu $f$ là hàm lồi (hoặc lõm), thì $g$ cũng là hàm lồi (hoặc lõm).</p>
+<p>Ví dụ hàm log barrier dùng cho các ràng buộc là bất phương trình tuyến tính là hàm lồi trên tập mà $f(x)$ xác định</p>
+<p class="equation">$$\begin{aligned}f(x) = - \sum^m_{i=1} \log(b_i - a^T_i x).\end{aligned}$$<span class="eq-number">(17)</span></p>
+<p>Hay hàm norm dùng trong bài toán hồi quy tuyến tính (linear regression)</p>
+<p class="equation">$$\begin{aligned}f(x) = \| Ax - b\|\end{aligned}$$<span class="eq-number">(18)</span></p>
+<p>là hàm lồi, trong đó $A \in \mathbb{R}^{m \times n}, b \in \mathbb{R}^m$.</p>
+<h3>Hàm cực đại, cực tiểu</h3>
+<p>Giả sử hai hàm số $f_1, f_2$ là các hàm lồi. Hàm được định nghĩa cực đại $f(x) = \max\{f_1(x), f_2(x)\}$, trên miền xác định $\mathbf{dom}f = \mathbf{dom}f_1 \cap \mathbf{dom}f_2$ cũng là hàm lồi.</p>
+<p>Áp dụng tính chất trên, ta có các hàm sau đều là hàm lồi:</p>
+<ul>
+<li>$f(x) = \max_i \|A^{(i)} x - b^{(i)}\|$, trong đó $A^{(i)} \in \mathbb{R}^{m \times n}, b^{(i)} \in \mathbb{R}^m$, và $\|.\|$ là norm.
+</li>
+<li>$f(x) = \max\{a_1^T x + b_1, \ldots, a_n^T x + b_n\}$
+</li>
+<li>$f(x) = \max\{x_1, \ldots, x_n\}$ $x_1, \ldots, x_n \in \mathbb{R}^n$.
+</li>
+</ul>
+<p>Nếu $f(x,y)$ lồi, và $C$ là tập lồi thì $g(x) =\min_{y \in C} f(x, y)$ là hàm lồi.</p>
+<h3>Luật kết hợp</h3>
+<p>Cho các hàm số $g: \mathbf{R}^n \rightarrow \mathbf{R}, h: \mathbf{R} \rightarrow \mathbf{R}$, hàm số được định nghĩa bởi</p>
+<p class="equation">$$\begin{aligned}f(x) = h(g(x))\end{aligned}$$<span class="eq-number">(19)</span></p>
+<ul>
+<li>lồi nếu $h$ lồi và không giảm, $g$ lồi,
+</li>
+<li>lồi nếu $h$ lồi và không giảm, $g$ lõm,
+</li>
+<li>lõm nếu $h$ lõm và không giảm, $g$ lõm,
+</li>
+<li>lõm nếu $h$ lõm và không tăng, $g$ lồi.
+</li>
+</ul>
+<p>Ta nhớ các quy tắc trên bằng cách xem xét trường hợp đặc biệt khi $n=1$:</p>
+<p class="equation">$$\begin{aligned}f''(x) = h''(g(x))g'(x)^2 + h'(g(x))g''(x).\end{aligned}$$<span class="eq-number">(20)</span></p>
+<p>$f'' \geq 0$ ($f$ lồi) nếu</p>
+<ul>
+<li>$h'' \geq 0$ ($h$ lồi) và $h' \geq 0$ ($h$ không giảm) và $g''(x) \geq 0$ ($g$ lồi), hoặc
+</li>
+<li>$h'' \geq 0$ ($h$ lồi) và $h' \ leq 0$ ($h$ không tăng) và $g''(x) \leq 0$ ($g$ lõm).
+</li>
+</ul>
+<p>$f'' \leq 0$ ($f$ lõm) nếu</p>
+<ul>
+<li>$h'' \leq 0$ ($h$ lõm) và $h' \geq 0$ ($h$ không giảm) và $g''(x) \leq 0$ ($g$ lõm), hoặc
+</li>
+<li>$h'' \leq 0$ ($h$ lõm) và $h' \ geq 0$ ($h$ không giảm) và $g''(x) \geq 0$ ($g$ lồi).
+</li>
+</ul>
+<p>Từ các quy tắc kết hợp trên, ta có thể suy ra ngay rằng:</p>
+<ul>
+<li>Nếu $g$ lồi thì $e^{g(x)}$ lồi.
+</li>
+<li>Nếu $g$ lõm và dương, thì $\log g(x)$ lõm.
+</li>
+<li>Nếu $g$ lõm và dương, thì $1/g(x)$ lồi.
+</li>
+<li>Nếu $g$ lồi, không âm, và $p \geq 1$, thì $g(x)^p$ lồi.
+</li>
+<li>Nếu $g$ lồi, thì $-\log(-g(x))$ lồi trên tập $\{x | g(x) &lt;0\}$.
+</li>
+<li>$\log(\sum_{i=1}^n e^{y_i})$ là hàm lồi, do đó, $f(x) = -\log(-\log(\sum_{i=1}^m e^{a_i^T x + b_i}))$ là hàm lồi trên tập $\{x | \sum_{i=1}^m e^{a_i^T x + b_i} &lt; 1 \}$.
+</li>
+</ul>
+<h3>Tập $\alpha$-sublevel</h3>
+<p><i>Level set</i> của một hàm $f(x)$ là tập hợp các đường cong mà $f(x)$ là một hằng số. Ta thấy level set được biểu diễn trong các bản đồ để thể hiện độ cao núi hay độ sâu của biển, hồ.</p>
+<p><i>Tập hợp $\alpha$-sublevel</i> của một hàm $f$ được định nghĩa bởi</p>
+<p class="equation">$$\begin{aligned}\{x | x \in \mathrm{dom} f, f(x) \leq \alpha \}.\end{aligned}$$<span class="eq-number">(21)</span></p>
+<p>Sublevel set của một hàm lồi là tập lồi, tuy nhiên ngược lại thì không đúng. Nếu một hàm mà tất các các sublevel set là lồi thì ta chỉ kết luận được hàm đó là hàm quasiconvex. (Vui lòng tham khảo thêm về hàm quasiconvex trong [1].)</p>
+<figure id="fig-6"><img src="images/blog/chap2-chap2_levelset_3d.png" alt="Hình 6" style="max-width:208px" /><figcaption>Hình 6: Hình biểu diễn hàm $f(x_1,x_2) = 4x_1^2 + 5x_2^2$ trong không gian 3D (hình bên trái) và các level set t1, t2, và t4 của hàm $f$ với các giá trị $f(x_1,x_2) =$1, 2 và 4 tương ứng (hình bên phải). Miền được tô đậm là 4-sublevel set của hàm số $f$.</figcaption></figure>
+<h3>Epigraph</h3>
+<p>Cho hàm $f(x): \mathbf{R}^n \rightarrow \mathbf{R}$. Epigraph của hàm $f$ là tập hợp</p>
+<p class="equation">$$\begin{aligned}\mathrm{epi} f = \{(x,t) | x \in \mathrm{dom} f, f(x) \leq t \}.\end{aligned}$$<span class="eq-number">(22)</span></p>
+<p>Ta có, <i>$f$ là một hàm lồi nếu và chỉ nếu epigraph là một tập lồi với mọi $t \in \mathbf{R}$</i> (Hình 7).</p>
+<figure id="fig-7"><img src="images/blog/chap2-chap2_epigraph.png" alt="Hình 7" style="max-width:189px" /><figcaption>Hình 7: Epigraph của hàm $f$.</figcaption></figure>
+<h2>Hàm quasiconvex</h2>
+<p>Hàm số $f$ là <i>quasiconvex</i> (quasi có nghĩa là gần như, tựa như, nên loại hàm này có thể dịch là <i>hàm tựa lồi</i>) nếu tập xác định và tất cả các sublevel set của nó đều là tập lồi.</p>
+<p>Hàm $f$ được gọi là <i>quasiconcave</i> nếu $-f$ là quasiconvex. Một hàm vừa quasiconvex, vừa quasiconcave thì được gọi là <i>quasilinear</i>. Tất cả các hàm lồi đều là quasive convex. Tuy nhiên điều ngược lại thì không đúng.</p>
+<p>Ví dụ các hàm sau là hàm quasi-:</p>
+<ul>
+<li>$\mathrm{ceil}(x) = \min\{ z \in \mathbf{Z} | z \geq z \}$ là quasiconvex.
+</li>
+<li>$f: \mathrm{R}^2 \rightarrow \mathbf{R}$, $f(x_1, x_2) = x_1 x_2$ là quasiconcave trên tập số không âm $\mathrm{R}^2$ vì tập superlevel set $x_1 x_2 &gt;= \alpha$ lồi trên tập $\mathbf{R}^2$.
+</li>
+<li>$f(x) = \frac{||x-a||_2}{||x-b||_2}$ là quasiconvex trên tập $\{x | ||x-a||_2 \leq ||x-b||_2\}$.
+</li>
+</ul>
+<figure id="fig-8"><img src="images/blog/chap2-chap2_quasiconvex_3d.png" alt="Hình 8" style="max-width:227px" /><figcaption>Hình 8: Biểu diễn hàm $f(x_1,x_2) = \frac{||x-a||_2}{||x-b||_2}$, trong đó $a=(0,0), b=(-1,-1)$ trong không gian 3D (hình bên trái) và sublevel set t2, t3, và t4 trong không gian 2D tương ứng với $f(x_1,x_2) = 2$, 3, và 4 (hình bên phải).</figcaption></figure>
+<p>Hàm quasiconvex xuất hiện trong một số ứng dụng trong thực tế kinh tế, viễn thông,... Mặc dù không thông dụng như tối ưu lồi, tối ưu hàm quasiconvex cũng là một nhánh của lý thuyết tối ưu, tuy nhiên nó không được đề cập đến trong khuôn khổ sách này.</p>
+<h2>Hàm log-concave và log-convex</h2>
+<p>Hàm $f$ dương là log-concave nếu $\log f$ là hàm lõm</p>
+<p class="equation">$$\begin{aligned}f(\theta x + (1-\theta)y) \geq f(x)^\theta f(y)^{1-\theta}, \forall 0 \leq \theta \leq 1.\end{aligned}$$<span class="eq-number">(23)</span></p>
+<p>Tương tự như vậy, $f$ là log-convex nếu $\log f$ lồi.</p>
+<p>Ví dụ, hàm mũ $x^a$ xác định trên tập số thực dương là log-convex với mọi $a \leq 0$ và log-concave với mọi $a \geq 0$.</p>
+<h3>Hàm sigmoid</h3>
+<p>Hàm <i>sigmoid</i> $\mathbf{R}^n \rightarrow \mathbf{R}$, hay còn được gọi là hàm logistic, được dùng để biểu diễn xác suất trong bài toán phân hai lớp là log-concave (Hình 9)</p>
+<p class="equation">$$\begin{aligned}sigmoid(x) = \frac{1}{1 + e^{-w^T x}}\end{aligned}$$<span class="eq-number">(24)</span></p>
+<p></p>
+<figure id="fig-9"><img src="images/blog/chap2-chap2_sigmoid.png" alt="Hình 9" style="max-width:359px" /><figcaption>Hình 9: Biểu diễn hàm sigmoid $\frac{1}{1 + e^{-w x}}$ với $w = 0,2; 2; 10$ trong không gian 2D.</figcaption></figure>
+<h3>Hàm softmax</h3>
+<p>Hàm <i>softmax</i> $\mathbf{R}^n \rightarrow \mathbf{R}^C$ được dùng trong bài toán phân đa lớp là log-concave</p>
+<p class="equation">$$\begin{aligned}softmax(x)_i = \frac{e^{w_i^T x}}{\sum_{i=1}^C e^{w_i^T x}}, i=1,..., C\end{aligned}$$<span class="eq-number">(25)</span></p>
+<p>Trong bài toán phân đa lớp dùng Bayes, $n$ là số đặc tính của điểm dữ liệu $x$ và $C$ là số lớp. Ví dụ trong ứng dụng nhận dạng chữ số viết tay dùng tập dữ liệu MNIST, khi đưa vào một hình chữ số viết tay $28\times 28 = 784$ pixel, giải thuật phân lớp sẽ dùng hàm softmax để ước lượng xác suất mà hình đó là chữ số nào. Đó là một vector có 10 thành phần là những xác suất mà hình đó là chữ số 0, 1,..., hay 9 ($C=10$). Nếu $softmax_2 = 0.91$ và 09 thành phần còn lại đều là 0.01 thì khả năng 91% hình đó là chữ số 2. Ngoài ra, softmax còn được dùng cho ngỏ ra của mạng reural nếu dùng mạng neural để phân đa lớp.</p>
+<h2>Tài liệu tham khảo</h2><ol class="refs"><li id="cite-boyd">Boyd, Stephen, Stephen P. Boyd, and Lieven Vandenberghe. Convex optimization. Cambridge university press, 2004.</li><li id="cite-pythonbook">Wentworth, Peter, Jeffrey Elkner, Allen B. Downey, and Chris Meyer. How to think like a computer scientist: Learning with Python 3. (2015).</li></ol></div>
+~~~
