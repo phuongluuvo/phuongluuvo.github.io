@@ -2,10 +2,9 @@
 # Written by tools/latex_to_page.py from www/files/blog/chuong 2 - ham loi.tex -- edit it, or fix the .tex
 # and run the tool again, which overwrites this file.
 
-#= Hàm lồi
-
 ~~~
 {}{raw}
+<h1 class="post-title">Hàm lồi</h1>
 <div class="post">
 <p class="post-meta">Chương 2 · Tác giả: Võ Thị Lưu Phương · Email: vtlphuong@hcmiu.edu.vn</p>
 <h2>Tập lồi</h2>
@@ -39,7 +38,7 @@
 <p class="equation">$$\begin{aligned}f(\theta x + (1-\theta) y) \leq \theta f(x) + (1- \theta) f(y), \forall \theta \in [0,1].\end{aligned}$$<span class="eq-number">(4)</span></p>
 <p>Hình 4 biểu diễn hàm lồi trong hệ trục $(x, f(x))$. Nếu hàm $f$ là hàm lồi thì các giá trị của $f$ trong đoạn $[x, y]$ luôn nhỏ hơn (nằm dưới) đoạn thẳng nối hai điểm $(x, f(x))$ và $(y, f(y))$.</p>
 <figure id="fig-4"><img src="images/blog/chap2-chap2_convexfunc.png" alt="Hình 4" style="max-width:302px" /><figcaption>Hình 4: Hình minh họa hàm lồi trong không gian 2D.</figcaption></figure>
-<p>Hàm $f$ được gọi là lồi chặt nếu bất đẳng thức ? là dấu $&lt;$ cho mọi $\theta \in (0,1)$. Hàm lõm (concave) được định nghĩa ngược lại với hàm lồi. Một hàm số $f$ là lõm nếu $-f$ là một hàm lồi.</p>
+<p>Hàm $f$ được gọi là lồi chặt nếu bất đẳng thức là dấu $&lt;$ cho mọi $\theta \in (0,1)$. Hàm lõm (concave) được định nghĩa ngược lại với hàm lồi. Một hàm số $f$ là lõm nếu $-f$ là một hàm lồi.</p>
 <p>Một hàm số có thể vữa không lồi, vừa không lõm trên một tập xác định. Ví dụ hàm $f(x) = x^3$ không lồi và không lõm trên $\mathbf{R}$, tuy nhiên $f$ lồi trên tập số thực dương và lỏm trên tập số thực âm.</p>
 <p>Ví dụ, ta có thể chứng minh hàm tuyến tính có dạng $f(x)=a^Tx+b$ là hàm lồi và cũng là hàm lõm theo định nghĩa. Mọi hàm norm đều là hàm lồi (bài tập).</p>
 <p>{</p>

@@ -1293,32 +1293,38 @@ python tools/latex_to_page.py "www/files/blog/chuong 3 - bai toan toi uu loi.tex
     --out www/blog/chap3.jemdoc --post "Bài toán tối ưu lồi"
 ```
 
+The five posts on the site are written in one run, from the `POSTS` list near the top of the
+tool:
+
+```bash
+python tools/latex_to_page.py --all          # writes www/blog/chap1..5.jemdoc
+```
+
 What it handles: `\chapter` and `\section` as headings, `itemize`/`enumerate` as lists, `align`,
 `equation`, matrices and cases as mathematics, `figure` with its caption (the image is copied
 from `www/files/blog/` into `www/images/blog/`), `tabular` as a table, `lstlisting` as code,
 `algorithmic` as pseudocode, and the bibliography with `\cite` and `\ref` turned into the numbers
 they point at. It needs nothing but the standard library, and nothing in `build.py` calls it.
 
-Two things to know:
+Three things to know:
 
 * It is **not a LaTeX engine**: a command it does not know is dropped rather than guessed at.
   Read the page over, and when you fix a word, fix it in the `.tex` and run the tool again — or
   edit the page, and know the next run overwrites it.
 * The chapters are long (three to five thousand words each). The tool is what makes them a page
   rather than a PDF; the file it writes is committed and needs no tooling to build.
+* **Every post numbers its own equations and figures, from 1.** The chapters are one book, so
+  the sources count chapter by chapter — "hình 2.4", "điều kiện (3.7)" — but a reader arrives at
+  one post, not at the book. So each page starts again at 1 and counts on without gaps (a block
+  of `align` takes one number on the page even when LaTeX prints a number beside every line of
+  it), and a `\ref` prints the same number as the caption it points at. A `\label` that no `.tex`
+  defines is neither turned into "?" nor dropped in silence: the run ends with the list of them,
+  e.g. `eq:chap2-convex` in `chuong 2 - ham loi.tex`, which is the one left to fix in the source.
 
-The PDFs live in `www/pdf/blogs/`, and `%%BLOG%%` in the `[materials]` section of
-`www/mysite.conf` says so:
-
-```
-blog      pdf/blogs
-```
-
-* **Where a PDF lives is not free.** A browser shows a PDF inside a frame only when it comes from
-the same site: GitHub sends `X-Frame-Options: deny` with `raw.githubusercontent.com`, so a file
-kept there appears as an empty box. That is why the lecture slides and the chapter PDFs live in
-`www/pdf/` — an asset folder like `css/` and `images/`, copied into the output and mirrored. A
-site served by **GitHub Pages**, e.g. `https://USER.github.io/blog`, would work too.
+That is all the blog needs: a post is text, and no PDF machinery is left for it — the chapters
+live in `www/files/blog/` and nowhere else. Every post carries its title as an
+`<h1 class="post-title">` rather than a jemdoc `= Title` line, so the tool writes it and
+`www/css/site.css` styles it.
 * `.pdf-frame` in `www/css/site.css` is what makes a framed PDF fill the screen: the width of the
 text column, and as much of the height as is left after the page title and the footer. Only the
 **course** pages frame a PDF now ([§9.4](#94-add-a-course)); a blog post is its own text.

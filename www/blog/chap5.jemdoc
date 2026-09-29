@@ -2,10 +2,9 @@
 # Written by tools/latex_to_page.py from www/files/blog/chuong 5 - duality.tex -- edit it, or fix the .tex
 # and run the tool again, which overwrites this file.
 
-#= Lý thuyết đối ngẫu
-
 ~~~
 {}{raw}
+<h1 class="post-title">Lý thuyết đối ngẫu</h1>
 <div class="post">
 <p class="post-meta">Chương 5 · Tác giả: Võ Thị Lưu Phương · Email: vtlphuong@hcmiu.edu.vn</p>
 <h2>Giới thiệu</h2>
@@ -98,53 +97,53 @@
 <p>Xét bài toán tối ưu:</p>
 <p class="equation">$$\begin{aligned}\mathrm{min~} &amp; x_1^2 + x_2^2 - 2x_1 \\
 \mathrm{s.t.~} &amp; 2x_1 + x_2 \geq 5 \\
-			&amp; x_2 \leq 7.\end{aligned}$$</p>
+			&amp; x_2 \leq 7.\end{aligned}$$<span class="eq-number">(22)</span></p>
 <p>Lagrangian được cho bởi công thức:</p>
 <p class="equation">$$\begin{aligned}L(x_1, x_2, \lambda_1, \lambda_2) = &amp; x_1^2 + x_2^2 - 2 x_1  \\
 								&amp; + (-2x_1 - x_2 + 5)\lambda_1 \\
-								&amp; + (x_2 - 7) \lambda_2.\end{aligned}$$<span class="eq-number">(22)</span></p>
+								&amp; + (x_2 - 7) \lambda_2.\end{aligned}$$<span class="eq-number">(23)</span></p>
 <p>Hàm đối ngẫu</p>
 <p class="equation">$$\begin{aligned}g(\lambda_1, \lambda_2) = &amp; \min_{x_1, x_2} L(x_1, x_2, \lambda_1, \lambda_2) \\
 							= &amp; \min_{x_1} x_1^2 - 2(1 + \lambda_1) x_1 \\
 								&amp; + \min_{x_2} x_2^2 + (- \lambda_1 + \lambda_2) x_2\\
-								&amp; + 5\lambda_1 - 7 \lambda_2.\end{aligned}$$<span class="eq-number">(23)</span></p>
+								&amp; + 5\lambda_1 - 7 \lambda_2.\end{aligned}$$<span class="eq-number">(24)</span></p>
 <p>Cực tiểu của $L$ theo $x_1, x_2$ đạt tại:</p>
 <p class="equation">$$\begin{aligned}x_1 &amp;= 1 + \lambda_1\\
-x_2 &amp;= \frac{1}{2} (\lambda_1 - \lambda_2).\end{aligned}$$<span class="eq-number">(24)</span></p>
+x_2 &amp;= \frac{1}{2} (\lambda_1 - \lambda_2).\end{aligned}$$<span class="eq-number">(25)</span></p>
 <p>Do đó hàm đối ngẫu có dạng sau:</p>
-<p class="equation">$$\begin{aligned}g(\lambda_1, \lambda_2) &amp;= - (1 + \lambda_1)^2 - \frac{1}{4} (\lambda_1 - \lambda_2)^2 + 5\lambda_1 - 7 \lambda_2.\end{aligned}$$<span class="eq-number">(25)</span></p>
+<p class="equation">$$\begin{aligned}g(\lambda_1, \lambda_2) &amp;= - (1 + \lambda_1)^2 - \frac{1}{4} (\lambda_1 - \lambda_2)^2 + 5\lambda_1 - 7 \lambda_2.\end{aligned}$$<span class="eq-number">(26)</span></p>
 <h3>Ví dụ 5:</h3>
 <p>Xét bài toán LP dạng tổng quát</p>
 <p class="equation">$$\begin{aligned}\mathrm{min~} &amp; c^T x \\
 \mathrm{s.t.~} &amp; Ax = B \\
-			&amp; x \geq 0.\end{aligned}$$<span class="eq-number">(26)</span></p>
+			&amp; x \geq 0.\end{aligned}$$<span class="eq-number">(27)</span></p>
 <p>Hàm đối ngẫu được cho bởi:</p>
 <p class="equation">$$\begin{aligned}g(\lambda, \nu) &amp;= \min_x L(x, \lambda, \nu) = -b^T \nu + \min_x(c + A^T \nu - \lambda)^T x \\
-		&amp; = \begin{cases} -b^T \nu ~ \textrm{nếu} ~ c + A^T \nu - \lambda = 0 \\ -\infty , \textrm{nếu không} \end{cases}\end{aligned}$$<span class="eq-number">(27)</span></p>
+		&amp; = \begin{cases} -b^T \nu ~ \textrm{nếu} ~ c + A^T \nu - \lambda = 0 \\ -\infty , \textrm{nếu không} \end{cases}\end{aligned}$$<span class="eq-number">(28)</span></p>
 <p>$-\infty$ là một chăn dưới đương nhiên của mọi hàm số. Do đó để cho hàm đối ngẫu $g(\lambda, \nu)$ là một chặn dưới thực sự thì ta cần có $c + A^T \nu - \lambda = 0$</p>
-<p>Bài toán đối ngẫu của bài toán LP 26 là bài toán tìm chặn dưới tối ưu nhất</p>
+<p>Bài toán đối ngẫu của bài toán LP 27 là bài toán tìm chặn dưới tối ưu nhất</p>
 <p class="equation">$$\begin{aligned}\max &amp; - b^T \nu \\
 \mathrm{s.t.~} &amp; A^T \nu - \lambda + c = 0 \\
-			&amp; \lambda \geq 0.\end{aligned}$$<span class="eq-number">(28)</span></p>
+			&amp; \lambda \geq 0.\end{aligned}$$<span class="eq-number">(29)</span></p>
 <p>hay tương dương với</p>
 <p class="equation">$$\begin{aligned}\max &amp; - b^T \nu \\
-\mathrm{s.t.~} &amp; A^T \nu  + c \geq 0.\end{aligned}$$<span class="eq-number">(29)</span></p>
+\mathrm{s.t.~} &amp; A^T \nu  + c \geq 0.\end{aligned}$$<span class="eq-number">(30)</span></p>
 <h3>Ví dụ 6:</h3>
 <p>Xét bài toán LP có ràng buộc dạng bất đẳng thức:</p>
 <p class="equation">$$\begin{aligned}\mathrm{min~} &amp; c^T x \\
-\mathrm{s.t.~} &amp; Ax \geq b\end{aligned}$$<span class="eq-number">(30)</span></p>
+\mathrm{s.t.~} &amp; Ax \geq b\end{aligned}$$<span class="eq-number">(31)</span></p>
 <p>Hàm đối ngẫu được cho bởi:</p>
 <p class="equation">$$\begin{aligned}g(\lambda) &amp;= \min_x L(x, \lambda) = -b^T \lambda + \min_x(A^T \lambda + c)^T x \\
 		&amp; = \begin{cases} -b^T \lambda ~ \textrm{nếu} ~ A^T + c \lambda = 0 \\ 
-		-\infty , ~\textrm{nếu}~ A^T + c \lambda \neq 0 \end{cases}\end{aligned}$$<span class="eq-number">(31)</span></p>
-<p>Do đó, bài toán đối ngẫu của bài toán 30 có dạng:</p>
+		-\infty , ~\textrm{nếu}~ A^T + c \lambda \neq 0 \end{cases}\end{aligned}$$<span class="eq-number">(32)</span></p>
+<p>Do đó, bài toán đối ngẫu của bài toán 31 có dạng:</p>
 <p class="equation">$$\begin{aligned}\max &amp; - b^T \lambda \\
 \mathrm{s.t.~} &amp; A^T \lambda + c = 0 \\
-			&amp; \lambda \geq 0.\end{aligned}$$<span class="eq-number">(32)</span></p>
+			&amp; \lambda \geq 0.\end{aligned}$$<span class="eq-number">(33)</span></p>
 <h2>Tính chất đối ngẫu yếu và mạnh</h2>
 <h3>Đối ngẫu yếu (weak duality)</h3>
 <p>Gọi $p^*$ và $d^*$ là giá trị cực trị của bài toán gốc và bài toán đối ngẫu. Do tính chất hàm đối ngẫu luôn là chặn dưới của $p^*$ nên ta có bất đẳng thức:</p>
-<p class="equation">$$\begin{aligned}d^* \leq p^*\end{aligned}$$<span class="eq-number">(33)</span></p>
+<p class="equation">$$\begin{aligned}d^* \leq p^*\end{aligned}$$<span class="eq-number">(34)</span></p>
 <p>luôn đúng. Bất đẳng thức trên được gọi là <b>tính đối ngẫu yếu</b> của bài toán Primal 1. Giá trị $p^* - d^*$ được gọi là khoảng cách đối ngẫu tối ưu (optimal duality gap) của bài toán Primal.</p>
 <h3>Đối ngẫu mạnh (strong duality)</h3>
 <p>Trong trường hợp $d^* = p^*$, ta nói bài toán Primal 1 có tính <b>đối ngẫu mạnh</b> (strong duality). Ta có tính chất sau: Nếu bài toán Primal 1 lồi và điều kiện Slater thỏa mãn thì bài toán có tính đối ngẫu mạnh.</p>
@@ -152,13 +151,13 @@ x_2 &amp;= \frac{1}{2} (\lambda_1 - \lambda_2).\end{aligned}$$<span class="eq-nu
 <h2>Các điều kiện tại điểm cực trị</h2>
 <h3>Complementary slackness</h3>
 <p>Một số tài liệu kinh tế dịch complementary slackness là định lý bù yếu. Giả sử bài toán tối ưu có tính đối ngẫu mạnh, tức là</p>
-<p class="equation">$$\begin{aligned}f_0(x^*) &amp; = g(\lambda^*, \nu^*)\end{aligned}$$<span class="eq-number">(34)</span></p>
+<p class="equation">$$\begin{aligned}f_0(x^*) &amp; = g(\lambda^*, \nu^*)\end{aligned}$$<span class="eq-number">(35)</span></p>
 <p>Tuy nhiên ta có:</p>
 <p class="equation">$$\begin{aligned}g(\lambda^*, \nu^*)	&amp; = \min_x \Big( f_0(x) + \sum_{i = 1}^m \lambda_i^* f_i(x) + \sum_{i = 1}^p \nu_i^* h_i(x) \Big)\\
 	&amp; \leq f_0(x^*) + \sum_{i = 1}^m \lambda_i^* f_i(x^*) + \sum_{i = 1}^p \nu_i^* h_i(x^*) \\
-	&amp; \leq f_0(x^*).\end{aligned}$$<span class="eq-number">(35)</span></p>
+	&amp; \leq f_0(x^*).\end{aligned}$$<span class="eq-number">(36)</span></p>
 <p>Từ đó dẫn đến $\sum_{i = 1}^m \lambda_i^* f_i(x^*) = 0$. Do đó</p>
-<p class="equation">$$\begin{aligned}\lambda_i^* f_i(x^*) = 0, \forall i = 1, \ldots, m.\end{aligned}$$<span class="eq-number">(36)</span></p>
+<p class="equation">$$\begin{aligned}\lambda_i^* f_i(x^*) = 0, \forall i = 1, \ldots, m.\end{aligned}$$<span class="eq-number">(37)</span></p>
 <p><b>Nếu $\lambda_i^* &gt; 0$, thì $f_i(x^*) = 0$ (ràng buộc $i$ chặt tại $x^*$) và nếu $f_i(x^*) &lt; 0$ (ràng buộc $i$ lỏng tại $x^*$), thì $\lambda_i^* = 0$.</b></p>
 <h3>Điều kiện Karush-Kuhn-Tucker</h3>
 <p>Giả sử hàm mục tiêu và các hàm ràng buộc $f_0, \ldots, f_m, h_1, \ldots, h_p$ khả vi. Gọi $x^*$ và $(\lambda^*, \nu^*)$ lần lượt là các điểm cực trị của bài toán chính và bài toán đối ngẫu. Nếu ta có đối ngẫu mạnh thì các điều kiện <i>Karush-Kuhn-Tucker (KKT)</i> thỏa mãn:</p>
@@ -166,33 +165,33 @@ x_2 &amp;= \frac{1}{2} (\lambda_1 - \lambda_2).\end{aligned}$$<span class="eq-nu
 h_i(x^*) &amp; = 0, i = 1, \ldots , p \\
 \lambda_i^* &amp; \geq 0, i = 1, \ldots , m \\
 \lambda_i^* f_i(x^*) &amp; = 0, i = 1, \ldots , m \\
-\nabla f_0(x^*) + \sum_{i = 1}^m \lambda_i^* \nabla f_i(x^*) + \sum_{i = 1}^p \nu_i^* \nabla h_i(x^*) &amp; = 0.\end{aligned}$$<span class="eq-number">(37)</span></p>
-<p>Hai điều kiện đầu tiên 37-? là điều kiện cho $x^*$ là một điểm hợp lệ trong tập khả thi của bài toán Primal. Điều kiện ? là điều kiện cho $\lambda^*$ là một điểm hợp lệ trong tập khả thi của bài toán Dual. Điều kiện ? chính là complementary slackness. Điều kiện ? chính là $\nabla_x L = 0$.</p>
+\nabla f_0(x^*) + \sum_{i = 1}^m \lambda_i^* \nabla f_i(x^*) + \sum_{i = 1}^p \nu_i^* \nabla h_i(x^*) &amp; = 0.\end{aligned}$$<span class="eq-number">(38)</span></p>
+<p>Hai điều kiện đầu tiên 38-38 là điều kiện cho $x^*$ là một điểm hợp lệ trong tập khả thi của bài toán Primal. Điều kiện 38 là điều kiện cho $\lambda^*$ là một điểm hợp lệ trong tập khả thi của bài toán Dual. Điều kiện 38 chính là complementary slackness. Điều kiện 38 chính là $\nabla_x L = 0$.</p>
 <p>Trong trường hợp bài toán chính là tối ưu lồi, các điều kiện KKT cũng là điều kiện đủ. Nếu $(\tilde{x}, \tilde{\lambda}, \tilde{\nu})$ thỏa các điều kiện KKT sau:</p>
 <p class="equation">$$\begin{aligned}f_i(\tilde{x}) &amp; \leq 0, i = 1, \ldots , m\\
 h_i(\tilde{x}) &amp; = 0, i = 1, \ldots , p \\
 \tilde{\lambda}_i &amp; \geq 0, i = 1, \ldots , m \\
 \tilde{\lambda}_i f_i(\tilde{x}) &amp; = 0, i = 1, \ldots , m\\
-\nabla f_0(\tilde{x}) + \sum_{i = 1}^m \tilde{\lambda}_i \nabla f_i(\tilde{x}) + \sum_{i = 1}^p \tilde{\nu}_i \nabla h_i(\tilde{x}) &amp; = 0.\end{aligned}$$<span class="eq-number">(38)</span></p>
+\nabla f_0(\tilde{x}) + \sum_{i = 1}^m \tilde{\lambda}_i \nabla f_i(\tilde{x}) + \sum_{i = 1}^p \tilde{\nu}_i \nabla h_i(\tilde{x}) &amp; = 0.\end{aligned}$$<span class="eq-number">(39)</span></p>
 <p>thì $\tilde{x}$ và $(\tilde{\lambda}, \tilde{\nu})$ là các điểm cực trị của bài toán chính và bài toán đối ngẫu tương ứng.</p>
 <p>Ta nhận thấy điều kiện KKT là điều kiện tổng quát cho một bài toán tối ưu có ràng buộc tại điểm cực trị.</p>
 <h3>Ví dụ 7: bài toán cực tiểu hàm toàn phương với ràng buộc đẳng thức</h3>
 <p>Xét bài toán</p>
 <p class="equation">$$\begin{aligned}\min ~ &amp; (1/2) x^T Px + q^Tx + r \\
-\mathrm{s.t.} ~ &amp; Ax = b,\end{aligned}$$<span class="eq-number">(39)</span></p>
+\mathrm{s.t.} ~ &amp; Ax = b,\end{aligned}$$<span class="eq-number">(40)</span></p>
 <p>trong đó $P$ là ma trận đối xứng xác định dương. Bài toán trên là một bài toán tối ưu lồi. Điều kiện KKT của bài toán trên bao gồm:</p>
-<p class="equation">$$\begin{aligned}A x^* = b, Px^* + q + A^T \nu^* = 0.\end{aligned}$$<span class="eq-number">(40)</span></p>
-<p class="equation">$$\begin{aligned}\begin{bmatrix} P &amp; A^T \\ A &amp; 0 \end{bmatrix} \begin{bmatrix} x^* \\ \nu^* \end{bmatrix} = \begin{bmatrix} -q \\ b \end{bmatrix}.\end{aligned}$$<span class="eq-number">(41)</span></p>
+<p class="equation">$$\begin{aligned}A x^* = b, Px^* + q + A^T \nu^* = 0.\end{aligned}$$<span class="eq-number">(41)</span></p>
+<p class="equation">$$\begin{aligned}\begin{bmatrix} P &amp; A^T \\ A &amp; 0 \end{bmatrix} \begin{bmatrix} x^* \\ \nu^* \end{bmatrix} = \begin{bmatrix} -q \\ b \end{bmatrix}.\end{aligned}$$<span class="eq-number">(42)</span></p>
 <h3>Ví dụ 8: bài toán water-filling</h3>
 <p>Bài toán water-filling được áp dụng để cực đại dung lượng kênh truyền trong viễn thông. Giả sử $x_i$ là công suất truyền trên kênh thứ $i$. Dung dung lượng của kênh $i$ có dạng công thức Shannon</p>
-<p class="equation">$$\begin{aligned}\log(\alpha_i + x_i),\end{aligned}$$<span class="eq-number">(42)</span></p>
+<p class="equation">$$\begin{aligned}\log(\alpha_i + x_i),\end{aligned}$$<span class="eq-number">(43)</span></p>
 <p>trong đó $a_i$ là một hằng số được tính từ các tham số của kênh truyền như khoảng cách từ trạm phát đến đầu nhận, nhiễu ,... Nếu trạm phát đang truyền trên $n$ kênh, bài toán tối ưu cho trạm phát là cực đại tổng dung lượng các kênh, nhưng tổng công suất phát không đổi.</p>
 <p class="equation">$$\begin{aligned}\min ~ &amp; -\sum_{i = 1}^n \log(\alpha_i + x_i) \\
-\mathrm{s.t.} ~ &amp; x \geq 0, 1^T x = 1,\end{aligned}$$<span class="eq-number">(43)</span></p>
+\mathrm{s.t.} ~ &amp; x \geq 0, 1^T x = 1,\end{aligned}$$<span class="eq-number">(44)</span></p>
 <p>trong đó $\alpha_i &gt; 0$.</p>
 <p>Điều kiện KKT bao gồm:</p>
 <p class="equation">$$\begin{aligned}x^* \geq 0, 1^T x^* = 1, \lambda^* \geq 0, \lambda_i^* x_i^* =0, i = 1, \ldots, n,\\
--1 / (\alpha_i + x_i^*) - \lambda_i^* + \nu^* = 0, i = 1, \ldots, n.\end{aligned}$$<span class="eq-number">(44)</span></p>
+-1 / (\alpha_i + x_i^*) - \lambda_i^* + \nu^* = 0, i = 1, \ldots, n.\end{aligned}$$<span class="eq-number">(45)</span></p>
 <p>Do đó, ta có $x_i^* = \max \{ 0, 1/\nu^* - \alpha_i \}$ và $\sum_{i = 1}^n \max \{ 0, 1/\nu^* - \alpha_i \} = 1$.</p>
 <figure id="fig-1"><img src="images/blog/chap5-water_filling.png" alt="Hình 1" style="max-width:302px" /><figcaption>Hình 1: Hình minh họa nghiệm của bài toán water filling.</figcaption></figure>
 <h2>Ghi chú</h2>

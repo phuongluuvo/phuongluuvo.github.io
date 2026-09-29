@@ -2,10 +2,9 @@
 # Written by tools/latex_to_page.py from www/files/blog/chuong 4 - first order algorithms.tex -- edit it, or fix the .tex
 # and run the tool again, which overwrites this file.
 
-#= Các giải thuật bậc một
-
 ~~~
 {}{raw}
+<h1 class="post-title">Các giải thuật bậc một</h1>
 <div class="post">
 <p class="post-meta">Chương 4 · Tác giả: Võ Thị Lưu Phương · Email: vtlphuong@hcmiu.edu.vn</p>
 <p>Không phải bài toán tối ưu nào cũng có nghiệm dạng công thức có thể tính trực tiếp được. Ngay cả bài toán tìm cực tiểu hàm toàn phương (quadratic) tuy có công thức nghiệm, nhưng việc tính nghiệm lại tốn nhiều tài nguyên, đăc biệt là khi bài toán có kích thước lớn. Do đó, các phương pháp được sử dụng phổ biến hiện nay để tìm nghiệm bài toán tối ưu lồi là sử dụng các giải thuật lặp cập nhật giá trị của các biến số nhiều lần để đạt tới giá trị tối ưu.</p>
@@ -26,7 +25,7 @@
 <p class="equation">$$\begin{aligned}f(x^{(k+1)}) \geq f(x^{(k)}) + t_k \nabla f(x^{(k)})^T \Delta x^{(k)}.\end{aligned}$$<span class="eq-number">(5)</span></p>
 <p>Để đảm bảo được tính giảm dần $f(x^{(k+1)}) &lt; f(x^{(k)})$, ta bắt buộc phải có</p>
 <p class="equation">$$\begin{aligned}\nabla f(x^{(k)})^T \Delta x^{(k)} &lt;0.\end{aligned}$$<span class="eq-number">(6)</span></p>
-<p>Về mặt hình học thì vector $\nabla f(x^{k})$ và vector search direction $\Delta x^{k}$ phải tạo thành một <i>góc tù</i>, hay nói cách khác, search direction và vector $\nabla f(x)$ phải nằm khác halfspace được tạo bởi siêu phẳng $\nabla f(x^{k})^T (x - x^{k}) = 0$ (xem Hình 10).</p>
+<p>Về mặt hình học thì vector $\nabla f(x^{k})$ và vector search direction $\Delta x^{k}$ phải tạo thành một <i>góc tù</i>, hay nói cách khác, search direction và vector $\nabla f(x)$ phải nằm khác halfspace được tạo bởi siêu phẳng $\nabla f(x^{k})^T (x - x^{k}) = 0$ (xem Hình 8).</p>
 <figure id="fig-1"><img src="images/blog/chap4-part5_descent.png" alt="Hình 1" style="max-width:302px" /><figcaption>Hình 1: Minh họa của <i>search direction</i> trong các phương pháp descent. Vector $\Delta x$ và vector $\nabla f(x)$ phải nằm ở hai nửa mặt phẳng khác nhau và tạo với nhau thành một góc tù.</figcaption></figure>
 <p>Descent method tổng quát có dạng sau:</p>
 <p class="alg-title">Descent method dạng tổng quát.</p>
@@ -237,8 +236,8 @@
 </li>
 </ul>
 <figure id="fig-6"><img src="images/blog/chap4-part5_subgradient_abs.png" alt="Hình 6" style="max-width:302px" /><figcaption>Hình 6: Bất cứ giá trị nào thuộc $[-1,1]$ đều là subgradient của hàm $f(x)=|x|$ tại điểm $x=0$.</figcaption></figure>
-<figure id="fig-7"><img src="images/blog/chap4-part5_subgradient_norm2.png" alt="Hình 7" style="max-width:302px" /><figcaption>Hình 7: </figcaption></figure>
-<figure id="fig-8"><img src="images/blog/chap4-part5_subgradient_norm1.png" alt="Hình 8" style="max-width:302px" /><figcaption>Hình 8: </figcaption></figure>
+<figure id="fig-6"><img src="images/blog/chap4-part5_subgradient_norm2.png" alt="Hình 6" style="max-width:302px" /></figure>
+<figure id="fig-6"><img src="images/blog/chap4-part5_subgradient_norm1.png" alt="Hình 6" style="max-width:302px" /></figure>
 <h3>Phương pháp subgradient</h3>
 <p>Phương pháp subgradient rất tương tự như phương pháp gradient descent, nhưng thay vì cập nhật dùng gradient thì ta dùng subgradient:</p>
 <p class="equation">$$\begin{aligned}x^{(k)} = x^{(k-1)} - t_k \nabla g^{(k-1)}, k = 1, 2, 3, \ldots\end{aligned}$$<span class="eq-number">(37)</span></p>
@@ -303,8 +302,8 @@
 <p><b>until</b> hội tụ.</p>
 <p><b>Lưu ý</b>, bài toán tối ưu là bài toán tìm cực đại hàm lõm, do đó cập nhật phải có dạng</p>
 <p class="equation">$$\begin{aligned}w := w + t \nabla J(w).\end{aligned}$$<span class="eq-number">(48)</span></p>
-<figure id="fig-9"><img src="images/blog/chap4-part5_logistic-regression_synthetic_subgradient_norm1_fix-s0.01.png" alt="Hình 9" style="max-width:302px" /><figcaption>Hình 9: Giải thuật subgradient với fix step size {step_size = 0.01}.</figcaption></figure>
-<figure id="fig-10"><img src="images/blog/chap4-part5_logistic-regression_synthetic_subgradient_norm1_diminising-s1.png" alt="Hình 10" style="max-width:302px" /><figcaption>Hình 10: Giải thuật subgradient với diminishing step size {step_size = 1/k}. Độ chính xác nếu dùng diminishing step size cao hơn so với dùng fix step size.</figcaption></figure>
+<figure id="fig-7"><img src="images/blog/chap4-part5_logistic-regression_synthetic_subgradient_norm1_fix-s0.01.png" alt="Hình 7" style="max-width:302px" /><figcaption>Hình 7: Giải thuật subgradient với fix step size {step_size = 0.01}.</figcaption></figure>
+<figure id="fig-8"><img src="images/blog/chap4-part5_logistic-regression_synthetic_subgradient_norm1_diminising-s1.png" alt="Hình 8" style="max-width:302px" /><figcaption>Hình 8: Giải thuật subgradient với diminishing step size {step_size = 1/k}. Độ chính xác nếu dùng diminishing step size cao hơn so với dùng fix step size.</figcaption></figure>
 <p></p>
 <h2>PROXIMAL GRADIENT METHOD</h2>
 <p>Các phương pháp proximal có thể được dùng cho các bài toán có tập dữ liệu lớn với nhiều thuộc tính. Các phương pháp này đều có sử dụng biến đổi proximal. Khác với các phương pháp gradient descent, Newton, phương pháp proximal dùng trong trường hợp hàm mục tiêu không khả vi, tuy nhiên tốc độ hội tụ lại tốt như gradient descent và nhanh hơn phương pháp sugradient.</p>

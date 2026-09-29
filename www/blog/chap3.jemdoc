@@ -2,10 +2,9 @@
 # Written by tools/latex_to_page.py from www/files/blog/chuong 3 - bai toan toi uu loi.tex -- edit it, or fix the .tex
 # and run the tool again, which overwrites this file.
 
-#= Bài toán tối ưu lồi
-
 ~~~
 {}{raw}
+<h1 class="post-title">Bài toán tối ưu lồi</h1>
 <div class="post">
 <p class="post-meta">Chương 3 · Tác giả: Võ Thị Lưu Phương · Email: vtlphuong@hcmiu.edu.vn</p>
 <h2>Giới thiệu bài toán tối ưu</h2>
@@ -13,7 +12,7 @@
 <p class="equation">$$\begin{aligned}\mathrm{min.}~ &amp; f_0(x) \\
 \mathrm{s.t.}~ &amp; f_i(x) \leq 0, i = 1, \ldots, m \\
 			&amp; h_i(x) = 0, i = 1, \ldots, p,\end{aligned}$$<span class="eq-number">(1)</span></p>
-<p>trong đó, $x \in \mathbb{R}^n$ là biến của bài toán tối ưu, $f_0$ là hàm mục tiêu, ? và ? là các ràng buộc.</p>
+<p>trong đó, $x \in \mathbb{R}^n$ là biến của bài toán tối ưu, $f_0$ là hàm mục tiêu, 1 và 1 là các ràng buộc.</p>
 <p>$p^*$ được gọi là <i>nghiệm tối ưu</i> nếu $p^* = \min \{f_0(x) | f_i(x) \leq 0, i = 1,\ldots,m, h_i(x) = 0, i = 1, \ldots, p\}$.</p>
 <p>Miền xác định của bài toán được định nghĩa là giao của các miền xác định của tất cả các hàm trong bài toán</p>
 <p class="equation">$$\begin{aligned}\mathcal{D} = (\cap_{i=0}^m \mathrm{dom} f_i) \cap (\cap_{i=1}^p \mathrm{dom} h_i).\end{aligned}$$<span class="eq-number">(2)</span></p>
@@ -55,7 +54,7 @@
 <p>Ta cũng có thể biến đổi tương đương các hàm mục tiêu và ràng buộc bằng các hàm riêng rẽ. Cho $\psi_0: \mathbb{R}^n \rightarrow \mathbb{R}^n$ là hàm đơn điệu tăng, $\psi_1, \ldots, \psi_m: \mathbb{R} \rightarrow \mathbb{R}$ thỏa mãn $\psi_i(u) \leq 0$ nếu và chỉ nếu $u \leq 0$, và $\xi_1, \ldots, \xi_{p}: \mathbb{R} \rightarrow \mathbb{R}$ thoả mãn $\xi_i(u) = 0$ nếu và chỉ nếu $u = 0$. Định nghĩa các hàm số sau:</p>
 <p class="equation">$$\begin{aligned}\tilde{f}_i(x) &amp;= \psi_i(f_i(x)), i = 0, \ldots, m, \\
 \tilde{h}_i(x) &amp;= \xi_{i}(h_i(x)), i = 0, \ldots, p.\end{aligned}$$<span class="eq-number">(12)</span></p>
-<p>Ta có bài toán sau tương được với bài toán gốc 1-?</p>
+<p>Ta có bài toán sau tương được với bài toán gốc 1-1</p>
 <p class="equation">$$\begin{aligned}\mathrm{min.}~ &amp; \tilde{f}_0 (x) \\
 \mathrm{s.t.}~ &amp; \tilde{f}_i (x)  \leq 0, i = 1, \ldots, m \\
 			&amp; \tilde{h}_i(x) = 0, i = 1, \ldots, p.\end{aligned}$$<span class="eq-number">(13)</span></p>
@@ -64,13 +63,13 @@
 <p>không khả vi tại một số điểm, ta có thể giải bài toán tương đương khả vi tại mọi điểm</p>
 <p class="equation">$$\begin{aligned}\min ~ \| Ax - b \|_2^2 = (Ax - b)^T(Ax - b).\end{aligned}$$<span class="eq-number">(15)</span></p>
 <h3>Biến phụ</h3>
-<p>Biến đổi bài toán tương đương có thể thực hiện bằng cách thêm vào <i>biến phụ</i>. Ví dụ bài toán sau tương được với bài toán gốc 1-? bằng cách thêm biến $s_i, i = 1, \ldots, m$</p>
+<p>Biến đổi bài toán tương đương có thể thực hiện bằng cách thêm vào <i>biến phụ</i>. Ví dụ bài toán sau tương được với bài toán gốc 1-1 bằng cách thêm biến $s_i, i = 1, \ldots, m$</p>
 <p class="equation">$$\begin{aligned}\mathrm{min.}~ &amp; f_0(x)\\
 \mathrm{s.t.}~ &amp; s_i \geq 0, i = 1, \ldots, m \\
 			&amp; f_i(x) + s_i = 0, i = 1, \ldots, m \\
 			&amp; h_i(x) = 0, i = 1, \ldots, p.\end{aligned}$$<span class="eq-number">(16)</span></p>
 <h3>Lược bớt và thêm ràng buộc đẳng thức</h3>
-<p>Ta cũng có thể lược bớt ràng buộc đẳng thức nếu có hàm số $\phi$ sao cho $h_i(x) = 0,  i = 1, \ldots, p$ nếu và chỉ nếu $x = \phi(z)$, thì ta có bài toán sau tương đương với bài toán gốc 1-?.</p>
+<p>Ta cũng có thể lược bớt ràng buộc đẳng thức nếu có hàm số $\phi$ sao cho $h_i(x) = 0,  i = 1, \ldots, p$ nếu và chỉ nếu $x = \phi(z)$, thì ta có bài toán sau tương đương với bài toán gốc 1-1.</p>
 <p class="equation">$$\begin{aligned}\mathrm{minimization}~ &amp; \tilde{f}(z) = f_0(\phi(z)) \\
 \mathrm{subject ~ to}~ &amp; \tilde{f}_i (z)  = f_i(\phi(z)) \leq 0, i = 1, \ldots, m.\end{aligned}$$<span class="eq-number">(17)</span></p>
 <p>Thêm ràng buộc đẳng thức Hai bài toán sau là tương đương:</p>

@@ -30,8 +30,14 @@ WHAT IT DOES NOT DO
     guessed at, so read the page over before publishing it.
 
 USAGE
-    python tools/latex_to_page.py "www/files/blog/chuong 1 - quy hoach tuyen tinh.tex" \
-        --out www/blog/chap1.jemdoc
+    python tools/latex_to_page.py --all
+
+    That writes every post in www/blog/ from the chapters in www/files/blog/,
+    sharing the numbering between them so that a \\ref in one chapter to an
+    equation in another resolves. One file on its own, with --out:
+
+    python tools/latex_to_page.py "www/files/blog/chuong 5 - duality.tex" \\
+        --out www/blog/chap5.jemdoc --post "Lý thuyết đối ngẫu" --chapter 5
 
     Standard library only, like build.py.
 """
@@ -43,6 +49,7 @@ import html
 import os
 import re
 import shutil
+import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
@@ -91,10 +98,9 @@ PAGE = """# jemdoc: menu{menu-blog.jemdoc}{%(name)s.html}, title{%(title)s}, not
 # Written by tools/latex_to_page.py from %(source)s -- edit it, or fix the .tex
 # and run the tool again, which overwrites this file.
 
-= %(title)s
-
 ~~~
 {}{raw}
+<h1 class="post-title">%(title)s</h1>
 <div class="post">
 <p class="post-meta">%(meta)s</p>
 %(body)s</div>
@@ -191,7 +197,7 @@ def math_to_html(body, alignment=""):
 class Chapter:
     """One chapter being converted: its text, its images and its numbering."""
 
-    def __init__(self, source, prefix, images_prefix):
+    def __init__(self, source, prefix, images_prefix, labels=None):
         with open(source, "r", encoding="utf-8") as handle:
             text = handle.read()
         self.source = source
@@ -200,9 +206,12 @@ class Chapter:
         self.stored = []            # placeholders, in the order they were cut out
         self.blocky = set()         # the ones that are a block, not inline text
         self.chapter_seen = False   # the first \chapter is the post's title
-        self.labels = {}            # \label -> the number it points at
+        # A reference resolves to the number its own post prints, and every post
+        # counts from 1. The table is still shared between the posts, so a \ref
+        # to a label an earlier chapter defines does not come out blank.
+        self.labels = {} if labels is None else labels
         self.cites = {}             # \bibitem key -> [n]
-        self.counters = {"figure": 0, "equation": 0, "table": 0, "algorithm": 0}
+        self.unresolved = set()     # references nothing defines
         body = text.split("\\begin{document}", 1)
         self.body = strip_comments(body[1] if len(body) > 1 else body[0])
         self.body = self.body.split("\\end{document}", 1)[0]
@@ -210,6 +219,11 @@ class Chapter:
         self.body = re.sub(r"\\(title|author|date)\{.*?\}\s*", "", self.body,
                            flags=re.S)
         self.body = re.sub(r"\\maketitle", "", self.body)
+        # The book's own bookkeeping: "\setcounter{chapter}{4}" says which chapter
+        # this is, which the post does not need, and its arguments would otherwise
+        # be left behind as a stray "{chapter}{4}" in the text.
+        self.body = re.sub(r"\\(setcounter|addtocounter)\{[^}]*\}\{[^}]*\}", "",
+                           self.body)
         # The byline under \chapter is the post's meta line; it does not need to
         # appear again at the top of the text. It is kept, because that line is
         # what the meta line is made from.
@@ -221,6 +235,8 @@ class Chapter:
             if byline and byline.start() - chapter.end() < 120:
                 self.byline = byline.group(1)
                 self.body = self.body[:byline.start()] + self.body[byline.end():]
+
+        self.counters = {"figure": 0, "equation": 0, "table": 0, "algorithm": 0}
 
     # -- placeholders ------------------------------------------------------- #
 
@@ -243,10 +259,18 @@ class Chapter:
         return text
 
     def number(self, kind, label=None):
+        """The next number of its kind, counting from 1 again in every post.
+
+        Each chapter is published as a post of its own, so the numbers a post
+        prints are its own: its first figure is "Hình 1" and its tenth equation
+        is (10), whatever chapter of the book it is. A reference and the caption
+        it points at therefore always agree.
+        """
         self.counters[kind] += 1
+        local = self.counters[kind]
         if label:
-            self.labels[label] = self.counters[kind]
-        return self.counters[kind]
+            self.labels[label] = str(local)
+        return local
 
     # -- maths -------------------------------------------------------------- #
 
@@ -254,17 +278,27 @@ class Chapter:
         """Cut every equation out of the way, as LaTeX for MathJax."""
         def environment(match):
             name = match.group(1)
-            open_tag, close_tag, alignment = MATH_ENVIRONMENTS[name]
+            _open, _close, alignment = MATH_ENVIRONMENTS[name]
             body = match.group(2)
-            label = re.search(r"\\label\{([^}]*)\}", body)
-            # \nonumber (and \notag) mean LaTeX prints no number for it, so the
-            # count must not move either -- otherwise everything after it is one
-            # out, which is how (3) went missing the first time.
-            numbered = "\\nonumber" not in body and "\\notag" not in body
+            # LaTeX prints a number beside each line of an align that does not
+            # carry \nonumber, so the count has to move by that much: counting the
+            # block as one number is what made (3) go missing the first time.
+            numbered = [line for line in re.split(r"\\\\", body)
+                        if "\\nonumber" not in line and "\\notag" not in line
+                        and line.strip()]
             if numbered:
-                number = self.number("equation", label.group(1) if label else None)
+                # A block is one thing on the page, so it takes one number even
+                # when the book prints a number beside each of its lines:
+                # numbering them one per line is what made 1, 3, 5 jump.
+                self.counters["equation"] += 1
+                number = str(self.counters["equation"])
+                # Every label in the block resolves to it: a \label usually sits
+                # on the line that carries the number, and a \ref to that line is
+                # what the prose around it points at.
+                for key in re.findall(r"\\label\{([^}]*)\}", body):
+                    self.labels[key] = number
                 if not re.search(r"\\tag\{", body):
-                    body += "\\tag{%d}" % number
+                    body += "\\tag{%s}" % number
             return self.keep_block(math_to_html(body, alignment))
 
         pattern = (r"\\begin\{(%s)\}(.*?)\\end\{\1\}" % "|".join(
@@ -314,9 +348,19 @@ class Chapter:
         def figure(match):
             content = match.group(3) or ""
             image = re.search(r"\\includegraphics(?:\[[^\]]*\])?\{([^}]*)\}", content)
-            caption = re.search(r"\\caption\{(.*?)\}\s*(?=\\label|\\end|$)", content, re.S)
+            # What is inside the caption's braces, one level of nesting deep,
+            # rather than what comes after it: insisting on \label or \end next
+            # dropped the caption of every float that put anything else there,
+            # and the figure printed "Hình 2:" with nothing after the colon.
+            caption = re.search(r"\\caption\{((?:[^{}]|\{[^{}]*\})*)\}", content, re.S)
             label = re.search(r"\\label\{([^}]*)\}", content)
-            number = self.number("figure", label.group(1) if label else None)
+            # A float without a \caption gets no number in LaTeX either, so only a
+            # captioned figure takes the next one; a \label on an uncaptioned float
+            # is left on the number already in force, as LaTeX leaves it.
+            number = (self.number("figure", label.group(1) if label else None)
+                      if caption else self.counters["figure"])
+            if label and not caption:
+                self.labels[label.group(1)] = str(number)
             if not image:
                 return self.keep_block("")
             name = self.copy_image(image.group(1))
@@ -327,15 +371,18 @@ class Chapter:
                        self.inline(caption.group(1)) if caption else "",
                        escape_text(image.group(1))))
             caption_html = self.inline(caption.group(1)) if caption else ""
+            # A figure the source gives no caption is just its picture: printing
+            # "Hình 7:" with nothing after the colon is worse than printing none.
+            legend = ("<figcaption>Hình %d: %s</figcaption>" % (number, caption_html)
+                      if caption_html.strip() else "")
             width = re.search(r"width=([0-9.]+)cm", content)
             style = ""
             if width:
                 # A width in centimetres at 96dpi, capped to the column.
                 style = ' style="max-width:%dpx"' % round(float(width.group(1)) / 2.54 * 96)
             return self.keep_block(
-                '<figure id="fig-%d"><img src="images/blog/%s" alt="Hình %d"%s />'
-                '<figcaption>Hình %d: %s</figcaption></figure>'
-                % (number, escape_text(name), number, style, number, caption_html))
+                '<figure id="fig-%d"><img src="images/blog/%s" alt="Hình %d"%s />%s</figure>'
+                % (number, escape_text(name), number, style, legend))
         self.body = re.sub(r"\\begin\{(figure\*?)\}(\[[^\]]*\])?(.*?)\\end\{\1\}",
                            figure, self.body, flags=re.S)
 
@@ -368,7 +415,7 @@ class Chapter:
 
         def table(match):
             content = match.group(3) or ""
-            caption = re.search(r"\\caption\{(.*?)\}\s*(?=\\label|\\end|$)", content, re.S)
+            caption = re.search(r"\\caption\{((?:[^{}]|\{[^{}]*\})*)\}", content, re.S)
             label = re.search(r"\\label\{([^}]*)\}", content)
             number = self.number("table", label.group(1) if label else None)
             body = re.search(r"\\begin\{(tabular\*?|tabularx)\}"
@@ -398,7 +445,7 @@ class Chapter:
         """An algorithmic block as pseudocode: one line each, indented by depth."""
         def algorithm(match):
             content = match.group(3) or ""
-            caption = re.search(r"\\caption\{(.*?)\}\s*(?=\\label|\\end|$)", content, re.S)
+            caption = re.search(r"\\caption\{((?:[^{}]|\{[^{}]*\})*)\}", content, re.S)
             # An algorithm float whose body is NOT pseudocode commands -- a list,
             # or plain prose -- is not a pseudocode block at all: its contents are
             # handed back to the ordinary conversion, which renders a list as a
@@ -466,6 +513,19 @@ class Chapter:
 
     # -- inline markup ------------------------------------------------------ #
 
+    def reference(self, key):
+        """What a \\ref or \\eqref prints, or nothing when nothing defines it.
+
+        An unresolved reference is remembered rather than turned into a visible
+        question mark: a stray "?" in the middle of a sentence is worse than the
+        number simply not being there, and the tool reports it at the end.
+        """
+        found = self.labels.get(key)
+        if found is None:
+            self.unresolved.add(key)
+            return ""
+        return found
+
     def inline(self, text):
         """The inline commands of one run of text.
 
@@ -482,7 +542,7 @@ class Chapter:
                           for key in m.group(1).split(",")),
                       text)
         text = re.sub(r"\\(?:eqref|ref)\{([^}]*)\}",
-                      lambda m: str(self.labels.get(m.group(1), "?")), text)
+                      lambda m: self.reference(m.group(1)), text)
         text = re.sub(r"\\(?:hyperref|autoref|nameref|pageref)\[[^\]]*\]\{([^}]*)\}",
                       r"\1", text)
         text = re.sub(r"\\href\{([^}]*)\}\{([^}]*)\}",
@@ -634,10 +694,83 @@ class Chapter:
         return "\n".join(out)
 
 
+#: The blog's posts: the source, in the order they are published, and the title
+#: the post carries. The \chapter line in the .tex is set in capitals, which
+#: reads as a chapter heading rather than as a post, so each post has its own.
+POSTS = (
+    ("chuong 1 - quy hoach tuyen tinh.tex", "Bài toán quy hoạch tuyến tính"),
+    ("chuong 2 - ham loi.tex", "Hàm lồi"),
+    ("chuong 3 - bai toan toi uu loi.tex", "Bài toán tối ưu lồi"),
+    ("chuong 4 - first order algorithms.tex", "Các giải thuật bậc một"),
+    ("chuong 5 - duality.tex", "Lý thuyết đối ngẫu"),
+)
+
+
+def write_post(source, out, title, number, labels):
+    """Convert one chapter and write its page; returns unresolved refs and words."""
+    name = os.path.splitext(os.path.basename(out))[0]
+    chapter = Chapter(source, name, name, labels=labels)
+
+    # The order matters. Mathematics is cut out first, so that a formula inside a
+    # reference entry or a caption is converted as well: the bibliography used to
+    # run before it, and a reference whose text was "$\sim$" came out as two
+    # stray dollar signs. Figures and tables then take their captions with the
+    # mathematics already held aside, and the bibliography collects the \cite keys.
+    chapter.keep_verbatim()
+    chapter.keep_math()
+    chapter.keep_bibliography()
+    chapter.keep_figures()
+    chapter.keep_tables()
+    chapter.keep_algorithms()
+
+    body = chapter.restore(chapter.blocks())
+
+    # The meta line under the title: the chapter number, and the byline.
+    parts = []
+    if number:
+        parts.append("Chương %d" % number)
+    if chapter.byline:
+        parts.append(chapter.inline(chapter.byline.replace("\\\\", " · ")))
+
+    page = PAGE % {"name": name, "title": title, "meta": " · ".join(parts),
+                   "source": os.path.relpath(source, ROOT).replace(os.sep, "/"),
+                   "body": body}
+    with open(out, "w", encoding="utf-8", newline="\n") as handle:
+        handle.write(page)
+    return chapter.unresolved, len(re.sub(r"<[^>]+>", " ", body).split())
+
+
+def write_all():
+    """Write every post, sharing one table of labels between the chapters.
+
+    The posts are chapters of one book, so a \\ref in one can point at a label an
+    earlier chapter defines; sharing the table is what keeps that from coming out
+    blank. Each post still numbers its own equations and figures from 1, because
+    each is published, and read, on its own.
+    """
+    labels = {}
+    unresolved = set()
+    for number, (name, title) in enumerate(POSTS, start=1):
+        source = os.path.join(ROOT, "www", "files", "blog", name)
+        if not os.path.isfile(source):
+            print("! missing source: %s" % name)
+            continue
+        out = os.path.join(ROOT, "www", "blog", "chap%d.jemdoc" % number)
+        missing, words = write_post(source, out, title, number, labels)
+        unresolved |= missing
+        print("wrote www/blog/chap%d.jemdoc (%s, %d words)" % (number, title, words))
+    if unresolved:
+        print("! %d reference(s) nothing defines: %s"
+              % (len(unresolved), ", ".join(sorted(unresolved))))
+
+
 def main():
     parser = argparse.ArgumentParser(description="Write a blog post from a LaTeX chapter.")
-    parser.add_argument("source", help="the .tex file, e.g. 'www/files/blog/chuong 1 ....tex'")
-    parser.add_argument("--out", required=True, help="the .jemdoc source to write")
+    parser.add_argument("source", nargs="?",
+                        help="one .tex file; omit it when using --all")
+    parser.add_argument("--all", action="store_true",
+                        help="write every post in www/files/blog, sharing the numbering")
+    parser.add_argument("--out", help="the .jemdoc source to write (one chapter)")
     parser.add_argument("--post", help="the post title; defaults to the chapter title")
     parser.add_argument("--meta", help="the line under the title; defaults to the chapter number and the byline in the source")
     arguments = parser.parse_args()
@@ -687,4 +820,7 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    if "--all" in sys.argv:
+        write_all()
+    else:
+        main()

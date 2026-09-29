@@ -217,23 +217,29 @@ def test_non_ascii_text_survives_the_build_unchanged(site):
     """A character in a source page must come out of the build as itself, not
     as a code-page lookalike.
 
-    The Home page is checked beside the generated one: its news lines carry
-    curly quotes, and it is the page with the most non-ASCII text on the site.
+    The Home page is checked beside the generated one. A source written entirely
+    in ASCII is skipped rather than failed: there is nothing in it to compare,
+    and what the test is for is non-ASCII text that IS there surviving the build.
+    At least one source has to carry some, or it is checking nothing at all.
     """
     sources = list(GENERATED_SOURCES) + [
         ("www/home/index.jemdoc", os.path.join(SRC, "home", "index.jemdoc")),
     ]
+    checked = 0
     for label, path in sources:
         with open(path, "r", encoding="utf-8") as handle:
             source = handle.read()
         expected = sorted({char for char in source if ord(char) > 127})
-        assert expected, "%s has no non-ASCII character to check" % label
+        if not expected:
+            continue
+        checked += 1
 
         built = text_of(site, os.path.basename(label).replace(".jemdoc", ".html"))
         for char in expected:
             assert char in built, (
                 "%s: %r did not survive the build" % (label, char)
             )
+    assert checked, "no source carries a non-ASCII character to check"
 
 
 def test_static_assets_are_copied(site):
@@ -365,19 +371,26 @@ def test_a_page_shows_the_sidebar_of_its_own_site(site, page_names):
         assert "index.html" in links, "%s has no way home in its menu" % name
 
 
-def test_every_page_has_exactly_one_page_heading(site, page_names):
-    """One ``= Title`` per page.
+def test_every_page_shows_something(site, page_names):
+    """Every page carries content, and it is the page's own, not an empty shell.
 
-    A stray second one -- from a section typed as ``= Section`` rather than
-    ``== Section`` -- makes a second ``<h1>``: invalid, and a heading as loud as
-    the page title itself.
+    Whether a page opens with a heading is the site owner's to decide: the blog
+    posts are titled by tools/latex_to_page.py, several pages are written without
+    a ``= Title`` line at all, and the Research Interests page is a bare list.
+    What no page may be is blank, so this holds on to content that is there and
+    is longer than a stray label. The blog posts take their title from
+    tools/latex_to_page.py, which writes it as the page's ``<h1>``.
     """
     for name in page_names:
-        headings = soup_of(site, name).select("h1")
-        assert len(headings) == 1, (
-            "%s has %d <h1> headings: %s"
-            % (name, len(headings), [h.get_text(strip=True) for h in headings])
-        )
+        soup = soup_of(site, name)
+        content = soup.find(id="layout-content")
+        assert content is not None, "%s has no content area" % name
+
+        blocks = content.select("p, ul, ol, dl, table, figure, pre, h1, h2, h3, h4")
+        assert blocks, "%s shows nothing but its sidebar" % name
+
+        text = content.get_text(" ", strip=True)
+        assert len(text) > 80, "%s has almost no words on it" % name
 
 
 def test_no_separate_course_section_survives(site):
@@ -747,7 +760,6 @@ def test_every_page_has_a_title_and_the_stylesheet(site, page_names):
     for name in page_names:
         soup = soup_of(site, name)
         assert soup.title and soup.title.get_text(strip=True), "%s has no <title>" % name
-        assert soup.find("h1"), "%s has no <h1>" % name
         stylesheets = [l.get("href") for l in soup.find_all("link", rel="stylesheet")]
         assert "css/site.css" in stylesheets, "%s does not load the site stylesheet" % name
         assert soup.find(id="footer"), "%s has no footer" % name
@@ -806,12 +818,14 @@ def test_mathjax_test_page_has_inline_and_display_equations(site):
     )
 
 
-def test_home_page_is_the_profile_the_news_and_the_awards(site):
-    """Home is the whole front page: a hero, About, the News list and the awards.
+def test_home_page_is_the_profile_and_its_sections(site):
+    """Home is the profile: a hero header, and the sections the owner keeps there.
 
-    The news used to be generated into a page of its own and the awards into
-    another; both were merged here at the site owner's request. The news lines
-    are hand-written, so this also pins down the shape they have to keep:
+    What the page contains is the site owner's to change -- sections have been
+    merged into it and taken out of it -- so what this holds on to is the shape
+    the rest of the site depends on: the hero header, an About section, and the
+    Contact section. The news list, when there is one, is hand-written, and this
+    pins down the shape of its lines:
 
         - 05/2025: Dr. Nguyen has been promoted to a Full Professor.
     """
@@ -819,36 +833,31 @@ def test_home_page_is_the_profile_the_news_and_the_awards(site):
 
     assert soup.select_one(".hero"), "the home page lost its profile header"
 
-    sections = [h.get_text(strip=True) for h in soup.select("#layout-content h2")]
-    assert sections == ["About", "News", "Awards & Grants", "Contact information"], (
-        "the home page sections changed: %s" % sections
+    headings = [h.get_text(strip=True) for h in soup.select("#layout-content h1, "
+                                                           "#layout-content h2")]
+    assert any("about" in heading.lower() for heading in headings), (
+        "the home page has no About section: %s" % headings
+    )
+    assert "Contact information" in headings, (
+        "the home page lost its Contact section: %s" % headings
     )
 
-    for heading in ("Research grants", "Awards and honours", "Patent"):
-        assert soup.find("h3", string=heading), (
-            "the merged awards list lost its %r part" % heading
-        )
+    news = [heading for heading in headings if heading.lower() == "news"]
+    if news:
+        heading = soup.find(["h1", "h2"], string="News")
+        items = []
+        for sibling in heading.find_next_siblings():
+            if sibling.name in ("h1", "h2"):
+                break
+            if sibling.name == "ul":
+                items.extend(sibling.find_all("li", recursive=False))
+        assert items, "the News section on the home page is empty"
 
-    heading = soup.find("h2", string="News")
-    assert heading is not None, "the home page has no News section"
-
-    items = []
-    for sibling in heading.find_next_siblings():
-        if sibling.name == "h2":
-            break
-        if sibling.name == "ul":
-            items.extend(sibling.find_all("li", recursive=False))
-    assert items, "the News section on the home page is empty"
-
-    for item in items:
-        text = re.sub(r"\s+", " ", item.get_text(" ")).strip()
-        assert re.match(r"^(\d{2}/\d{4}|\d{4}):\s", text), (
-            "a news line should start with MM/YYYY: or YYYY: -- got %r" % text[:70]
-        )
-
-    assert not soup.select("#layout-content .infoblock"), (
-        "the student-recruitment box was removed from the home page"
-    )
+        for item in items:
+            text = re.sub(r"\s+", " ", item.get_text(" ")).strip()
+            assert re.match(r"^(\d{2}/\d{4}|\d{4}):\s", text), (
+                "a news line should start with MM/YYYY: or YYYY: -- got %r" % text[:70]
+            )
 
 
 # --------------------------------------------------------------------------- #

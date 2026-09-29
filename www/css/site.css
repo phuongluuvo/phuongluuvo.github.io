@@ -711,6 +711,15 @@ details.materials ul { margin: 0 0 16px; }
    is left as LaTeX for MathJax, so it can be selected, searched, and read at
    whatever size the reader likes. The figures are the images the source names. */
 
+/* A post opens with its own title instead of a jemdoc `= Title` line, because
+   the title is written by tools/latex_to_page.py. It is a real <h1> so the page
+   has one, and the byline's rule sits under it. */
+.post-title {
+  margin: 0 0 0.15em;
+  font-size: 1.85em;
+  line-height: 1.25;
+}
+
 .post-meta {
   margin: 0 0 1.6em;
   padding-bottom: 0.8em;
