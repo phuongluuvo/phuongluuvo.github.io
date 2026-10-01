@@ -19,6 +19,9 @@ WHAT IT DOES
         equation numbers are kept with \\tag. Matrices, cases and bmatrix are
         handed to MathJax untouched;
       * itemize as a bullet list, enumerate as a numbered one;
+      * a small contents rail in the sidebar, built from the sections, which
+        appears once the menu has scrolled away and marks the section being read;
+        every heading gets an id, so one section can be linked to;
       * figures: the referenced image is copied into www/images/blog/ and shown
         with the caption underneath;
       * tables as tables, listings as code, and algorithmic blocks as pseudocode;
@@ -32,12 +35,12 @@ WHAT IT DOES NOT DO
 USAGE
     python tools/latex_to_page.py --all
 
-    That writes every post in www/blog/ from the chapters in www/files/blog/,
-    sharing the numbering between them so that a \\ref in one chapter to an
-    equation in another resolves. One file on its own, with --out:
+    That writes every post in www/blog/ from the chapters in www/files/blog/. Each
+    post numbers its own equations and figures from 1, and each carries a small
+    contents rail in the sidebar. One file on its own, with --out:
 
     python tools/latex_to_page.py "www/files/blog/chuong 5 - duality.tex" \\
-        --out www/blog/chap5.jemdoc --post "Lý thuyết đối ngẫu" --chapter 5
+        --out www/blog/duality.jemdoc --post "Lý thuyết đối ngẫu"
 
     Standard library only, like build.py.
 """
@@ -50,6 +53,7 @@ import os
 import re
 import shutil
 import sys
+import unicodedata
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
@@ -102,8 +106,8 @@ PAGE = """# jemdoc: menu{menu-blog.jemdoc}{%(name)s.html}, title{%(title)s}, not
 {}{raw}
 <h1 class="post-title">%(title)s</h1>
 <div class="post">
-<p class="post-meta">%(meta)s</p>
 %(body)s</div>
+%(rail)s
 ~~~
 """
 
@@ -190,6 +194,116 @@ def math_to_html(body, alignment=""):
             % (markup, escape_text(number)))
 
 
+def slug(text, taken):
+    """A short name for a heading, so the table of contents can link to it.
+
+    Vietnamese headings are the common case, so the name is the text with its
+    accents taken off: "Hàm Lagrange" becomes ham-lagrange, which is readable in
+    an address bar, and two headings that read the same get -2 on the second.
+    """
+    plain = unicodedata.normalize("NFKD", text)
+    plain = "".join(letter for letter in plain if not unicodedata.combining(letter))
+    plain = plain.replace("\u0111", "d").replace("\u0110", "D")
+    plain = re.sub(r"[^A-Za-z0-9]+", "-", plain).strip("-").lower()
+    name = plain or "muc"
+    count = 1
+    while name in taken:
+        count += 1
+        name = "%s-%d" % (plain, count)
+    taken.add(name)
+    return name
+
+
+#: The rail is the post's contents, small and fixed in the sidebar's strip: it
+#: waits under the menu, and moves up into the menu's place once the menu has
+#: scrolled away. Plain script rather than a stylesheet trick, because no
+#: scroll-state selector exists and the section being read has to be marked as
+#: well. Without it the stylesheet's own top keeps the rail under the menu, so
+#: the list is there either way.
+RAIL_SCRIPT = """<script>
+(function () {
+  var rail = document.getElementById("rail");
+  if (!rail) {
+    return;
+  }
+  var links = [].slice.call(rail.querySelectorAll("a"));
+  var spots = links.map(function (link) {
+    return document.getElementById(link.getAttribute("href").slice(1));
+  });
+  // The last link of the sidebar is where the menu ends, whatever it holds.
+  var menu = document.querySelector("#layout-menu");
+  var linksInMenu = menu ? menu.querySelectorAll("a") : [];
+  var menuEnd = linksInMenu.length ? linksInMenu[linksInMenu.length - 1] : null;
+  function menuGone() {
+    return menuEnd ? menuEnd.getBoundingClientRect().bottom < 8 : true;
+  }
+  function place() {
+    if (menuGone()) {
+      rail.style.top = "";
+      rail.style.maxHeight = "";
+      return;
+    }
+    var under = Math.round(menuEnd.getBoundingClientRect().bottom) + 16;
+    rail.style.top = under + "px";
+    rail.style.maxHeight = Math.max(120, window.innerHeight - under - 14) + "px";
+  }
+  function draw() {
+    place();
+    rail.classList.toggle("rail-on", menuGone());
+    var current = 0;
+    spots.forEach(function (spot, index) {
+      if (spot) {
+        var top = spot.getBoundingClientRect().top;
+        if (top > 90) {
+          return;
+        }
+        current = index;
+      }
+    });
+    links.forEach(function (link, index) {
+      link.classList.toggle("rail-current", index === current);
+    });
+  }
+  window.addEventListener("scroll", draw, { passive: true });
+  window.addEventListener("resize", draw);
+  draw();
+}());
+</script>
+"""
+
+
+def headings_and_rail(body):
+    """Give the headings their ids, and return the body and the rail of sections.
+
+    A chapter is three to five thousand words long and a reader often arrives in
+    the middle of it from a search result. The post carries no list of its own:
+    the ids are what make a single heading addressable, and the rail in the
+    sidebar is the only contents list there is -- it follows the reader down the
+    post, and marks the section being read.
+    """
+    taken = set()
+    entries = []
+
+    def heading(match):
+        level, attributes, text = match.group(1), match.group(2), match.group(3)
+        name = slug(re.sub(r"<[^>]+>", "", text), taken)
+        entries.append((int(level), name, text))
+        return '<h%s id="%s"%s>%s</h%s>' % (level, name, attributes, text, level)
+
+    body = re.sub(r"<h([23])([^>]*)>(.*?)</h\1>", heading, body, flags=re.S)
+
+    # Only the sections: the rail is a strip a few words wide, and a post whose
+    # whole text is one section does not need it at all.
+    sections = [(name, text) for level, name, text in entries if level == 2]
+    if len(sections) < 2:
+        return body, ""
+    rail = ('<nav class="rail" id="rail" aria-label="Mục lục">\n'
+            '<p class="rail-title">Mục lục</p>\n<ul>%s</ul>\n</nav>\n%s'
+            % ("".join('<li><a href="#%s">%s</a></li>' % (name, text)
+                       for name, text in sections), RAIL_SCRIPT))
+    return body, rail
+
+
 # --------------------------------------------------------------------------- #
 # the conversion
 # --------------------------------------------------------------------------- #
@@ -224,9 +338,9 @@ class Chapter:
         # be left behind as a stray "{chapter}{4}" in the text.
         self.body = re.sub(r"\\(setcounter|addtocounter)\{[^}]*\}\{[^}]*\}", "",
                            self.body)
-        # The byline under \chapter is the post's meta line; it does not need to
-        # appear again at the top of the text. It is kept, because that line is
-        # what the meta line is made from.
+        # The byline under \chapter is not shown: a post carries its title and
+        # nothing else above the text. It is still taken out of the body, so it
+        # does not reappear as a stray line of italics under the title.
         self.byline = ""
         chapter = re.search(r"\\chapter\{.*?\}", self.body, re.S)
         if chapter:
@@ -694,19 +808,24 @@ class Chapter:
         return "\n".join(out)
 
 
-#: The blog's posts: the source, in the order they are published, and the title
-#: the post carries. The \chapter line in the .tex is set in capitals, which
+#: The blog's posts: the source, the file name the post is published under, and
+#: the title it carries. The \chapter line in the .tex is set in capitals, which
 #: reads as a chapter heading rather than as a post, so each post has its own.
+#: The file name is the page's address, and it says what the chapter is about,
+#: the way every other page of the site does; the menu keeps the chapter titles.
 POSTS = (
-    ("chuong 1 - quy hoach tuyen tinh.tex", "Bài toán quy hoạch tuyến tính"),
-    ("chuong 2 - ham loi.tex", "Hàm lồi"),
-    ("chuong 3 - bai toan toi uu loi.tex", "Bài toán tối ưu lồi"),
-    ("chuong 4 - first order algorithms.tex", "Các giải thuật bậc một"),
-    ("chuong 5 - duality.tex", "Lý thuyết đối ngẫu"),
+    ("chuong 1 - quy hoach tuyen tinh.tex", "linear-programming",
+     "Bài toán quy hoạch tuyến tính"),
+    ("chuong 2 - ham loi.tex", "convex-functions", "Hàm lồi"),
+    ("chuong 3 - bai toan toi uu loi.tex", "convex-optimization",
+     "Bài toán tối ưu lồi"),
+    ("chuong 4 - first order algorithms.tex", "first-order-algorithms",
+     "Các giải thuật bậc một"),
+    ("chuong 5 - duality.tex", "duality", "Lý thuyết đối ngẫu"),
 )
 
 
-def write_post(source, out, title, number, labels):
+def write_post(source, out, title, labels):
     """Convert one chapter and write its page; returns unresolved refs and words."""
     name = os.path.splitext(os.path.basename(out))[0]
     chapter = Chapter(source, name, name, labels=labels)
@@ -724,15 +843,9 @@ def write_post(source, out, title, number, labels):
     chapter.keep_algorithms()
 
     body = chapter.restore(chapter.blocks())
+    body, rail = headings_and_rail(body)
 
-    # The meta line under the title: the chapter number, and the byline.
-    parts = []
-    if number:
-        parts.append("Chương %d" % number)
-    if chapter.byline:
-        parts.append(chapter.inline(chapter.byline.replace("\\\\", " · ")))
-
-    page = PAGE % {"name": name, "title": title, "meta": " · ".join(parts),
+    page = PAGE % {"name": name, "title": title, "rail": rail,
                    "source": os.path.relpath(source, ROOT).replace(os.sep, "/"),
                    "body": body}
     with open(out, "w", encoding="utf-8", newline="\n") as handle:
@@ -750,15 +863,15 @@ def write_all():
     """
     labels = {}
     unresolved = set()
-    for number, (name, title) in enumerate(POSTS, start=1):
+    for number, (name, slug, title) in enumerate(POSTS, start=1):
         source = os.path.join(ROOT, "www", "files", "blog", name)
         if not os.path.isfile(source):
             print("! missing source: %s" % name)
             continue
-        out = os.path.join(ROOT, "www", "blog", "chap%d.jemdoc" % number)
-        missing, words = write_post(source, out, title, number, labels)
+        out = os.path.join(ROOT, "www", "blog", "%s.jemdoc" % slug)
+        missing, words = write_post(source, out, title, labels)
         unresolved |= missing
-        print("wrote www/blog/chap%d.jemdoc (%s, %d words)" % (number, title, words))
+        print("wrote www/blog/%s.jemdoc (%s, %d words)" % (slug, title, words))
     if unresolved:
         print("! %d reference(s) nothing defines: %s"
               % (len(unresolved), ", ".join(sorted(unresolved))))
@@ -769,10 +882,9 @@ def main():
     parser.add_argument("source", nargs="?",
                         help="one .tex file; omit it when using --all")
     parser.add_argument("--all", action="store_true",
-                        help="write every post in www/files/blog, sharing the numbering")
+                        help="write every post in www/files/blog")
     parser.add_argument("--out", help="the .jemdoc source to write (one chapter)")
     parser.add_argument("--post", help="the post title; defaults to the chapter title")
-    parser.add_argument("--meta", help="the line under the title; defaults to the chapter number and the byline in the source")
     arguments = parser.parse_args()
 
     name = os.path.splitext(os.path.basename(arguments.out))[0]
@@ -792,25 +904,14 @@ def main():
     chapter.keep_algorithms()
 
     body = chapter.restore(chapter.blocks())
+    body, rail = headings_and_rail(body)
 
     title_match = re.search(r"\\chapter\{(.*)\}", chapter.body)
     title = arguments.post or (chapter.inline(title_match.group(1))
                               if title_match else name)
     title = re.sub(r"<[^>]+>", "", title).strip()
 
-    # The meta line: the chapter number from the file's own name, and whatever
-    # byline the source carries under its \chapter.
-    meta = arguments.meta
-    if meta is None:
-        number = re.search(r"chuong\s*(\d+)", os.path.basename(arguments.source))
-        parts = []
-        if number:
-            parts.append("Chương %s" % number.group(1))
-        if chapter.byline:
-            parts.append(chapter.inline(chapter.byline.replace("\\\\", " \u00b7 ")))
-        meta = " \u00b7 ".join(parts)
-
-    page = PAGE % {"name": name, "title": title, "meta": meta,
+    page = PAGE % {"name": name, "title": title, "rail": rail,
                    "source": os.path.relpath(arguments.source, ROOT).replace(os.sep, "/"),
                    "body": body}
     with open(arguments.out, "w", encoding="utf-8", newline="\n") as handle:

@@ -12,7 +12,8 @@
 #     {{double braces}} only if you want it allowed to wrap instead.
 #   * Menu order = order in this file. Keep it in sync with the pages.
 #
-# The Edge AI Lab has a sidebar of its own: www/menu-lab.jemdoc.
+# The Edge AI Lab is a section of this site, below; the blog has a sidebar
+# of its own, in www/menu-blog.jemdoc.
 #
 # Careful: jemdoc marks the current entry with a SUFFIX test, so one page name
 # must never be the tail of another, and two entries must never point at the
@@ -20,13 +21,16 @@
 # ---------------------------------------------------------------------------
  Phuong Vo
  Home [index.html]
- Blog [chap1.html]
-Research
- Lab [lab.html]
  Interests [interests.html]
  Publications [publications.html]
- #Gallery [gallery.html]
+ Supervision [supervision.html]
+ Blog [linear-programming.html]
+Research
+ Lab [lab.html]
+ Members [members.html]
+ Projects [projects.html]
+ News [news.html]
 Teaching
  Algorithm Optimization [algorithm-optimization.html]
  Regression Analysis [regression-analysis.html]
- Thesis [joining.html]
+ Thesis [thesis.html]

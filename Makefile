@@ -5,8 +5,8 @@
 #   make clean      delete the generated .html files
 #   make test       run the test-suite
 #   make verify     rebuild into _site/ and then run the test-suite
-#   make update     refresh the generated Publications page from ORCID, then rebuild
-#   make publications   alias of "make update"
+#   make publications   rebuild the Publications page from its BibTeX file, then build
+#   make update         alias of "make publications"
 #
 # You do NOT need make: every target is a one-line command that you can also
 # type directly, e.g.  python build.py
@@ -43,11 +43,11 @@ verify:
 	$(PYTHON) build.py --out _site
 	$(PYTHON) -m pytest
 
-# Refresh the generated Publications page from the ORCID record and
-# www/data/publications-extra.bib, then rebuild. Needs network access.
-# Commit the regenerated www/research/publications.jemdoc.
-update:
-	$(PYTHON) tools/update_site.py
+# Rebuild the Publications page from www/data/publications.bib and then rebuild
+# the site. Everything is local: the list is a file you edit, and nothing is
+# fetched. Commit the regenerated www/profile/publications.jemdoc.
+publications:
+	$(PYTHON) tools/build_publications.py
 	$(PYTHON) build.py
 
-publications: update
+update: publications

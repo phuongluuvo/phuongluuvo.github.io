@@ -14,12 +14,13 @@
       <li><a href="https://orcid.org/0000-0003-3909-4385" target="blank">ORCID</a></li>
     </ul>
     <p class="hero-bio">
-      Dr. Vo received the B.Eng. degree in Electronics and Telecommunications from HCMC University of Technology, Vietnam, in 1999, 
-      the M.Sc. degree in Telecommunications (Radio Electronics) from HCMC University of Technology, Vietnam, in 2003, and 
-      the Ph.D. degree in Computer Engineering from Kyung Hee University, Korea, in 2014. 
-      She is currently an Associate Professor and Head of the IT Department at International University, Vietnam National University Ho Chi Minh City. 
-      She has been a researcher at the School of Computer Science and Engineering, International University, since 2007, 
-      and worked in industry from 1998 to 2007.
+      Dr. Vo is an Associate Professor and Head of the Information Technology
+      Department at the School of Computer Science and Engineering, International
+      University, Vietnam National University Ho Chi Minh City, where she has worked
+      since 2007. She received the B.Eng. degree in Electronics and
+      Telecommunications in 1999 and the M.Sc. degree in Telecommunications (Radio
+      Electronics) in 2003, both from HCMC University of Technology, Vietnam, and the
+      Ph.D. degree in Computer Engineering from Kyung Hee University, Korea, in 2014.
     </p>
   </div>
 </div>
@@ -27,14 +28,15 @@
 
 = About
 
-- International University, Vietnam National University Ho Chi Minh City (2007 -- present)
-  -- Head of IT Department
-  -- Researcher, School of Computer Science and Engineering
-- Industry (1998 -- 2007)
+- *2007 -- present* \M International University, Vietnam National University Ho Chi Minh
+  City.
+  -- Head of the Information Technology Department
+  -- Researcher in the School of Computer Science and Engineering.
+- *1998 -- 2007* \M Industry, in telecommunications and networking.
 - Education
-  -- 01\/2009 -- 01\/2014: Ph.D., Computer Engineering, Kyung Hee University, Korea
-  -- 01\/2000 -- 01\/2003: M.Sc., Telecommunications, HCMC University of Technology, Vietnam
-  -- 01\/1994 -- 01\/1999: B.Eng., Electronics and Telecommunications, HCMC University of Technology, Vietnam
+  -- 2009 -- 2014: Ph.D., Computer Engineering, Kyung Hee University, Korea
+  -- 2000 -- 2003: M.Sc., Telecommunications, HCMC University of Technology, Vietnam
+  -- 1994 -- 1999: B.Eng., Electronics and Telecommunications, HCMC University of Technology, Vietnam
 
 #= News
 
@@ -47,24 +49,25 @@
 # one by adding a line here and running:  python build.py
 # See guide.md section 9.1.
 
-= Awards 
-- *2018* \M Outstanding Scientific Publication Award for Individual, academic year 2017--2018,
-  VNU-HCM.
-- *1996* \M Third prize, National Mechanical Olympic Competition (Hydraulics).
+= Recognition
 
-= Patent
-- "Method for managing width of window in multi-path TCP," Korean Intellectual Property Office
-  (KIPO).
+- *2018* \M Outstanding Scientific Publication Award (individual), academic year
+  2017--2018, VNU-HCM.
+- *2014* \M Patent 10-1425300, "Method for controlling the window size in multipath
+  TCP," Korean Intellectual Property Office.
+- *1996* \M Third prize, National Mechanical Olympiad, Vietnam (hydraulics).
 
 # ---------------------------------------------------------------------------
-# TEMPLATE -- add an entry with one bullet line, e.g.:
-# - *2027* \M Award or grant description in one sentence.
+# Everything that changes over time lives on a page of its own, so that this page
+# stays short and every list keeps one shape:
 #
-# NOTE: this list was built from the ORCID record
-# (https://orcid.org/0000-0003-3909-4385) and the HCMIU faculty page
-# (https://it.hcmiu.edu.vn/user/vtlphuong/). The "invited talks" section that shipped
-# with the demo was removed because none of it could be verified -- add yours back
-# here as they happen.
+#   publications.html   the papers, from www/data/publications.bib
+#   supervision.html    master's and doctoral students, with their theses
+#   projects.html   funded projects, with budgets and roles
+#   news.html       what the group announces
+#
+# Add to those pages rather than here. The patent and the awards are one line each
+# and live above, under Recognition.
 # ---------------------------------------------------------------------------
 
 == Contact information

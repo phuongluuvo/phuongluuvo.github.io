@@ -1,0 +1,307 @@
+# jemdoc: menu{menu-blog.jemdoc}{convex-optimization.html}, title{Bài toán tối ưu lồi}, notime
+# Written by tools/latex_to_page.py from www/files/blog/chuong 3 - bai toan toi uu loi.tex -- edit it, or fix the .tex
+# and run the tool again, which overwrites this file.
+
+~~~
+{}{raw}
+<h1 class="post-title">Bài toán tối ưu lồi</h1>
+<div class="post">
+<h2 id="gioi-thieu-bai-toan-toi-uu">Giới thiệu bài toán tối ưu</h2>
+<p>Một bài toán tối ưu có dạng chính tắc như sau:</p>
+<p class="equation">$$\begin{aligned}\mathrm{min.}~ &amp; f_0(x) \\
+\mathrm{s.t.}~ &amp; f_i(x) \leq 0, i = 1, \ldots, m \\
+			&amp; h_i(x) = 0, i = 1, \ldots, p,\end{aligned}$$<span class="eq-number">(1)</span></p>
+<p>trong đó, $x \in \mathbb{R}^n$ là biến của bài toán tối ưu, $f_0$ là hàm mục tiêu, 1 và 1 là các ràng buộc.</p>
+<p>$p^*$ được gọi là <i>nghiệm tối ưu</i> nếu $p^* = \min \{f_0(x) | f_i(x) \leq 0, i = 1,\ldots,m, h_i(x) = 0, i = 1, \ldots, p\}$.</p>
+<p>Miền xác định của bài toán được định nghĩa là giao của các miền xác định của tất cả các hàm trong bài toán</p>
+<p class="equation">$$\begin{aligned}\mathcal{D} = (\cap_{i=0}^m \mathrm{dom} f_i) \cap (\cap_{i=1}^p \mathrm{dom} h_i).\end{aligned}$$<span class="eq-number">(2)</span></p>
+<p>Miền khả thi của bài toán được định nghĩa là tập hợp các điểm thỏa mãn các ràng buộc</p>
+<p class="equation">$$\begin{aligned}\left\lbrace x  | x \in \mathcal{D}; f_i(x) \leq 0, i = 1, \ldots, m; h_i(x) = 0, i = 1, \ldots, p \right\rbrace\end{aligned}$$<span class="eq-number">(3)</span></p>
+<p>Nếu bài toán không có chặn dưới thì $p^* = -\infty$ và nếu miền nghiệm là rỗng thì bài toán vô nghiệm ($p^* = \infty$).</p>
+<p>$x^*$ được gọi là điểm cực tiểu (hay vector cực tiểu) nếu $x^*$ thuộc miền khả thi và $f_0(x^*) = p^*$. Tập hợp tất các các điểm cực tiểu của bài toán thì được gọi là tập cực tiểu</p>
+<p class="equation">$$\begin{aligned}X_{opt} = \{ x | x \in \mathcal{D} ~ \mathrm{and} ~ f_0(x) = p^*\}\end{aligned}$$<span class="eq-number">(4)</span></p>
+<p>Một vector $x^*$ được gọi là vector cực tiểu cục bộ nếu tồn tại một số thực $R$ dương đủ nhỏ sao cho $f_0(x)$ đạt cực tiểu trong lân cận của $x^*$ bán kính $R$</p>
+<p class="equation">$$\begin{aligned}f_0(x^*) = &amp; \min \{f_0(z) | f_i(z)  \leq 0, i = 1, \ldots, m, \\
+		&amp; h_i(z) = 0, i = 1, \ldots, p, \|z - x^* \|_2 \leq R \},\end{aligned}$$<span class="eq-number">(5)</span></p>
+<h2 id="mot-so-bien-doi-bai-toan-tuong-duong">Một số biến đổi bài toán tương đương</h2>
+<p>Hai bài toán tối ưu được gọi là tương đương nếu ta có thể suy ra dễ dàng nghiệm của một bài toán nếu có nghiệm của bài toán kia.</p>
+<p>Ví dụ có một số bài toán tối ưu mà ràng buộc dạng chận trên và chận dưới đơn giản như sau</p>
+<p class="equation">$$\begin{aligned}\mathrm{min.}~ &amp; f_0(x)\\
+\mathrm{s.t.}~ &amp; l_i \leq x_i \leq u_i, i = 1, \ldots, n.\end{aligned}$$<span class="eq-number">(6)</span></p>
+<p>Ta có thể chuyển bài toán trên thành bài toán tối ưu dạng chính tắc như sau:</p>
+<p class="equation">$$\begin{aligned}\mathrm{min.}~ &amp; f_0(x)\\
+\mathrm{s.t.}~ &amp; l_i-  x_i \leq 0, i = 1, \ldots, n\\
+			&amp; x_i - u_i \leq 0, i = 1, \ldots, n.\end{aligned}$$<span class="eq-number">(7)</span></p>
+<h3 id="bai-toan-tim-cuc-dai">Bài toán tìm cực đại</h3>
+<p>Đối với bài toán tìm cực đại</p>
+<p class="equation">$$\begin{aligned}\mathrm{max.} ~ &amp; f_0(x)\\
+\mathrm{s.t.} ~ &amp; f_i(x) \leq 0, i = 1, \ldots, m \\
+			&amp; h_i(x) = 0, i = 1, \ldots, p.\end{aligned}$$<span class="eq-number">(8)</span></p>
+<p>ta có thể chuyển bài toán trên về thành tìm cực tiểu $- f_0(x)$.</p>
+<h3 id="bien-doi-cac-ham-muc-tieu-va-rang-buoc">Biến đổi các hàm mục tiêu và ràng buộc</h3>
+<p>Một bài toán có hàm mục tiêu và các ràng buộc được nhân với các hằng số cũng là bài toán tương đương với bài toán gốc</p>
+<p class="equation">$$\begin{aligned}\mathrm{min.} ~ &amp; \tilde{f}(x) = \alpha_0 f_0(x)\\
+\mathrm{s.t} ~ &amp; \tilde{f}_i (x) = \alpha_i f_i(x) \leq 0, i = 1, \ldots, m \\
+			&amp; \tilde{h}_i(x) = \beta_i h_i(x) = 0, i = 1, \ldots, p,\end{aligned}$$<span class="eq-number">(9)</span></p>
+<p>trong đó $\alpha_i &gt; 0, i=0, \ldots, m$ và $\beta_i \neq 0, i=1, \ldots, p$.</p>
+<p>Ta cũng có thể đổi biến $x = \phi(z)$ để chuyển đổi bài toán tương đương miễn phép đổi biến $\phi$ là ánh xạ một - một:</p>
+<p class="equation">$$\begin{aligned}\tilde{f}_i(z) = f_i(\phi(z)), i = 0, \ldots, m, \quad \tilde{h}_i(z) = h_i(\phi(z)), i = 0, \ldots, p.\end{aligned}$$<span class="eq-number">(10)</span></p>
+<p>Do đó bài toán tương đương có được là:</p>
+<p class="equation">$$\begin{aligned}\mathrm{min.}~ &amp; \tilde{f}_0 (z) \\
+\mathrm{st.}~ &amp; \tilde{f}_i (z)  \leq 0, i = 1, \ldots, m \\
+			&amp; \tilde{h}_i(z) = 0, i = 1, \ldots, p\end{aligned}$$<span class="eq-number">(11)</span></p>
+<p>Ta cũng có thể biến đổi tương đương các hàm mục tiêu và ràng buộc bằng các hàm riêng rẽ. Cho $\psi_0: \mathbb{R}^n \rightarrow \mathbb{R}^n$ là hàm đơn điệu tăng, $\psi_1, \ldots, \psi_m: \mathbb{R} \rightarrow \mathbb{R}$ thỏa mãn $\psi_i(u) \leq 0$ nếu và chỉ nếu $u \leq 0$, và $\xi_1, \ldots, \xi_{p}: \mathbb{R} \rightarrow \mathbb{R}$ thoả mãn $\xi_i(u) = 0$ nếu và chỉ nếu $u = 0$. Định nghĩa các hàm số sau:</p>
+<p class="equation">$$\begin{aligned}\tilde{f}_i(x) &amp;= \psi_i(f_i(x)), i = 0, \ldots, m, \\
+\tilde{h}_i(x) &amp;= \xi_{i}(h_i(x)), i = 0, \ldots, p.\end{aligned}$$<span class="eq-number">(12)</span></p>
+<p>Ta có bài toán sau tương được với bài toán gốc 1-1</p>
+<p class="equation">$$\begin{aligned}\mathrm{min.}~ &amp; \tilde{f}_0 (x) \\
+\mathrm{s.t.}~ &amp; \tilde{f}_i (x)  \leq 0, i = 1, \ldots, m \\
+			&amp; \tilde{h}_i(x) = 0, i = 1, \ldots, p.\end{aligned}$$<span class="eq-number">(13)</span></p>
+<p>Ví dụ các bài toán cực tiểu norm và cực tiểu norm bình phương là tương đương. Thay vì giải bài toán gốc</p>
+<p class="equation">$$\begin{aligned}\min ~ \| Ax - b \|_2.\end{aligned}$$<span class="eq-number">(14)</span></p>
+<p>không khả vi tại một số điểm, ta có thể giải bài toán tương đương khả vi tại mọi điểm</p>
+<p class="equation">$$\begin{aligned}\min ~ \| Ax - b \|_2^2 = (Ax - b)^T(Ax - b).\end{aligned}$$<span class="eq-number">(15)</span></p>
+<h3 id="bien-phu">Biến phụ</h3>
+<p>Biến đổi bài toán tương đương có thể thực hiện bằng cách thêm vào <i>biến phụ</i>. Ví dụ bài toán sau tương được với bài toán gốc 1-1 bằng cách thêm biến $s_i, i = 1, \ldots, m$</p>
+<p class="equation">$$\begin{aligned}\mathrm{min.}~ &amp; f_0(x)\\
+\mathrm{s.t.}~ &amp; s_i \geq 0, i = 1, \ldots, m \\
+			&amp; f_i(x) + s_i = 0, i = 1, \ldots, m \\
+			&amp; h_i(x) = 0, i = 1, \ldots, p.\end{aligned}$$<span class="eq-number">(16)</span></p>
+<h3 id="luoc-bot-va-them-rang-buoc-dang-thuc">Lược bớt và thêm ràng buộc đẳng thức</h3>
+<p>Ta cũng có thể lược bớt ràng buộc đẳng thức nếu có hàm số $\phi$ sao cho $h_i(x) = 0,  i = 1, \ldots, p$ nếu và chỉ nếu $x = \phi(z)$, thì ta có bài toán sau tương đương với bài toán gốc 1-1.</p>
+<p class="equation">$$\begin{aligned}\mathrm{minimization}~ &amp; \tilde{f}(z) = f_0(\phi(z)) \\
+\mathrm{subject ~ to}~ &amp; \tilde{f}_i (z)  = f_i(\phi(z)) \leq 0, i = 1, \ldots, m.\end{aligned}$$<span class="eq-number">(17)</span></p>
+<p>Thêm ràng buộc đẳng thức Hai bài toán sau là tương đương:</p>
+<p class="equation">$$\begin{aligned}\mathrm{min.}~ &amp; f_0(A_0 x + b_0)\\
+\mathrm{s.t.}~ &amp; f_i(A_i x + b_i) \leq 0, i = 1, \ldots, m \\
+			&amp; h_i(x) = 0, i = 1, \ldots, p.\end{aligned}$$<span class="eq-number">(18)</span></p>
+<p>và</p>
+<p class="equation">$$\begin{aligned}\mathrm{min.}~ &amp; f_0(y_0)\\
+\mathrm{s.t.}~ &amp; f_i(y_i) \leq 0, i = 1, \ldots, m \\
+			&amp; y_i = A_i x + b_i, i = 0, \ldots, m \\
+			&amp; h_i(x) = 0, i = 1, \ldots, p.\end{aligned}$$<span class="eq-number">(19)</span></p>
+<h3 id="toi-uu-tren-mot-vai-bien">Tối ưu trên một vài biến</h3>
+<p>Ta cũng có thể thực hiện <i>tối ưu trên một vài biến</i> đối với một số bài toán dạng đăc biệt. Ví dụ như bài toán có hai nhóm ràng buộc độc lập giữa $x_1$ và $x_2$ sau</p>
+<p class="equation">$$\begin{aligned}\mathrm{min.}~ &amp; f_0(x_1, x_2)\\
+\mathrm{s.t.}~ &amp; f_i(x_1) \leq 0, i = 1, \ldots, m_1\\
+				&amp; g_i(x_2) \leq 0, i = 1, \ldots, m_2\end{aligned}$$<span class="eq-number">(20)</span></p>
+<p>sẽ tương đương với bài toán</p>
+<p class="equation">$$\begin{aligned}\mathrm{min.}~ &amp; \tilde{f}_0(x_1)\\
+\mathrm{s.t.}~ &amp; f_i(x_1) \leq 0, i = 1, \ldots, m_1,\end{aligned}$$<span class="eq-number">(21)</span></p>
+<p>trong đó</p>
+<p class="equation">$$\begin{aligned}\tilde{f}_0(x_1) = \min_{x_2 | g_i(x_2) \leq 0, i = 1,...,m_2} f_0(x_1, x_2).\end{aligned}$$<span class="eq-number">(22)</span></p>
+<h3 id="bien-doi-dang-epigraph">Biến đổi dạng epigraph</h3>
+<p>Bài toán dạng epigraph sau là tương đương với bài toán gốc</p>
+<p class="equation">$$\begin{aligned}\mathrm{min.}~ &amp; t\\
+\mathrm{s.t.}~ &amp; f_0(x) - t \leq 0 \\
+			&amp; f_i(y_i) \leq 0,  \quad i = 1, \ldots, m \\
+			&amp; h_i(x) = 0, 		\quad i = 1, \ldots, p.\end{aligned}$$<span class="eq-number">(23)</span></p>
+<p>$(x^*, t^*)$ là cực tiểu của bài toán dạng epigraph nếu và chỉ nếu $x^*$ là điểm cực tiểu của bài toán gốc và đồng thời $t^* = f_0(x^*)$.</p>
+<h2 id="bai-toan-toi-uu-loi">Bài toán tối ưu lồi</h2>
+<p>Bài toán tối ưu lồi có dạng như sau</p>
+<p class="equation">$$\begin{aligned}\mathrm{min.}~ &amp; f_0(x)\\
+\mathrm{s.t.}~ &amp; f_i(x) \leq 0, \quad i = 1, \ldots, m \\
+			&amp; a_i^T x = b_i, 	\quad i = 1, \ldots, p.\end{aligned}$$<span class="eq-number">(24)</span></p>
+<p>Trong đó, các hàm mục tiêu và ràng buộc bất đăng thức $f_i, i=1, \ldots, m$ đều là hàm lồi. Ràng buộc dạng đẳng thức phải ở dạng tuyến tính.</p>
+<p>Từ tính chất giao các tập lồi là tập lồi và epigraph của một hàm lồi là một tập lồi, ta có miền khả thi của một bài toán tối ưu lồi là một tập lồi.</p>
+<h3 id="bai-toan-tim-cuc-dai-ham-lom">Bài toán tìm cực đại hàm lõm</h3>
+<p>Bài toán tìm cực đại</p>
+<p class="equation">$$\begin{aligned}\mathrm{max.}~ &amp; f_0(x) \\
+\mathrm{s.t.}~ &amp; f_i(x) \leq 0, \quad i = 1, \ldots, m \\
+			&amp; a_i^T x = b_i, 	\quad i = 1, \ldots, p,\end{aligned}$$<span class="eq-number">(25)</span></p>
+<p>trong đó trong đó $f_0$ là hàm lõm và các hàm $f_i, i=1,...,m$ lồi cũng được xem là bài toán tối ưu lồi.</p>
+<h3 id="diem-cuc-tri">Điểm cực trị</h3>
+<p>Trong bài toán tối ưu lồi, điểm cực trị cục bộ cũng là điểm cực trị toàn cục.</p>
+<p>Giả sử <i>miền khả thi</i> của bài toán là là $X = \{ x | f_i(x) \leq 0, i=1, \ldots, m, h_i(x) = 0, i = 1, \ldots, p \}$. Trong trường hợp hàm $f_0$ khả vi, $x^*$ là điểm cực trị nếu và chỉ nếu $x^* \in X$ và</p>
+<p class="equation">$$\begin{aligned}\nabla f_0(x^*)^T (y - x^*) \geq 0, \quad \forall y \in X.\end{aligned}$$<span class="eq-number">(26)</span></p>
+<p>Đặc biệt nếu bài toán tối ưu không có ràng buộc thì điều kiện cần và đủ để $x^*$ cực trị là</p>
+<p class="equation">$$\begin{aligned}\nabla f_0(x) = 0\end{aligned}$$<span class="eq-number">(27)</span></p>
+<p>Ví dụ trong bài toán tối ưu một hàm toàn phương</p>
+<p class="equation">$$\begin{aligned}\min f_0(x) = (1/2) x^T Px + q^T x + r,\end{aligned}$$<span class="eq-number">(28)</span></p>
+<p>trong đó ma trận $P$ đối xứng và xác định dương, điều kiện cần và đủ để $x^*$ cực trị là $Px^* + q = 0$. Từ đó, ta có nghiệm của bài toán là $x^* = -P^{-1}q$ nếu ma trận $P$ xác định dương chặt. Nếu $det(P) = 0$ ($P$ singular) thì $x^* = -P^{\dagger} q + \mathcal{N} (P)$, trong đó $P^\dagger = (P^T P)^{-1} P^T$.</p>
+<h3 id="mot-so-vi-du-ve-bai-toan-toi-uu-loi">Một số ví dụ về bài toán tối ưu lồi</h3>
+<h3 id="linear-programming">Linear programming</h3>
+<p>Bài toán quy hoạch tuyến tính là một bài toán tối ưu lồi.</p>
+<p class="equation">$$\begin{aligned}\mathrm{min.}~ &amp; c^T x + d \\
+\mathrm{s.t.}~ &amp; Gx \preceq h \\
+			&amp; A x = b,\end{aligned}$$<span class="eq-number">(29)</span></p>
+<p>trong đó $G \in \mathbb{R}^{m \times n}$ và $A \in \mathbb{R}^{p \times n}$.</p>
+<p>Các biến đổi tương đương sau vẫn bảo toàn tính lồi bến bài toán gốc là lồi.</p>
+<ul>
+<li>Dạng epigraph của một bài toán lồi cũng là một bài toán lồi.
+</li>
+<li>Thêm biến phụ $s_i$ tương ứng với ràng buộc $f_i(x) \leq 0$ để biến ràng buộc này thành ràng buộc dạng đẳng thức.
+</li>
+<li>Bài toán tối ưu trên một số biến trong trường hợp bài toán gốc có các ràng buộc độc lập theo các biến vẫn là bài toán lồi (xem phần 3.2).
+</li>
+</ul>
+<h3 id="bai-toan-toi-uu-ham-toan-phuong">Bài toán tối ưu hàm toàn phương</h3>
+<p>Bài toán tối ưu hàm toàn phương có dạng sau</p>
+<p class="equation">$$\begin{aligned}\mathrm{min.}~ &amp; (1/2) x^T P x + q^T x + r \\
+\mathrm{s.t.}~ &amp; Gx \leq h \\
+			&amp; A x = b,\end{aligned}$$<span class="eq-number">(30)</span></p>
+<p>trong đó $P \in \mathbb{R}^{n \times n}, P \succeq 0$, $G \in \mathbb{R}^{m \times n}$ và $A \in \mathbb{R}^{p \times n}$. Bài toán trên là một bài toán tối ưu lồi.</p>
+<p>Bài toán tối ưu trong <i>hồi quy tuyến tính</i> (linear regression hay còn gọi là least square) chính là một bài toán tối ưu hàm toàn phương</p>
+<p class="equation">$$\begin{aligned}\| Ax - b\|^2_2 = x^T A^T A x - 2b^T A x + b^T b.\end{aligned}$$<span class="eq-number">(31)</span></p>
+<p>Nghiệm của bài toán tối ưu trên là $x^* = A^\dagger b$, trong đó $A^\dagger = (A^T A)^{-1} A^T$ là ma trận nghịch đảo giả (Moore-Penrose pseudo-inverse) của ma trận A, được xem là dạng tổng quát của phép nghị đảo ma trận trong trường hợp ma trận không vuông hay không khả nghịch. Một số bài toán hồi quy tuyến tích còn có thêm chận trên và chận dưới cho các biến, ví dụ, $l \preceq x \preceq u$.</p>
+<h3 id="geometric-programming">Geometric programming</h3>
+<p>Bài toán tối ưu geometric programming xuất hiện trong một số lĩnh vực trong kỹ thuật, kinh tế, khoa học quản lý,... Ta có thể đưa bài toán geometric programming thành bài toán lồi tương đương.</p>
+<p>Ta có một số định nghĩa trước khi định nghĩa bài toán geometric programming như sau: Hàm đơn thức (monomial) được định nghĩa là $f(x) = c x_1^{a_1} x_2^{a_2} \ldots x_n^{a_n}$, trong đó $c &gt; 0, a_i \in \mathbb{R}$. Hàm đa thức (posynomial) là hàm có dạng như sau $f(x) = \sum_{k = 1}^K c x_1^{a_{1k}} x_2^{a_{2k}} \ldots x_n^{a_{nk}}$, $c_k &gt; 0$.</p>
+<p>Bài toán tối ưu có dạng</p>
+<p class="equation">$$\begin{aligned}\mathrm{min.}~ &amp; f_0(x)\\
+\mathrm{s.t.}~ &amp; f_i(x) \leq 1, \quad i = 1, \ldots, m \\
+			&amp; h_i(x) = 1, 	\quad i = 1, \ldots, p,\end{aligned}$$<span class="eq-number">(32)</span></p>
+<p>trong đó $f_0, \ldots, f_m$ đều là posynomial, $h_i$ là monomial được gọi là bài toán tối ưu dạng <i>geometric programming</i>.</p>
+<p>Bằng cách thay biến $y_i = \log x_i$ và lấy logarit các hàm, ta có</p>
+<ul>
+<li>đơn thức $f(x) = c x_1^{a_1} x_2^{a_2} \ldots x_n^{a_n}$ trở thành
+ <p class="equation">$$\begin{aligned}\log f(e^{y_1}, \ldots, e^{y_n})= a^T y + b\end{aligned}$$<span class="eq-number">(33)</span></p>
+ trong đó $b = \log c$,
+</li>
+<li>posynomial $f(x) = \sum_{k = 1}^K c x_1^{a_{1k}} x_2^{a_{2k}} \ldots x_n^{a_{nk}}$ trở thành
+ <p class="equation">$$\begin{aligned}\log f(e^{y_1}, \ldots, e^{y_n})= \log\Big(\sum_{i=1}^K e^{a_{ik}^T + b_{ik}}\Big),\end{aligned}$$<span class="eq-number">(34)</span></p>
+ trong đó $b_k = \log c_k$,
+</li>
+</ul>
+<p>Do đó, geometric program tương đương với bài toán tối ưu lồi sau</p>
+<p class="equation">$$\begin{aligned}\mathrm{max.}~ &amp; \log\Big(\sum_{i=1}^K e^{a_{0k}^T + b_{0k}}\Big)\\
+\mathrm{s.t.}~ &amp; \log\Big(\sum_{i=1}^K e^{a_{ik}^T + b_{ik}}\Big) \leq 1, \quad i = 1, \ldots, m \\
+			&amp; Gy + d = 0, 	\quad i = 1, \ldots, p.\end{aligned}$$<span class="eq-number">(35)</span></p>
+<h2 id="mot-so-bai-toan-toi-uu-trong-hoc-may">MỘT SỐ BÀI TOÁN TỐI ƯU TRONG HỌC MÁY</h2>
+<h3 id="hoi-quy-tuyen-tinh">Hồi quy tuyến tính</h3>
+<p>Giả sử số ca mắc sốt xuất huyết và lượng mưa trong tháng qua thống kê trong 3 năm được mô tả ở Hình 1, trong đó</p>
+<p class="equation">$$\begin{aligned}x_1 =&amp; [55,	102,	169,	177,	185,	236,	252,	269,	359,	380,	386,	115,\\
+&amp; 11,	 16,	137,	149,	216,	234,	251,	253,	356,	364,	372,	362,\\
+&amp; 36,	58,	63,	77,	282,	287,	304,	305,	370,	374,	399,	279]\\
+y =&amp;[163,	239,	227,	364,	265,	354,	325,	364,	577,	529,	544,	214\\
+&amp; 109,	9,	155,	179,	339,	434,	410,	373,	546,	486,	536,	471,\\
+&amp; 189,	275,	51,	184,	293,	501,	431,	462,	457,	514,	486,	461]\end{aligned}$$<span class="eq-number">(36)</span></p>
+<p><i>Ghi chú: Số liệu trên chỉ cho ví dụ minh họa này.</i></p>
+<figure id="fig-1"><img src="images/blog/convex-optimization-xy_plot.png" alt="Hình 1" style="max-width:265px" /><figcaption>Hình 1: Tập dữ liệu ví dụ minh họa linear regression.</figcaption></figure>
+<p><i>Tìm hàm tuyến tính xấp xỉ số ca mắc ($y$) theo lượng mưa ($X$)</i>.</p>
+<p>Giả sử một mẫu thứ $i$ có lương mưa là $x_{i1}$. Nếu ta thêm $x_0$ luôn bằng 1. Số ca mắc dự đoán tương ứng với lượng mưa sẽ được cho bởi hàm $f(w; x) = w_0 + x_{i1} w_1 = x^Tw$, trong đó, $x = [x_0, x_1]^T$. Trong khi đó giá thực là $y_i$. Do đó sai số của ước lượng so với số ca thực của tập dữ liệu thường được lượng hóa bởi hàm norm:</p>
+<p class="equation">$$\begin{aligned}L = ||y - Xw||,\end{aligned}$$<span class="eq-number">(37)</span></p>
+<p>trong đó, $X = \begin{bmatrix} x_1^T \\ ... \\ x_{36}^T
+\end{bmatrix}$, $y = \begin{bmatrix} y_1 \\ ... \\ y_{36}
+\end{bmatrix}$</p>
+<p>Ta cần tìm $w = [w_0, w_1]^T$ sao cho hàm ước lượng là khớp nhất với tập dữ liệu đã cho. Điều đó có nghĩa là tổng sai số</p>
+<p class="equation">$$\begin{aligned}L = ||y - Xw||\end{aligned}$$<span class="eq-number">(38)</span></p>
+<p>phải là nhỏ nhất.</p>
+<p>Như vậy bài toán hồi quy tuyến tính được đưa về bài toán tối ưu lồi với biến $w$:</p>
+<p class="equation">$$\begin{aligned}\mathrm{min.} ~ L = ||y - Xw||.\end{aligned}$$<span class="eq-number">(39)</span></p>
+<p>Nếu dùng $\ell_2$-norm ước lượng khoảng cách giữa giá trị ước lượng và giá trị thật, ta thường tối thiểu hàm $\ell_2$-norm bình phương (có tên thông dụng là least square):</p>
+<p class="equation">$$\begin{aligned}\mathrm{min.} ~ \frac{1}{2}||y - Xw||_2^2 = (y - Xw)^T (y - Xw).\end{aligned}$$<span class="eq-number">(40)</span></p>
+<p>Dùng thư viện CVX, ta có thể tìm được vector trọng số $w=[77.80,  1.18]$.</p>
+<figure id="fig-2"><img src="images/blog/convex-optimization-xy_plot_linear-regression.png" alt="Hình 2" style="max-width:265px" /><figcaption>Hình 2: Hàm tuyến tính nội suy từ lượng mưa ra số ca mắc sốt xuất huyết.</figcaption></figure>
+<p>Nếu tập dữ liệu lớn với nhiều mẫu và nhiều đặc tính, bài toán tối ưu trở thành một bài toán kích thước lớn. Khi đó ta thường dùng giải thuật như gradient, stochastic gradient để giải bài toán.</p>
+<p>Dùng hàm mất mát là $\ell_2$-norm thường khá nhạy cảm với các điểm đăc biệt. Ví dụ tập dữ liệu có điểm đặc biệt như Hình 3. Nếu sử dụng hàm mất mát là $\ell_1$-norm sẽ cho kết quả trông tốt hơn như Hình 4.</p>
+<figure id="fig-3"><img src="images/blog/convex-optimization-xy_plot_outlier.png" alt="Hình 3" style="max-width:265px" /><figcaption>Hình 3: Tập dữ liệu với điểm đăc biệt.</figcaption></figure>
+<figure id="fig-4"><img src="images/blog/convex-optimization-xy_linear-regression_outlier_ell2.png" alt="Hình 4" style="max-width:227px" /><figcaption>Hình 4: Tối ưu với hàm mất mát là $\ell_2$-norm (trái) và $\ell_1$-norm (phải).</figcaption></figure>
+<h3 id="bai-toan-logistic-regression">Bài toán logistic regression</h3>
+<p>Trong các giải thuật phân lớp, đầu vào vector đăc tính $x$, đầu ra phải phân vào một trong $K$ lớp. Có hai phương pháp phổ biến trong phân lớp: 1) ước lượng hàm phân lớp trực tiếp từ tập dữ liệu cho trước, từ đó xác định $x$ thuộc lớp nào từ hàm này và 2) từ tập dữ liệu cho trước, tìm mô hình xác suất để ước lượng xác suất đối tượng với vector đặc tính $x$. Trong phần này, chúng ta xem xét phương pháp thứ hai.</p>
+<p>Xét bài toán phân 2 lớp $C_1, C_2$ trong ví dụ sau:</p>
+<p>Ta dùng hàm sigmoid để mô hình xác suất của đối tượng có vector đặc tính $x$ thuộc lớp $C_1$</p>
+<p class="equation">$$\begin{aligned}p(C_1 | x) = \sigma(w^T x) = \frac{1}{1 + e^{-w^Tx}}.\end{aligned}$$<span class="eq-number">(41)</span></p>
+<p>Như vậy $p(C_2 | x) = 1- p(C_1 | x)$ sẽ là xác suất đối tượng có vector đặc tính $x$ thuộc lớp $C_2$.</p>
+<figure id="fig-5"><img src="images/blog/convex-optimization-chap2_sigmoid.png" alt="Hình 5" style="max-width:359px" /><figcaption>Hình 5: Biểu diễn hàm sigmoid $\frac{1}{1 + e^{-w^Ta}}$ với $w = 0,2; 2; 10$ trong không gian 2D.</figcaption></figure>
+<p>Ta có một số tính chất của hàm sigmoid:</p>
+<ul>
+<li>Hàm sigmoid luôn có giá trị từ 0 đến 1, nên rất phù hợp để mô hình xác suất,
+</li>
+<li>$\sigma(-a) = 1-\sigma(a)$.
+</li>
+<li>Hàm nghịch đảo của hàm sigmoid được gọi là hàm <i>logit</i>,
+ <p class="equation">$$\begin{aligned}a=\log(\frac{\sigma}{1-\sigma})\end{aligned}$$<span class="eq-number">(42)</span></p>
+</li>
+<li>Đạo hàm
+ <p class="equation">$$\begin{aligned}\frac{d \sigma}{da} = \sigma (1- \sigma).\end{aligned}$$<span class="eq-number">(43)</span></p>
+</li>
+</ul>
+<p>Cho dataset $(X, y)$, trong đó, $X = \begin{bmatrix} x_1^T \\ ... \\ x_N^T \end{bmatrix}$ là ma trận chứa $N$ vector đăc tính, $y = \begin{bmatrix} y_1^T \\ ... \\ y_N \end{bmatrix}$, $y_i$ là 0 hoặc 1. Vector $y$ còn được gọi là target. Ta tìm vector $w$ sao cho likelihood của tập dữ liệu theo mô hình xác suất $\sigma(w^T x)$ là cực đại.</p>
+<p>Do $y_i$ bằng 0 hoặc 1 trong bài toán phân hai lớp, ta có thể viết lại xác suất ước lượng theo mô hình sigmoid (likelihood) của vector $x_i$ theo dạng sau:</p>
+<p class="equation">$$\begin{aligned}P(y_i | x_i;w) = \sigma(w^T x_i)^{y_i} (1-\sigma(w^T x_i))^{1-y_i}.\end{aligned}$$<span class="eq-number">(44)</span></p>
+<p>Theo công thức trên, nếu $y_i = 1$ (thuộc lớp $C_1$) thì xác xuất sẽ là $\sigma(w^T x_i)$ và nếu $y_i = 0$ (thuộc lớp $C_2$) thì xác xuất sẽ là $1-\sigma(w^T x_i)$.</p>
+<p>Do đó, xác suất ước lượng theo sigmoid cho cả tập dữ liệu là</p>
+<p class="equation">$$\begin{aligned}P(y | X ;w) = \prod_{i=1}^N \sigma(w^T x_i)^{y_i} (1-\sigma(w^T x_i))^{1-y_i}.\end{aligned}$$<span class="eq-number">(45)</span></p>
+<p>Ta cần tìm vector trọng số $w$ để tối đa xác suất ước lượng $P(y | X ;w)$ (maximum likelihood estimation). Tuy nhiên thay vì tìm cực đại hàm số $P(y | X ;w)$ có dạng tích khá phức tạp, ta lấy logarit để biến đổi từ dạng tích về dạng tổng và tìm cực trị của hàm mục tiêu mới:</p>
+<p class="equation">$$\begin{aligned}\log(P(y | X ;w)) &amp;= \sum_{i=1}^N y_i \log(\sigma(w^T x_i)) + (1-y_i)\log (1-\sigma(w^T x_i))\\
+				&amp; = \sum_{i=1}^N y_i w^T x_i + \log (1-\sigma(w^T x_i)) \\
+				&amp; = \sum_{i=1}^N y_i w^T x_i - \log (1 + e^{w^T x_i}).\end{aligned}$$<span class="eq-number">(46)</span></p>
+<p>Do đó bài toán được đưa về bài toán tìm cực trị của hàm log-likelihood:</p>
+<p class="equation">$$\begin{aligned}\mathrm{max.} \sum_{i=1}^N y_i w^T x_i - \log (1 + e^{w^T x_i}).\end{aligned}$$<span class="eq-number">(47)</span></p>
+<h3 id="bai-toan-phan-k-lop-voi-ham-softmax">Bài toán phân $K$ lớp với hàm softmax</h3>
+<p>Nếu có nhiều hơn 2 lớp, ngõ ra $y$ được biểu diễn dưới dạng vector. Giả sử output $y_i$ của điểm dữ liệu $i$ thuộc lớp 2 có dạng <i>one-hot coding</i> như sau</p>
+<p class="equation">$$\begin{aligned}y_i = \begin{bmatrix} y_{i1}\\ y_{i2} \\ y_{i3} \\ ... \\ y_{iK} \end{bmatrix} = \begin{bmatrix} 0 \\ 1 \\ 0 \\ ... \\ 0 \end{bmatrix}.\end{aligned}$$<span class="eq-number">(48)</span></p>
+<p>Ta có $y_{i1} + y_{i2} + y_{i3} + ... + y_{iK} = 1$.</p>
+<p>Mô hình logistic regression với $K$ lớp dùng hàm softmax để mô hình hóa xác suất với vector đăc tính $x$, đối tượng thuộc lớp $k$</p>
+<p class="equation">$$\begin{aligned}p(y_{ik}=1 | x_i; W) = \frac{e^{w_k^T x_i}}{\sum_{k'=1}^K e^{w_{k'}^T x_i}}.\end{aligned}$$<span class="eq-number">(49)</span></p>
+<p>Do đó, hàm likelihood của một điểm dữ liệu $x_i$ với output $y_i$ được cho bởi công thức</p>
+<p class="equation">$$\begin{aligned}p(y_i| x_i; W) = \prod_{k=1}^K \left( \frac{e^{w_k^T x_i}}{\sum_{k'=1}^K e^{w_{k'}^T x_i}}\right)^{y_{ik}},\end{aligned}$$<span class="eq-number">(50)</span></p>
+<p>do đó hàm likelihood của mô hình ước lượng được cho bởi công thức:</p>
+<p class="equation">$$\begin{aligned}p(y| X; W) 		&amp;= \prod_{i=1}^N p(y_i| x_i)\\
+&amp;= \prod_{i=1}^N \prod_{k=1}^K \left( \frac{e^{w_k^T x_i}}{\sum_{k'=1}^K e^{w_{k'}^T x_i}}\right)^{y_{ik}}.\end{aligned}$$<span class="eq-number">(51)</span></p>
+<p>Ta cần tìm $W = \begin{bmatrix}
+w_1^T \\ ... \\ w_K^T
+\end{bmatrix}$ sao cho $p(y| X; W)$ đạt cực đại. Bài toán này được gọi là <i>maximum likelihood</i>.</p>
+<p>Thay vì tìm cực trị của hàm tích 51, ta tìm cực trị của biến đổi logarit để đưa dạng tích thành dạng tổng (maximum log-likelihood):</p>
+<p class="equation">$$\begin{aligned}\mathrm{max.} &amp; \sum_{i=1}^N \sum_{k=1}^K \log\left( \frac{e^{w_k^T x_k}}{\sum_{k'=1}^K e^{w_{k'}^T x_i}}\right)^{y_{ik}}\\
+			&amp; =\sum_{i=1}^N \left( \sum_{k=1}^K y_{ik}w_k^T x_k - \log(\sum_{k'=1}^K e^{w_{k'}^T x_i}) \right)\end{aligned}$$<span class="eq-number">(52)</span></p>
+<p>Bài toán tối ưu trên là một bài toán tối ưu lồi.</p>
+<h2 id="ghi-chu">Ghi chú</h2>
+<p>Các bài tập trong chương này được tham khảo từ các sách [1]</p>
+<h2 id="tai-lieu-tham-khao">Tài liệu tham khảo</h2><ol class="refs"><li id="cite-boyd">Boyd, Stephen, Stephen P. Boyd, and Lieven Vandenberghe. Convex optimization. Cambridge university press, 2004.</li><li id="cite-pythonbook">Wentworth, Peter, Jeffrey Elkner, Allen B. Downey, and Chris Meyer. How to think like a computer scientist: Learning with Python 3. (2015).</li></ol></div>
+<nav class="rail" id="rail" aria-label="Mục lục">
+<p class="rail-title">Mục lục</p>
+<ul><li><a href="#gioi-thieu-bai-toan-toi-uu">Giới thiệu bài toán tối ưu</a></li><li><a href="#mot-so-bien-doi-bai-toan-tuong-duong">Một số biến đổi bài toán tương đương</a></li><li><a href="#bai-toan-toi-uu-loi">Bài toán tối ưu lồi</a></li><li><a href="#mot-so-bai-toan-toi-uu-trong-hoc-may">MỘT SỐ BÀI TOÁN TỐI ƯU TRONG HỌC MÁY</a></li><li><a href="#ghi-chu">Ghi chú</a></li><li><a href="#tai-lieu-tham-khao">Tài liệu tham khảo</a></li></ul>
+</nav>
+<script>
+(function () {
+  var rail = document.getElementById("rail");
+  if (!rail) {
+    return;
+  }
+  var links = [].slice.call(rail.querySelectorAll("a"));
+  var spots = links.map(function (link) {
+    return document.getElementById(link.getAttribute("href").slice(1));
+  });
+  // The last link of the sidebar is where the menu ends, whatever it holds.
+  var menu = document.querySelector("#layout-menu");
+  var linksInMenu = menu ? menu.querySelectorAll("a") : [];
+  var menuEnd = linksInMenu.length ? linksInMenu[linksInMenu.length - 1] : null;
+  function menuGone() {
+    return menuEnd ? menuEnd.getBoundingClientRect().bottom < 8 : true;
+  }
+  function place() {
+    if (menuGone()) {
+      rail.style.top = "";
+      rail.style.maxHeight = "";
+      return;
+    }
+    var under = Math.round(menuEnd.getBoundingClientRect().bottom) + 16;
+    rail.style.top = under + "px";
+    rail.style.maxHeight = Math.max(120, window.innerHeight - under - 14) + "px";
+  }
+  function draw() {
+    place();
+    rail.classList.toggle("rail-on", menuGone());
+    var current = 0;
+    spots.forEach(function (spot, index) {
+      if (spot) {
+        var top = spot.getBoundingClientRect().top;
+        if (top > 90) {
+          return;
+        }
+        current = index;
+      }
+    });
+    links.forEach(function (link, index) {
+      link.classList.toggle("rail-current", index === current);
+    });
+  }
+  window.addEventListener("scroll", draw, { passive: true });
+  window.addEventListener("resize", draw);
+  draw();
+}());
+</script>
+
+~~~

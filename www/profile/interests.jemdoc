@@ -1,0 +1,33 @@
+# jemdoc: menu{menu.jemdoc}{interests.html}, title{Research Interests}, notime
+
+My work sits where machine learning meets communication and optimisation: what to
+compute, what to send, and where to do each of them, when bandwidth, energy and
+privacy are scarce at the same time. The question I keep coming back to is
+*learning under a network constraint* -- models trained or served across devices
+that cannot pool their data, over links that carry meaning rather than bits.
+
+== Current directions
+
+- *Semantic communication* -- sending the meaning of a signal rather than a faithful
+  copy of it, with a learned encoder and decoder at each end: what should "meaning"
+  be when the task at the receiver changes?
+- *Distributed and federated learning* -- training that never pools raw data, under
+  non-IID clients, intermittent links and heterogeneous devices.
+- *Edge intelligence* -- inference where the data is produced, and the split of a
+  model between a device and the edge that makes it affordable.
+- *Deep reinforcement learning for network control* -- bitrate adaptation, resource
+  allocation and scheduling learned from experience rather than from a model.
+- *Wireless and mobile networking, and the Internet of Things* -- multipath
+  transport, caching and network slicing, and the optimisation that chooses
+  between them.
+- *Large AI models for networked systems* -- efficient fine-tuning and inference of
+  large models across a network, and what they make possible at the edge.
+
+== Methods
+
+Convex and distributed optimisation, game theory, stochastic and online learning,
+and reinforcement learning -- applied to problems that arrive with a system
+attached.
+
+Theses in these directions are listed on the [supervision.html Supervision] page,
+and the papers that came out of them on [publications.html Publications].

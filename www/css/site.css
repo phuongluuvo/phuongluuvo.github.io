@@ -473,59 +473,11 @@ details[open] > summary::before { content: "▾"; }
 
 details > summary:hover { color: var(--accent-ink); }
 
-/* ------------------------------------------------------------------ pubs -- */
-/* One reference per line, the date leading it: the page reads as a single column
-   of dates with the newest at the top, so nothing has to be opened before a
-   title can be read. The rule down the left of each entry is what separates them
-   at this density -- a margin alone was not enough once the year headings were
-   gone. */
-
-ul.pubs {
-  margin: 0 0 22px;
-  padding: 0;
-  list-style: none;
-}
-
-ul.pubs > li {
-  margin: 0 0 15px;
-  padding: 0 0 0 12px;
-  border-left: 2px solid var(--border);
-}
-
-ul.pubs > li::marker { content: none; }
-
-.pub-ref {
-  margin: 0;
-  font-size: 0.92rem;
-  line-height: 1.55;
-}
-
-/* The date is given a fixed width so the references line up under one another
-   as a column, which is the whole point of putting it first. */
-.pub-date {
-  display: inline-block;
-  min-width: 4.7em;
-  margin-right: 0.45em;
-  font-variant-numeric: tabular-nums;
-  font-weight: 700;
-  color: var(--accent);
-}
-
-.pub-authors { color: var(--muted); }
-
-.pub-title { font-weight: 700; }
-
-.pub-type {
-  display: inline-block;
-  margin-left: 0.5em;
-  font-size: 0.68rem;
-  font-weight: 650;
-  letter-spacing: 0.07em;
-  text-transform: uppercase;
-  color: var(--faint);
-}
-
-.pub-note { font-style: italic; }
+/* ---------------------------------------------------------- publications -- */
+/* The publication list is ordinary jemdoc: a bullet list under a year heading,
+   written by tools/build_publications.py. It needs no rules of its own -- a
+   section heading is an <h2> and a year is an <h3>, both styled above -- so the
+   references simply read as the rest of the site's lists do. */
 
 /* --------------------------------------------------------------- courses -- */
 
@@ -713,19 +665,74 @@ details.materials ul { margin: 0 0 16px; }
 
 /* A post opens with its own title instead of a jemdoc `= Title` line, because
    the title is written by tools/latex_to_page.py. It is a real <h1> so the page
-   has one, and the byline's rule sits under it. */
+   has one, and it carries the heavier rule every other page gets from its
+   jemdoc title, which a post does not have. */
 .post-title {
-  margin: 0 0 0.15em;
+  margin: 0 0 1.4em;
+  padding-bottom: 0.2em;
+  border-bottom: 3px solid var(--rule-strong);
   font-size: 1.85em;
   line-height: 1.25;
 }
 
-.post-meta {
-  margin: 0 0 1.6em;
-  padding-bottom: 0.8em;
-  border-bottom: 1px solid var(--border);
+/* The post's contents, small and fixed in the sidebar's strip: it waits under the
+   menu, and moves up into the menu's place once the menu has scrolled away. The
+   script in the page measures the menu and keeps the rail under it, so the top
+   here only has to be right for the blog's own menu; nothing hides the rail, so
+   a page whose script does not run still has its list. */
+.rail {
+  position: fixed;
+  top: 236px;
+  left: 12px;
+  z-index: 5;                 /* above the sidebar it takes the place of */
+  width: calc(var(--menu-width) - 24px);
+  max-height: calc(100vh - 250px);
+  overflow: auto;
+  padding: 12px 14px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+  transition: top 0.25s ease;
+}
+
+.rail-on {
+  top: 14px;
+  max-height: calc(100vh - 28px);
+}
+
+.rail-title {
+  margin: 0 0 0.6em;
+  font-family: var(--font-head);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
   color: var(--faint);
-  font-size: 0.88rem;
+}
+
+.rail ul { margin: 0; padding: 0; list-style: none; }
+
+.rail li { margin: 0 0 0.3em; font-size: 0.86rem; line-height: 1.35; }
+
+.rail a { color: var(--muted); text-decoration: none; }
+
+.rail a:hover { color: var(--accent); }
+
+.rail .rail-current a { color: var(--accent); font-weight: 600; }
+
+/* Below 760px the two cells stack, and the menu is the whole width: a fixed
+   rail there would sit on top of the text. */
+@media (max-width: 760px) {
+  .rail { display: none; }
+}
+
+@media print {
+  .rail { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rail { transition: none; }
 }
 
 /* A numbered display equation: MathJax centres the formula and the number sits

@@ -67,13 +67,11 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Refresh the generated Publications page from ORCID
-        # Best effort. The generated www/research/publications.jemdoc is
-        # committed, so if ORCID or Crossref is unreachable -- or answers only
-        # partially -- the committed copy is used and the deployment still goes
-        # ahead. Nothing else is generated: the news on the Home page is
-        # hand-written.
-        run: python tools/update_site.py || echo "::warning::Could not refresh the generated Publications page; using the committed copy."
+      - name: Check that the Publications page matches its BibTeX file
+        # The page is generated from www/data/publications.bib by an offline tool
+        # and committed, so this only has to notice when the two have drifted
+        # apart. Nothing is fetched and nothing is rewritten here.
+        run: python tools/build_publications.py --check
 
       - name: Generate the HTML from the .jemdoc sources
         run: python build.py --out _site

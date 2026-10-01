@@ -140,7 +140,7 @@ def fill_materials(name: str, text: str, materials: dict[str, str]) -> str:
 
 
 def is_menu_file(name: str) -> bool:
-    """True for a ``menu*.jemdoc`` file, e.g. menu.jemdoc or menu-lab.jemdoc.
+    """True for a ``menu*.jemdoc`` file, e.g. menu.jemdoc or menu-blog.jemdoc.
 
     Every page includes exactly one menu, and the lab pages use a different one,
     so the sidebar changes inside the lab without touching the rest of the site.
@@ -163,7 +163,7 @@ def find_pages() -> list[str]:
 
     A menu file is *included* by the pages that use it, so it is not a page
     itself. There is more than one: www/menu.jemdoc for the main site and
-    www/menu-lab.jemdoc for the pages of the Edge AI Lab, whose sidebar differs.
+    www/menu-blog.jemdoc for the blog's posts, which have a sidebar of their own.
     """
     pages = []
     for root, dirs, files in os.walk(SRC):
