@@ -30,7 +30,7 @@ USAGE
     python build.py --clean          delete the generated HTML files
 
 Everything you normally edit lives in ``www/``. The output folder is generated
-and is not committed: GitHub Actions builds it and deploys it. See guide.md.
+and is not committed: GitHub Actions builds it and deploys it.
 """
 
 from __future__ import annotations
@@ -50,7 +50,7 @@ JEMDOC = os.path.join(TOOLS, "jemdoc")
 CONF = "mysite.conf"
 
 #: Where the generated site is written unless --out says otherwise. This folder
-#: is NOT committed -- GitHub Actions builds it and deploys it. See guide.md.
+#: is NOT committed -- GitHub Actions builds it and deploys it.
 OUTPUT_DIR = os.path.join(ROOT, "_site")
 
 #: jemdoc files in www/ that are NOT standalone pages.

@@ -27,12 +27,10 @@ _site/
 /.nojekyll
 
 # jemdoc equation cache. Only created if you ever switch jemdoc from MathJax
-# to its built-in LaTeX equation mode (see guide.md).
+# to its built-in LaTeX equation mode.
 eqs/
 
 # Editor / OS noise
 *.swp
 .DS_Store
 Thumbs.db
-
-guide.md 

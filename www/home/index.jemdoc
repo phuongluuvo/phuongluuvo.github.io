@@ -47,7 +47,6 @@
 # Nothing here is generated and nothing is sorted for you: the page shows these
 # lines in the order they are written, so keep the newest at the top. Add a new
 # one by adding a line here and running:  python build.py
-# See guide.md section 9.1.
 
 = Recognition
 

@@ -4,9 +4,9 @@ This repository is the personal website of Assoc. Prof. Phuong Luu Vo: static
 [jemdoc](http://jemdoc.jaboc.net/) sources compiled to HTML by `build.py`, with MathJax 3 for
 equations, published with GitHub Pages.
 
-**Read [`guide.md`](guide.md) before changing anything.** It is the full manual for both humans
-and agents; §13 is the agent-specific part. It is the only manual — nothing is duplicated
-elsewhere.
+**Read this file before changing anything.** It is the only documentation the repository has:
+the rules below, and the commands in the next section, are all there is, so keep them accurate
+when you change something.
 
 ## The five rules that matter most
 
@@ -106,5 +106,5 @@ line endings, and an invalid CI workflow.
 * Reformat the CRLF → LF normalisation in `build.py`, or save `.jemdoc` files as CRLF. jemdoc
   treats a CRLF blank line as non-blank and silently swallows paragraphs.
 * Modify `tools/jemdoc` casually. It is vendored upstream jemdoc + MathJax 0.7.3 with **five**
-  local fixes marked `LOCAL FIX` (`guide.md` §2). Keep them all intact.
+  local fixes marked `LOCAL FIX`. Keep them all intact.
 * Mass-rewrite page content to "improve" style; content belongs to the site owner.

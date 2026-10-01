@@ -12,8 +12,6 @@ name: Build and deploy the website
 #
 # One-time setup:  Settings -> Pages -> Build and deployment -> Source:
 #                  "GitHub Actions"
-# See guide.md for the step-by-step instructions and for the alternative
-# (branch-based) deployment method.
 
 on:
   push:

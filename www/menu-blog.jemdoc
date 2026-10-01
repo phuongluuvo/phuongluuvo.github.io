@@ -9,11 +9,12 @@
 #   * a line WITHOUT brackets is a coloured section heading;
 #   * a line with brackets is a link:  Visible text [target-file.html]
 #
-# TO ADD A POST: add one line under the Blog heading below, then see guide.md
-# §9.12 for the page itself.
+# TO ADD A POST: add one line under the Blog heading below, and add the page in
+# www/blog/. The five posts there are written by tools/latex_to_page.py from the
+# .tex chapters in www/files/blog/.
 #
 # Careful: jemdoc marks the current entry with a SUFFIX test, so one page name
-# must never be the tail of another. See guide.md §6.4.
+# must never be the tail of another. See AGENTS.md, rule 4.
 # ---------------------------------------------------------------------------
 Home [index.html]
 Blog

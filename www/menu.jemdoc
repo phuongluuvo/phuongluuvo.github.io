@@ -17,7 +17,7 @@
 #
 # Careful: jemdoc marks the current entry with a SUFFIX test, so one page name
 # must never be the tail of another, and two entries must never point at the
-# same page. See guide.md §6.4.
+# same page. See AGENTS.md, rule 4.
 # ---------------------------------------------------------------------------
  Phuong Vo
  Home [index.html]

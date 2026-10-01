@@ -86,11 +86,6 @@ HEADER = """# jemdoc: menu{menu.jemdoc}{publications.html}, title{Publications},
 #     python tools/build_publications.py        (or: make publications)
 """
 
-LEDE = """Peer-reviewed publications, grouped by year and newest first inside each group. My
-own name is set in *bold*; the volume, pages and year are given for every entry, so
-a reference can be copied straight out of the page.
-"""
-
 #: How the references are wrapped. jemdoc keeps a bullet together while its
 #: continuation lines are indented, so a wrapped reference stays one entry.
 WIDTH = 96
@@ -319,7 +314,7 @@ def group_entries(entries):
 
 def render_page(entries):
     """The whole .jemdoc source of the page, and how many references it holds."""
-    out = [HEADER, LEDE]
+    out = [HEADER]
     total = 0
     for title, years in group_entries(entries):
         out.append("== %s\n" % title)
