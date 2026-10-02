@@ -5,247 +5,221 @@
 
 == Journal Articles
 
-=== 2026
-
 - Thien Huynh-The, Toan Van Nguyen, *Phuong Luu Vo*, Huu-Tai Nguyen. “A lightweight-to-diffusion
   framework for semantic image communications” /ICT Express/, vol. 12, no. 1, pp. 175--179, 2026.
+
 - Long Tan Le, Senura Hansaja Wanasekara, Zerun Niu, Nguyen H Tran, *Phuong Luu Vo*, Walid Saad,
   Dusit Niyato, Zhu Han, Choong Seon Hong, H Vincent Poor. “Distributionally Robust Wireless
   Semantic Communication With Large AI Models” /IEEE Journal on Selected Areas in Communications/,
   vol. 44, pp. 3473--3489, 2026.
+
 - Quan V La, Junming Huang, Huy N Le, Phuong Tran, Tung A Nguyen, *Phuong Luu Vo*, Bing B Zhou,
   Nguyen H Tran. “FORCE: Federated Orthogonality-Aware Low-Rank Adaptation for
   Communication-Efficient Fine-Tuning” /IEEE Networking Letters/, vol. 8, pp. 325--328, 2026.
+
 - Nhut Minh Nguyen, Thanh Trung Nguyen, Thu Thuy Le, Ngoc-Hanh Dang, *Phuong Luu Vo*, Thanh Hien
   Lam, Duc Minh Ngoc Dang. “HyperDyG: Hypergraph-Driven Dynamic Fusion for Semi-Supervised
   Multimodal Emotion Recognition” /EAI Endorsed Transactions on Industrial Networks and
   Intelligent Systems/, vol. 13, no. 1, 2026.
 
-=== 2024
-
 - Long Tan Le, Tung-Anh Nguyen, Tuan-Dung Nguyen, Nguyen H Tran, Nguyen Binh Truong, *Phuong Luu
   Vo*, Bui Thanh Hung, Tuan Anh Le. “Distributionally Robust Federated Learning for Mobile Edge
   Networks” /Mobile Networks and Applications/, vol. 29, no. 1, pp. 262--272, 2024.
-
-=== 2023
 
 - Nghia Nguyen, Long Luu, *Phuong Luu Vo*, Sang Nguyen, Cuong Do, Ngoc-Thanh Nguyen.
   “Reinforcement Learning-based Adaptation and Scheduling Methods for Multi-source DASH” /Computer
   Science and Information Systems/, vol. 20, no. 1, pp. 157--173, 2023.
 
-=== 2021
-
 - Tuan Dung Nguyen, Amir R Balef, Canh T Dinh, Nguyen H Tran, Duy T Ngo, Tuan Anh Le, *Phuong Luu
   Vo*. “Accelerating Federated Edge Learning” /IEEE Communications Letters/, vol. 25, no. 10, pp.
   3282--3286, 2021.
 
-=== 2019
-
 - *Phuong Luu Vo*, Tuan-Anh Le, Nguyen H Tran. “An Upward Max-Min Fairness Multipath Flow Control”
   /Mobile Networks and Applications/, vol. 25, no. 3, pp. 1174--1177, 2019.
+
 - *Phuong Luu Vo*, Tuan-Anh Le, Nguyen H Tran. “mFAST: A Multipath Congestion Control Protocol for
   High Bandwidth-Delay Connection” /Mobile Networks and Applications/, vol. 24, no. 1, pp.
   115--123, 2019.
+
 - Tra Huong Thi Le, Nguyen H Tran, *Phuong Luu Vo*, Zhu Han, Mehdi Bennis, Choong Seon Hong.
   “Joint Cache Allocation with Incentive and User Association in Cloud Radio Access Networks Using
   Hierarchical Game” /IEEE Access/, vol. 7, pp. 20773--20788, 2019.
 
-=== 2018
-
 - *Phuong Luu Vo*, Minh N H Nguyen, Tuan Anh Le, Nguyen H Tran. “Slicing the edge: Resource
   allocation for RAN network slicing” /IEEE Wireless Communications Letters/, vol. 7, no. 6, pp.
   970--973, 2018.
+
 - *Phuong Luu Vo*, Nguyen H Tran. “Cooperative caching for HTTP-based adaptive streaming contents
   in cache-enabled radio access networks” /Computing/, vol. 101, no. 5, pp. 435--453, 2018.
-
-=== 2015
 
 - *Phuong Luu Vo*, Duc Ngoc Minh Dang, Sungwon Lee, Choong Seon Hong, Quan Le-Trung. “A
   coalitional game approach for fractional cooperative caching in content-oriented networks”
   /Computer Networks/, vol. 77, pp. 144--152, 2015.
 
-=== 2014
-
 - *Phuong Luu Vo*, Tuan Anh Le, Sungwon Lee, Choong Seon Hong, Byeongsik Kim, Hoyoung Song.
   “Multi-path utility maximization and multi-path TCP design” /Journal of Parallel and Distributed
   Computing/, vol. 74, no. 1, pp. 1848--1857, 2014.
 
-=== 2013
-
 - *Phuong Luu Vo*, Tuan Anh Le, Sungwon Lee, Choong Seon Hong, Byeongsik Kim, Hoyoung Song.
   “MReno: A practical multipath congestion control for communication networks” /Computing/, vol.
   96, no. 3, pp. 189--205, 2013.
+
 - *Phuong Luu Vo*, Nguyen H Tran, Choong Seon Hong, Sungwon Lee. “Network Utility Maximisation
   Framework with Multiclass Traffic” /IET Networks/, vol. 2, no. 3, 2013.
-
-=== 2012
 
 - *Phuong Luu Vo*, Sungwon Lee, Choong Seon Hong. “The random access NUM with multiclass traffic”
   /EURASIP Journal on Wireless Communications and Networking/, vol. 2012, no. 1, 2012.
 
 == Conference Papers
 
-=== 2025
-
 - Senura Hansaja Wanasekara, Kok Sen Wong, M.-Duong Nguyen, Toan-Van Nguyen, *Phuong Luu Vo*,
   Van-Dinh Nguyen. “Invariant Representation Learning for Effective Goal-oriented Semantic
-  Communication” /EAI INISCOM 2025, Da Nang, Vietnam/, 2025 (DS2024-28-01).
+  Communication” /EAI INISCOM 2025, Da Nang, Vietnam/, 2025.
+
 - Thuy An Nguyen, Tran Ngoc Thinh Nguyen, Toan Van Nguyen, *Phuong Luu Vo*. “LoRA-MAEJSCC: Masked
   Autoencoders for Semantic Communications using Low-Rank Adaptation” /2025 International
-  Conference on Advanced Technologies for Communications (ATC)/, pp. 1--6, 2025 (Nafosted
-  102.04-2023.50).
+  Conference on Advanced Technologies for Communications (ATC)/, pp. 1--6, 2025.
+
 - Thu Thuy Le, Nhut Minh Nguyen, Nhat Truong Pham, Phuong-Nam Tran, Nguyen Doan Hieu Nguyen, *
   Phuong Luu Vo*, Balachandran Manavalan, Duc Ngoc Minh Dang. “Federated Semi-Supervised
   FixMatch: Enhancing CutMix for Medical Image Segmentation” /2025 IEEE International Conference
   on Big Data/, 2025.
 
-=== 2024
-
 - Hung Ngo Luu Tan, Van-Dinh Nguyen, Thien Huynh-The, Toan-Van Nguyen, *Phuong Luu Vo*. “Security
   Improvement for Deep Learning-Based Semantic Communication Systems” /2024 International
   Conference on Advanced Technologies for Communications (ATC)/, pp. 717--721, 2024.
-
-=== 2023
 
 - *Phuong Luu Vo*, Nghia T Nguyen, Long Luu, Canh T Dinh, Nguyen H Tran, Tuan-Anh Le. “Federated
   Deep Reinforcement Learning - Based Bitrate Adaptation for Dynamic Adaptive Streaming over HTTP”
   /Communications in Computer and Information Science/, pp. 279--290, 2023.
 
-=== 2021
-
 - Viet Anh Vo, Dat Van Nguyen, Tai Tan Tran, Mai Nguyen Ngoc Pham, Tan Duy Le, *Phuong Luu Vo*. “A
   Tourism Support Framework using Beacons technology” /2021 8th NAFOSTED Conference on Information
   and Computer Science (NICS)/, pp. 342--347, 2021.
+
 - Nghia T Nguyen, *Phuong Luu Vo*, Thi Thanh Sang Nguyen, Quan M Le, Cuong T Do, Ngoc-Thanh
   Nguyen. “A Reinforcement Learning Framework for Multi-source Adaptive Streaming” /Lecture Notes
   in Computer Science/, pp. 416--426, 2021.
 
-=== 2017
-
 - Tien-Dung Pham, *Phuong Luu Vo*, Truong Cong Thang. “Improving DASH performance in a network
   with caching” /Proceedings of the Eighth International Symposium on Information and
   Communication Technology/, pp. 255--261, 2017.
+
 - Tra Huong Thi Le, Nguyen H Tran, *Phuong Luu Vo*, Zhu Han, Mehdi Bennis, Choong Seon Hong.
   “Contract-Based Cache Partitioning and Pricing Mechanism in Wireless Network Slicing” /GLOBECOM
   2017 - 2017 IEEE Global Communications Conference/, pp. 1--6, 2017.
+
 - Anselme Ndikumana, Kyi Thar, Tai Manh Ho, Nguyen H Tran, *Phuong Luu Vo*, Dusit Niyato, Choong
   Seon Hong. “In-Network Caching for Paid Contents in Content Centric Networking” /GLOBECOM 2017 -
   2017 IEEE Global Communications Conference/, pp. 1--6, 2017.
+
 - Duc Ngoc Minh Dang, Quynh Tu Ngo, Hanh Ngoc Dang, *Phuong Luu Vo*. “Analytical Study of the IEEE
   1609.4 MAC in Vehicular Ad Hoc Networks” /Lecture Notes in Electrical Engineering/, pp.
   145--154, 2017.
+
 - Dang Tran Phuong, Tuan-Anh Le, Le Phong Du, Tuyet Anh Thi Nguyen, *Phuong Luu Vo*. “LCD-based on
   probability in content centric networking” /Lecture Notes of the Institute for Computer
   Sciences, Social Informatics and Telecommunications Engineering/, pp. 82--90, 2017.
+
 - Linh Pham, *Phuong Luu Vo*, Tuan-Anh Le. “An energy-aware multipath congestion control protocol
   for mobile devices” /2017 International Conference on Recent Advances in Signal Processing,
   Telecommunications &amp; Computing (SigTelCom)/, 2017.
+
 - Le Phong Du, Tuan-Anh Le, Nguyen Duc Thai, *Phuong Luu Vo*. “The performance of caching
   strategies in content centric networking” /2017 International Conference on Information
   Networking (ICOIN)/, pp. 628--632, 2017.
 
-=== 2016
-
 - Duc Ngoc Minh Dang, Quynh Tu Ngo, Hanh Ngoc Dang, *Phuong Luu Vo*, Choong Seon Hong.
   “Directional multi-channel MAC for VANETs” /Lecture Notes in Electrical Engineering/, pp.
   803--812, 2016.
+
 - *Phuong Luu Vo*, Long Van Nguyen, Tuan-Anh Le, Duc Ngoc Minh Dang. “A QoE-based caching
   algorithm for HTTP adaptive streaming contents in radio access networks” /2016 IEEE Sixth
   International Conference on Communications and Electronics (ICCE)/, pp. 417--422, 2016.
 
-=== 2015
-
 - Long Van Nguyen, Quoc-Anh Nguyen, *Phuong Luu Vo*, Nguyen H Tran, Tuan-Anh Le. “Reactive
   eviction algorithms for radio access networks” /2015 International Conference on Communications,
   Management and Telecommunications (ComManTel)/, pp. 162--166, 2015.
+
 - Duc Ngoc Minh Dang, Hanh Ngoc Dang, *Phuong Luu Vo*, Quynh Tu Ngo. “A Cooperative - Efficient -
   Reliable MAC protocol for Vehicular Ad hoc Networks” /2015 International Conference on Advanced
   Technologies for Communications (ATC)/, pp. 383--388, 2015.
+
 - Truc Quyen Nguyen, Bich-Phuong Ha, Tuan-Anh Le, *Phuong Luu Vo*, Trong Thua Huynh, Cong Hung
   Tran. “Coupled multipath congestion control at receiver in content-centric networking” /2015 2nd
   National Foundation for Science and Technology Development Conference on Information and
   Computer Science (NICS)/, pp. 239--242, 2015.
+
 - Bao Nguyen Tran Duy, Quoc Anh Nguyen, *Phuong Luu Vo*, Tuan-Anh Le. “Optimal content placement
   for adaptive bit-rate streaming in cache networks” /2015 2nd National Foundation for Science and
   Technology Development Conference on Information and Computer Science (NICS)/, pp. 243--247,
   2015.
+
 - *Phuong Luu Vo*, Tuan-Anh Le, Choong Seon Hong, Seung Il Moon, Sungwon Lee, Nga Ly Tu.
   “Cooperative caching for adaptive bit rate streaming in content delivery networks” /Proceedings
   of the 9th International Conference on Ubiquitous Information Management and Communication/, pp.
   1--5, 2015.
+
 - Nga Ly-Tu, Thuong Le-Tien, *Phuong Luu Vo*, Linh Mai. “Particle filter through kullback-leibler
   distance resampling with adjusted variance and gradient data for wireless biomedical sensor
   networks” /Proceedings of the 9th International Conference on Ubiquitous Information Management
   and Communication/, pp. 1--5, 2015.
 
-=== 2014
-
 - Bich-Phuong Ha, Bao-Yen Tran, Tuan-Anh Le, Cong-Hung Tran, *Phuong Luu Vo*. “A hybrid multipath
   congestion control algorithm for high speed and\/or long delay networks” /2014 International
   Conference on Advanced Technologies for Communications (ATC 2014)/, pp. 452--456, 2014.
+
 - Duc Ngoc Minh Dang, *Phuong Luu Vo*, Chi Kwang Hwang, Choong Seon Hong. “Mitigating starvation
   in wireless ad hoc networks: Multi-channel MAC and power control” /Proceedings of the 8th
   International Conference on Ubiquitous Information Management and Communication/, pp. 1--8,
   2014.
 
-=== 2013
-
 - *Phuong Luu Vo*, Anh T Le, Choong S Hong. “A Multipath Receiver-driven Congestion Control
   Protocol for Content-centric Network” /International Conference on Future Internet Technologies
   (CFI)/, 2013.
-
-=== 2012
 
 - *Phuong Luu Vo*, Anh T Le, Choong S Hong. “The successive approximation approach for multi-path
   utility maximization problem” /2012 IEEE International Conference on Communications (ICC)/, pp.
   1255--1259, 2012.
 
-=== 2011
-
 - *Phuong Luu Vo*, N H Tran, Choong Seon Hong. “Joint rate and power control for elastic and
   inelastic traffic in multihop wireless networks” /2011 IEEE Global Telecommunications Conference -
   GLOBECOM 2011/, pp. 1--5, 2011.
+
 - *Phuong Luu Vo*, Muhammad Shoaib Siddiqui, Choong Seon Hong. “The node-centric formulation for
   network utility maximization of multihop wireless networks with elastic and inelastic traffic”
   /12th IFIP\/IEEE International Symposium on Integrated Network Management (IM 2011) and
   Workshops/, pp. 1029--1034, 2011.
+
 - *Phuong Luu Vo*, Nguyen H Tran, Choong Seon Hong, KiJoon Chae. “A joint congestion control,
   routing, and scheduling algorithm in multihop wireless networks with heterogeneous flows” /The
   International Conference on Information Networking 2011 (ICOIN2011)/, pp. 347--351, 2011.
 
 == Book Chapters
 
-=== 2026
-
 - Khanh Trang Duong, *Phuong Luu Vo*, Tung Kieu, Duc Ngoc Minh Dang. “Multi-domain Time Series
   Reconstruction with Frequency-Enhanced Transformers” /Lecture Notes in Computer Science/, pp.
   553--573, 2026.
+
 - Quang-Tinh Thai, Toan-Van Nguyen, Trung-Nghia Nguyen, Tung Kieu, *Phuong Luu Vo*. “Secure
   Semantic Communications with Adversarial Training and Active Eavesdropper” /Lecture Notes in
   Computer Science/, pp. 460--474, 2026.
+
 - Huy Thanh Nguyen, Thuy An Nguyen, Tung Kieu, Toan Van Nguyen, *Phuong Luu Vo*. “Semantic
   Communication with Transformer and Knowledge Distillation for Language Translation”
   /Communications in Computer and Information Science/, pp. 106--120, 2026.
-
-=== 2025
 
 - Hung Ngo Luu Tan, Van Toan Nguyen, *Phuong Luu Vo*. “Secure Cooperative Semantic Communication
   with Swin Transformer and Jamming” /Lecture Notes in Computer Science/, pp. 137--151, 2025.
 
 == National Journal Articles
 
-=== 2023
-
 - Long Minh Luu, Nghia Trung Nguyen, *Phuong Luu Vo*, Tuan-Anh Le. “Deep Reinforcement
   Learning-based Bitrate Adaptations in Dynamic Adaptive Streaming over HTTP” /REV Journal on
   Electronics and Communications/, vol. 12, no. 3-4, 2023.
 
-=== 2019
-
 - Trung Thuan Nguyen, Duy Khanh Vu, *Phuong Luu Vo*, Chau Le, Quang Duy Nguyen. “Performance of
   DASH over Multipath TCP” /REV Journal on Electronics and Communications/, vol. 9, no. 1-2, 2019.
-
-=== 2014
 
 - *Phuong Luu Vo*, Tuan-Anh Le, Saeed Ullah, Duc Ngoc Minh Dang. “Content Caching for Adaptive
   Bit-Rate Streaming in Cache Networks” /Journal of Science and Technology (Vietnamese Academy of
@@ -253,55 +227,39 @@
 
 == National Conference Papers
 
-=== 2020
-
 - Thanh Xuan Tung Nguyen, Hung Thuan Nguyen Phan, *Phuong Luu Vo*. “A Monitoring and Control
   System for Motorcycles” /The 13th National Conference on Fundamental and Applied Information
   Technology Research (FAIR 2020), Nha Trang, Vietnam/, 2020.
 
-=== 2018
-
 - Duy Truong Phung, Tuan-Anh Le, *Phuong Luu Vo*. “A Content Distribution Network over Multipath
   TCP” /The 11th National Conference on Fundamental and Applied Information Technology Research
-  (FAIR 2018), Vietnam/, 2018 (in Vietnamese).
-
-=== 2017
+  (FAIR 2018), Vietnam/, 2018.
 
 - Ngoc Thien Nguyen, Tan Tai Le, Hung Thuan Nguyen Phan, *Phuong Luu Vo*, Minh Duc Dang Ngoc, Tuan
   Anh Le. “A GPS-based Localisation System using LoRa Technology” /The 10th National Conference on
   Fundamental and Applied Information Technology Research (FAIR 2017), Vietnam/, 2017.
 
-=== 2015
-
 - Quoc Anh Nguyen, *Phuong Luu Vo*, Tuan-Anh Le. “Optimising Content Caching in
   Information-Centric Networks” /National Conference on Electronics, Communications and
-  Information Technology (ECIT 2015), Ho Chi Minh City, Vietnam/, 2015 (C2015-28-01, in
-  Vietnamese).
-
-=== 2014
+  Information Technology (ECIT 2015), Ho Chi Minh City, Vietnam/, 2015.
 
 - *Phuong Luu Vo*, Nguyen Q Tran, Tuan-Anh Le, Choong Seon Hong. “A Cross-layer Rate Control,
   Routing, and Scheduling Design for Inelastic Traffic in Multihop Wireless Networks” /The First
   NAFOSTED Conference on Information and Computer Science (NICS 2014), Hanoi, Vietnam/, 2014.
+
 - Truc Quyen Nguyen, Tuan-Anh Le, *Phuong Luu Vo*, Minh Duc Giang Dang. “Receiver-side Multipath
   Congestion Control for Content-Centric Networks” /National Conference on Electronics,
-  Communications and Information Technology (ECIT 2014), Nha Trang, Vietnam/, 2014 (in
-  Vietnamese).
-
-=== 2013
+  Communications and Information Technology (ECIT 2014), Nha Trang, Vietnam/, 2014.
 
 - *Phuong Luu Vo*, Nguyen H Tran, Choong Seon Hong. “Joint Rate Control, Routing, and Scheduling
   for Inelastic Traffic in Multihop Wireless Networks” /Korea Computer Congress (KCC 2013),
   Korea/, 2013.
+  
 - *Phuong Luu Vo*, Choong Seon Hong. “The Fractional Cooperative Caching in Content-Oriented
   Networks” /KIISE Fall Conference (KIISE 2013), Korea/, 2013.
 
-=== 2012
-
 - *Phuong Luu Vo*, Choong Seon Hong. “The Network Utility Maximization Problem with Multiclass
   Traffic” /Korea Computer Congress (KCC 2012), Korea/, 2012.
-
-=== 2010
 
 - *Phuong Luu Vo*, Nguyen H Tran, Jin Woong Cho, Jang Yeon Lee, Choong Seon Hong. “The Cross-layer
   Design Approach for Multi-hop Wireless Networks with Elastic and Inelastic Traffic” /Summer

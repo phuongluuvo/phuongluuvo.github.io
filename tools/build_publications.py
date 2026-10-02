@@ -13,9 +13,9 @@ WHY
 
 WHAT IT DOES
     Reads www/data/publications.bib and writes www/profile/publications.jemdoc,
-    as **jemdoc**: a section per kind of work, a sub-heading per year, and one
-    bullet per reference. The page is then an ordinary page of the site, styled
-    by the stylesheet like every other list on it, and readable as a source.
+    as **jemdoc**: a section per kind of work and one bullet per reference. The
+    page is then an ordinary page of the site, styled by the stylesheet like
+    every other list on it, and readable as a source.
 
     The kind of work comes from the entry type:
 
@@ -318,10 +318,8 @@ def render_page(entries):
     total = 0
     for title, years in group_entries(entries):
         out.append("== %s\n" % title)
-        for year, members in years:
+        for _year, members in years:
             total += len(members)
-            if year:
-                out.append("=== %d\n" % year)
             for entry in members:
                 out.append(wrap(render_reference(entry[1])))
             out.append("")
