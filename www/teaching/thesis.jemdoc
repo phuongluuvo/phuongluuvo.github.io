@@ -1,29 +1,39 @@
 # jemdoc: menu{menu.jemdoc}{thesis.html}, title{Joining the Group}, notime
 
 I supervise pre-thesis and thesis projects for students in the School of
-Computer Science and Engineering. This page explains what I work on, what
-kinds of topics are available, and how supervision runs.
+Computer Science and Engineering. This page explains my research areas, the
+topics available, and how supervision is organised.
 
 == Co-supervision
 
-Some projects are run jointly with a colleague, in which case there are two
-supervisors and the scope is agreed between the three of us. Mention it in
-your message if you would like to be considered for one of those.
+Some projects are co-supervised with another advisor. In such cases, the project
+scope is agreed between me and the co-advisor. If you would like to be
+considered for a co-supervised project, please mention this in your message.
 
-- *Dr. Toan-Van Nguyen* — San Diego State University, USA · vannguyentoan@gmail.com
-- *Assoc. Prof. Tung Kieu* — Aalborg University, Denmark · tungkvt@cs.aau.dk
-- *M.Sc. Nguyen Trung Nghia* — International University, Vietnam · ntnghia@hcmiu.edu.vn
+Current co-advisors:
+
+- *Dr. Toan-Van Nguyen* — San Diego State University, USA. /Wireless
+  communications, artificial intelligence, signal processing, wireless
+  security/. \n [vannguyentoan@gmail.com]
+
+- *Assoc. Prof. Tung Kieu* — Aalborg University, Denmark. /Data mining, machine
+  learning, spatio-temporal data, time-series analysis/. \n [tungkvt@cs.aau.dk]
+
+Additional collaborator:
+
+- *M.Sc. Nguyen Trung Nghia* — International University, Vietnam.
+  \n [ntnghia@hcmiu.edu.vn]
 
 == What I work on
 
-My current interests include deep learning, federated learning, edge inference,
-collaborative inference, semantic communication, large language models (LLMs),
-distributed learning, deep reinforcement learning for networks, and wireless
-and mobile networking with the Internet of Things.
+My current research interests include deep learning, federated learning, edge
+inference, collaborative inference, semantic communication, large language
+models (LLMs), distributed learning, deep reinforcement learning for networks,
+and wireless and mobile networking with the Internet of Things.
 
-The easiest way to find a topic is to open the two or three most recent papers
-on the [publications.html Publications] page and ask which one you would like
-to understand deeply enough to extend.
+A practical way to find a topic is to review the two or three most recent papers
+on the [publications.html Publications] page and consider which one you would
+like to understand deeply enough to extend.
 
 == Open topics
 
@@ -41,6 +51,7 @@ to understand deeply enough to extend.
 == How we work
 
 - One individual meeting each week, plus a group seminar.
-- You are expected to read actively, write down what you understand, and
-  present your work regularly — including the weeks when it is not going well.
-- The goal is a result you can defend: a clear question, a method, and evidence.
+- You are expected to read actively, document your understanding, and present
+  your work regularly — including during weeks when progress is limited.
+- The goal is a defensible result: a clear research question, a sound method,
+  and supporting evidence.

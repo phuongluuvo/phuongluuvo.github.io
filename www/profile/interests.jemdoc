@@ -22,12 +22,3 @@ that cannot pool their data, over links that carry meaning rather than bits.
   between them.
 - *Large AI models for networked systems* -- efficient fine-tuning and inference of
   large models across a network, and what they make possible at the edge.
-
-== Methods
-
-Convex and distributed optimisation, game theory, stochastic and online learning,
-and reinforcement learning -- applied to problems that arrive with a system
-attached.
-
-Theses in these directions are listed on the [supervision.html Supervision] page,
-and the papers that came out of them on [publications.html Publications].
