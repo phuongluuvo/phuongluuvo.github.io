@@ -13,7 +13,10 @@ WHY
 
 WHAT IT DOES
     Reads www/data/publications.bib and writes www/profile/publications.jemdoc,
-    as **jemdoc**: a section per kind of work and one bullet per reference. The
+    as **jemdoc**: a section per kind of work and one bullet per reference, each
+    bullet its own paragraph with a blank line around it, so the references are
+    spaced apart on the page. There are no year sub-headings: the entries run
+    newest first inside a section, which is what the eye follows anyway. The
     page is then an ordinary page of the site, styled by the stylesheet like
     every other list on it, and readable as a source.
 
@@ -27,7 +30,9 @@ WHAT IT DOES
     under the national sections at the end instead of the international ones.
 
     A reference is printed as its authors, the title in quotes, the venue in
-    italics, and the volume, pages and year. There are **no links**: a DOI is
+    italics, and the volume, pages and year. A ``note`` field -- a funding code,
+    or "in Vietnamese" -- stays in the .bib as data the page does not carry.
+    There are **no links**: a DOI is
     data, not something the page needs to carry, and a bare URL in jemdoc prose
     is a trap -- the "/" in it pairs with the "/" of the italics that follow and
     silently italicises the rest of the page.
@@ -241,7 +246,13 @@ def wrap(text, indent="  "):
 
 
 def render_reference(fields):
-    """One reference line: authors, title, venue, volume, pages, year."""
+    """One reference line: authors, title, venue, volume, pages, year.
+
+    A ``note`` field is deliberately not printed: the funding codes and the
+    "in Vietnamese" markers it holds were taken off the page at the owner's
+    request, and the field stays in the .bib, where it is still data worth
+    keeping.
+    """
     pieces = []
     authors = render_authors(fields.get("author", ""))
     if authors:
@@ -264,8 +275,6 @@ def render_reference(fields):
         pieces.append("/%s/%s" % (venue, ", " + ", ".join(tail) if tail else ""))
     elif tail:
         pieces.append(", ".join(tail))
-    if fields.get("note"):
-        pieces.append("(%s)" % escape(fields["note"]))
     text = " ".join(pieces).rstrip()
     return text if text.endswith(".") else text + "."
 
@@ -289,7 +298,7 @@ def section_of(kind, fields):
 
 
 def group_entries(entries):
-    """{section title: [(year, [entries])]}, in page order, newest first."""
+    """[(section title, [entries])], in page order, newest first inside a section."""
     grouped = {}
     for entry in entries:
         title = section_of(entry[0], entry[1])
@@ -299,31 +308,39 @@ def group_entries(entries):
     sections = []
     for title, _types, _national in SECTIONS:
         members = sorted(grouped.get(title, []), key=sort_key)
-        if not members:
-            continue
-        years = []
-        for entry in members:
-            year = entry_date(entry[1])[0] or 0
-            if years and years[-1][0] == year:
-                years[-1][1].append(entry)
-            else:
-                years.append((year, [entry]))
-        sections.append((title, years))
+        if members:
+            sections.append((title, members))
     return sections
 
 
 def render_page(entries):
-    """The whole .jemdoc source of the page, and how many references it holds."""
+    """The whole .jemdoc source of the page, and how many references it holds.
+
+    Every reference is its own bullet, with a blank line before and after it, so
+    jemdoc closes the list at each one and the page shows the entries spaced
+    apart rather than as one dense block. That blank line is the whole of the
+    spacing: the list has no year sub-headings any more.
+    """
     out = [HEADER]
     total = 0
-    for title, years in group_entries(entries):
+    for title, members in group_entries(entries):
         out.append("== %s\n" % title)
-        for _year, members in years:
-            total += len(members)
-            for entry in members:
-                out.append(wrap(render_reference(entry[1])))
+        for entry in members:
+            total += 1
+            out.append(wrap(render_reference(entry[1])))
             out.append("")
     return "\n".join(out).rstrip() + "\n", total
+
+
+def normalized(text):
+    """The page with the trailing white space taken off every line.
+
+    jemdoc trims a line before it reads it, so a space or two left on a blank
+    line changes nothing on the page. ``--check`` is there to catch drift -- an
+    entry added to the .bib and never rendered -- and not the last characters of
+    a line, so it compares the two copies this way.
+    """
+    return "\n".join(line.rstrip() for line in text.splitlines())
 
 
 def read_entries():
@@ -355,7 +372,7 @@ def main():
         if os.path.isfile(OUTPUT):
             with open(OUTPUT, "r", encoding="utf-8") as handle:
                 current = handle.read()
-        if arguments.check and current != page:
+        if arguments.check and normalized(current) != normalized(page):
             print("www/profile/publications.jemdoc is out of date: "
                   "run python tools/build_publications.py")
             return 1

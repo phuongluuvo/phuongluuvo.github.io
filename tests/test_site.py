@@ -878,25 +878,21 @@ def test_home_page_is_the_profile_and_its_sections(site):
 # --------------------------------------------------------------------------- #
 
 def publication_sections(soup):
-    """The publications page as {heading: [(year, [entry, ...]), ...]}.
+    """The publications page as {heading: [entry, ...]}, in page order.
 
-    tools/build_publications.py writes one <h2> per kind of work, a <h3> per year
-    under it, and that year's <ul class="pubs"> under the heading of each, so all
-    three are read together here.
+    tools/build_publications.py writes one <h2> per kind of work, and under each
+    heading every reference is its own bullet with a blank line around it. jemdoc
+    closes a list at a blank line, so a reference arrives as a one-item <ul>; the
+    headings and the lists are read together here.
     """
     sections = {}
     heading = None
-    for node in soup.select("#layout-content > h2, #layout-content > h3, "
-                            "#layout-content > ul"):
+    for node in soup.select("#layout-content > h2, #layout-content > ul"):
         if node.name == "h2":
             heading = node.get_text(strip=True)
             sections[heading] = []
-        elif node.name == "h3":
-            sections[heading].append((node.get_text(strip=True), []))
         else:
-            if not sections[heading]:
-                sections[heading].append(("", []))
-            sections[heading][-1][1].extend(node.select("li"))
+            sections[heading].extend(node.select("li"))
     return sections
 
 
@@ -906,7 +902,8 @@ def test_publications_are_one_section_per_kind_of_work(site):
     The page was a single list with the kind of work stamped on every entry.
     Splitting it is what the site owner asked for, and the kind comes from the
     BibTeX entry type, so no entry is sorted by hand and none can end up in two
-    sections or in none.
+    sections or in none. There are no year sub-headings under them any more: the
+    entries run newest first inside a section instead.
     """
     soup = soup_of(site, "publications.html")
     headings = [h.get_text(strip=True) for h in soup.select("#layout-content > h2")]
@@ -917,47 +914,41 @@ def test_publications_are_one_section_per_kind_of_work(site):
 
     sections = publication_sections(soup)
     assert set(sections) == set(headings), "a heading has no list under it"
-    for heading, years in sections.items():
-        assert years, "%s has no entries" % heading
-        for year, members in years:
-            assert members, "%s, %s has an empty year" % (heading, year)
+    for heading, members in sections.items():
+        assert members, "%s has no entries" % heading
 
-    assert len(sections["Journal Articles"]) >= 5, (
-        "the journals are not grouped by year"
-    )
-    journals = sum(len(m) for _y, m in sections["Journal Articles"])
+    journals = len(sections["Journal Articles"])
     assert journals > 10, "only %d journal articles" % journals
 
     # Every entry is on the page once, in one section or another.
-    total = sum(len(m) for years in sections.values() for _y, m in years)
+    total = sum(len(members) for members in sections.values())
     assert total == len(soup.select("#layout-content li")), (
         "the sections do not add up to the list on the page"
     )
     assert total > 40, "only %d references" % total
 
 
-def test_publications_are_grouped_by_year_newest_first(site):
-    """Inside a section the years run downwards, and every entry sits under its
-    own year, so the heading above a reference is the year that reference ends
-    with. That is what makes the page scannable without reading every title.
+def test_publications_run_newest_first_inside_a_section(site):
+    """Inside a section the years run downwards, so the page is scannable in the
+    order a reader wants it. The year is read off the end of each reference: the
+    year sub-headings that used to carry it were removed at the owner's request,
+    and one bullet per reference is what is left.
     """
     soup = soup_of(site, "publications.html")
     sections = publication_sections(soup)
     assert len(sections) == 5
 
-    for heading, years in sections.items():
-        labels = [int(year) for year, _members in years if year.isdigit()]
-        assert labels == sorted(labels, reverse=True), (
-            "%s is not newest-first: %s" % (heading, [y for y, _m in years])
+    for heading, members in sections.items():
+        years = []
+        for entry in members:
+            text = re.sub(r"\s+", " ", entry.get_text(" ", strip=True))
+            assert text, "an empty reference in %s" % heading
+            found = re.findall(r"\b(?:19|20)\d\d\b", text)
+            assert found, "%s holds a reference with no year: %s" % (heading, text[:80])
+            years.append(int(found[-1]))
+        assert years == sorted(years, reverse=True), (
+            "%s is not newest-first: %s" % (heading, years)
         )
-        for year, members in years:
-            for entry in members:
-                text = re.sub(r"\s+", " ", entry.get_text(" ", strip=True))
-                assert text, "an empty reference sits under %s, %s" % (heading, year)
-                assert ", %s" % year in text, (
-                    "%s holds a reference that does not end in %s: %s"
-                    % (heading, year, text[:80])
-                )
 
 
 def test_every_reference_is_a_complete_citation(site):
@@ -1085,7 +1076,12 @@ def test_the_builder_takes_the_date_from_the_entry():
 
 def test_the_builder_prints_no_links():
     """The reference list is for reading: a DOI field does not become a link, and
-    a reference with one ends at its year like any other."""
+    a reference with one ends at its year like any other.
+
+    A ``note`` field is not printed either. The funding codes and the "in
+    Vietnamese" markers it held were taken off the page at the owner's request,
+    and the field stays in the .bib as data nothing renders.
+    """
     module = load_publications_module()
     reference = module.render_reference({
         "author": "Le, Long Tan and Vo, Phuong Luu", "title": "A paper",
@@ -1093,9 +1089,10 @@ def test_the_builder_prints_no_links():
         "pages": "1--9", "doi": "10.1000/x", "note": "Nafosted 1"})
     assert "doi" not in reference.lower(), reference
     assert "http" not in reference
-    assert reference.endswith("2026 (Nafosted 1)."), (
-        "the note should still be printed after the year: %r" % reference
+    assert "Nafosted" not in reference, (
+        "a note field should not reach the page: %r" % reference
     )
+    assert reference.endswith("2026."), reference
 
 
 def test_the_builder_escapes_what_it_prints():
@@ -1168,8 +1165,11 @@ def test_the_builder_writes_one_section_per_kind_and_keeps_the_national_ones_apa
     assert page.index("A national journal paper") > order[2], (
         "kind = {national} did not move the entry to the national section"
     )
-    assert "=== 2021" in page and "=== 2019" in page, (
-        "the years are not sub-headings of their section"
+    assert "=== " not in page, (
+        "the page has no year sub-headings any more"
+    )
+    assert "\n\n- " in page, (
+        "the references are not spaced apart: jemdoc needs the blank line"
     )
 
 
@@ -1194,7 +1194,7 @@ def test_the_publications_page_is_what_the_bibtex_file_says():
         committed = handle.read()
 
     assert total > 40, "only %d entries in the source" % total
-    assert committed == page, (
+    assert module.normalized(committed) == module.normalized(page), (
         "www/profile/publications.jemdoc is not what %s says: run "
         "python tools/build_publications.py"
         % os.path.relpath(module.SOURCE, ROOT)
@@ -1323,25 +1323,50 @@ def test_github_actions_workflow_is_valid_yaml():
     assert any("upload-pages-artifact" in s for s in steps)
 
 
-def test_ci_checks_that_the_generated_pages_are_current():
-    """The Publications page is generated and committed, so CI has to notice when
-    the committed copy and the BibTeX file have drifted apart.
+def test_ci_only_builds_and_deploys():
+    """GitHub Actions builds the site and publishes it, and does nothing else.
 
-    It must not try to refresh anything from the network: the list is a file in
-    this repository, and the tool that renders it fetches nothing.
+    The test-suite and the check on the generated Publications page were taken
+    out of the workflow at the owner's request: a run goes red only when the site
+    itself cannot be built, and the result is checked on the published pages. The
+    workflow still may not reach for the network to build the site -- the
+    publication list is a file in this repository.
     """
     workflow = os.path.join(ROOT, ".github", "workflows", "pages.yml")
     with open(workflow, "r", encoding="utf-8") as handle:
         text = handle.read()
+    with open(workflow, "r", encoding="utf-8") as handle:
+        data = yaml.safe_load(handle)
 
     assert "update_site.py" not in text, (
         "the workflow still calls the ORCID updater, which no longer exists"
     )
-    assert "build_publications.py" in text, (
-        "the workflow does not check the generated Publications page"
+    assert "build_publications.py" not in text, (
+        "the workflow checks the generated Publications page again"
     )
     assert "curl" not in text and "wget" not in text, (
         "the workflow reaches for the network to build the site"
+    )
+
+    # The comment at the top of the file may name the local commands; the steps
+    # may not run them.
+    assert set(data["jobs"]) == {"build", "deploy"}, (
+        "the workflow has more jobs than build and deploy: %s"
+        % sorted(data["jobs"])
+    )
+    for name, job in data["jobs"].items():
+        for step in job["steps"]:
+            command = step.get("run", "")
+            assert "pytest" not in command, (
+                "the %s job runs the test-suite: %s" % (name, command)
+            )
+            assert "build_publications" not in command, (
+                "the %s job checks the Publications page: %s" % (name, command)
+            )
+
+    commands = [step.get("run", "") for step in data["jobs"]["build"]["steps"]]
+    assert any("python build.py" in command for command in commands), (
+        "the workflow does not build the site"
     )
 
 
