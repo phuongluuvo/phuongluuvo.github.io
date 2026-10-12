@@ -53,8 +53,9 @@ CONF = "mysite.conf"
 #: is NOT committed -- GitHub Actions builds it and deploys it.
 OUTPUT_DIR = os.path.join(ROOT, "_site")
 
-#: jemdoc files in www/ that are NOT standalone pages.
-NOT_A_PAGE = {"menu.jemdoc", CONF}
+#: jemdoc files in www/ that are NOT standalone pages. The publication list is
+#: one of them: it is a *section* of the home page, spliced in below.
+NOT_A_PAGE = {"menu.jemdoc", CONF, "publications.jemdoc"}
 
 #: Folders in www/ that are copied verbatim to the output folder.
 ASSET_DIRS = ("css", "files", "images", "pdf")
@@ -69,6 +70,18 @@ GENERATED_MARKER = "GENERATED FILE"
 #: address in one place: moving the files never touches a page.
 MATERIALS_TOKEN = re.compile(r"%%([A-Za-z0-9_-]+)%%")
 MATERIALS_SECTION = "[materials]"
+
+#: A page writes this on a line of its own where the publication list belongs.
+#: tools/build_publications.py writes the list as jemdoc source, and jemdoc has no
+#: way to include one file in another, so the list is spliced in before it runs.
+#: It is a section of the home page rather than a page of its own, so a visitor
+#: reads the biography, the interests and the papers without leaving the page.
+INCLUDE_TOKEN = "%%PUBLICATIONS%%"
+INCLUDE_SOURCE = os.path.join(SRC, "data", "publications.jemdoc")
+
+#: The include marker is written like a %%NAME%% token, but it is not one: nothing
+#: in [materials] defines it, so the check below must not ask for a line.
+INCLUDE_NAME = INCLUDE_TOKEN.strip("%").lower()
 
 #: Folders inside www/ that are copied to the output rather than searched for
 #: pages, so a .jemdoc file dropped in one of them is not built.
@@ -122,8 +135,14 @@ def fill_materials(name: str, text: str, materials: dict[str, str]) -> str:
 
     An unknown name stops the build rather than being left in the page, where it
     would become a link that quietly goes nowhere.
+
+    The include marker looks like one of these tokens but is not one, and it is
+    left exactly as it is: the page that carries it has had it replaced by the
+    list already, so what is left is the mention of it inside the fragment's own
+    comment.
     """
     used = {match.group(1).lower() for match in MATERIALS_TOKEN.finditer(text)}
+    used.discard(INCLUDE_NAME)
     unknown = sorted(used - set(materials))
     if unknown:
         sys.exit(
@@ -136,14 +155,41 @@ def fill_materials(name: str, text: str, materials: dict[str, str]) -> str:
                ", ".join("%%%s%%" % word.upper() for word in unknown),
                CONF, MATERIALS_SECTION, MATERIALS_SECTION, unknown[0].upper())
         )
-    return MATERIALS_TOKEN.sub(lambda match: materials[match.group(1).lower()], text)
+    return MATERIALS_TOKEN.sub(
+        lambda match: match.group(0)
+        if match.group(1).lower() == INCLUDE_NAME
+        else materials[match.group(1).lower()],
+        text,
+    )
+
+
+def splice_publications(name: str, text: str) -> str:
+    """Put the generated publication list where the page asks for it.
+
+    The list is written by tools/build_publications.py from the BibTeX file, and
+    jemdoc cannot include one file in another, so the fragment is spliced into the
+    page here. Only a line that is the marker and nothing else is replaced, so a
+    comment that mentions the marker is left alone. A missing fragment stops the
+    build: a page with no publications on it is worse than a build that says why.
+    """
+    if not any(line.strip() == INCLUDE_TOKEN for line in text.split("\n")):
+        return text
+    if not os.path.isfile(INCLUDE_SOURCE):
+        sys.exit(
+            "error: www/%s asks for %s, but the file that holds it is missing.\n"
+            "       Run: python tools/build_publications.py"
+            % (name, INCLUDE_TOKEN)
+        )
+    body = read_text_lf(INCLUDE_SOURCE).rstrip("\n")
+    return "\n".join(body if line.strip() == INCLUDE_TOKEN else line
+                     for line in text.split("\n"))
 
 
 def is_menu_file(name: str) -> bool:
     """True for a ``menu*.jemdoc`` file, e.g. menu.jemdoc or menu-blog.jemdoc.
 
-    Every page includes exactly one menu, and the lab pages use a different one,
-    so the sidebar changes inside the lab without touching the rest of the site.
+    Every page includes exactly one menu; the blog's posts have one of their own,
+    so the sidebar changes inside the blog without touching the rest of the site.
     """
     return name.startswith("menu") and name.endswith(".jemdoc")
 
@@ -389,7 +435,8 @@ def stage_sources(staging: str, pages: list[str]) -> None:
     keeps the built addresses flat however the sources are arranged.
 
     ``%%NAME%%`` is replaced here with the address ``www/mysite.conf`` gives for
-    NAME, so a page never spells out where its lecture notes live.
+    NAME, so a page never spells out where its lecture notes live, and a page that
+    writes ``%%PUBLICATIONS%%`` gets the generated publication list in its place.
     """
     materials = read_materials()
     sources: dict[str, str] = {CONF: os.path.join(SRC, CONF)}
@@ -404,6 +451,7 @@ def stage_sources(staging: str, pages: list[str]) -> None:
             continue
         text = read_text_lf(source)
         if name.endswith(".jemdoc") and not is_menu_file(name):
+            text = splice_publications(name, text)
             text = fill_materials(name, text, materials)
         with open(os.path.join(staging, name), "w", encoding="utf-8", newline="\n") as handle:
             handle.write(text)

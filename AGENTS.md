@@ -33,10 +33,13 @@ when you change something.
    gitignored and rebuilt from scratch every time, and every generated page carries a
    `GENERATED FILE. DO NOT EDIT` comment in its `<head>`. The asset folders are **mirrored**,
    so a file deleted from `www/` is deleted from the output on the next build.
-   **One source file is also generated:** `www/profile/publications.jemdoc` comes from
-   `tools/build_publications.py`. To change the publication list, edit
-   `www/data/publications.bib` and run `make publications`; the tool is offline and
-   nothing is fetched from anywhere. Never edit a generated `.jemdoc` by hand. The news is   **not** generated: it is a hand-written list in the `== News` section of
+   **One source file is also generated:** `www/data/publications.jemdoc` comes from
+   `tools/build_publications.py`, and it is a *fragment*, not a page: the Publications
+   section of the home page. `build.py` splices it in where `www/home/index.jemdoc`
+   writes `%%PUBLICATIONS%%`, because jemdoc cannot include one file in another. To
+   change the publication list, edit `www/data/publications.bib` and run
+   `make publications`; the tool is offline and nothing is fetched from anywhere.
+   Never edit a generated `.jemdoc` by hand. The news is   **not** generated: it is a hand-written list in the `== News` section of
    `www/home/index.jemdoc`, one `- MM/YYYY: text` line per announcement.
 3. **After any source change run `python build.py`.** The published site is rebuilt from `www/`
    by CI, so an unbuilt change is an unverified change. Commit **sources only** — `_site/` is
@@ -59,7 +62,7 @@ python build.py --out docs       # build into a different folder
 python build.py --serve          # build + preview at http://localhost:8000
 python build.py --clean          # delete the generated *.html
 make verify                      # build to _site/ + run the full test-suite
-make publications                # rebuild the Publications page from its BibTeX file, then build
+make publications                # rebuild the publication list from its BibTeX file, then build
 python -m pytest                 # run only the tests (needs the "vtlp" env)
 ```
 
@@ -99,7 +102,7 @@ line endings, and an invalid CI workflow.
 * Commit generated output, or remove the `_site/`, `/docs/` or anchored `/*.html`, `/css/`,
   `/files/`, `/images/`, `/.nojekyll` rules from `.gitignore`. This repository holds sources,
   tooling and documentation only.
-* Hand-edit `www/profile/publications.jemdoc`, or add a page whose file name is the tail of another
+* Hand-edit `www/data/publications.jemdoc`, or add a page whose file name is the tail of another
   page's name (see rule 4).
 * Rename files to a different case, or introduce spaces/uppercase. Windows and macOS would
   accept it; git and GitHub Pages would not.

@@ -29,13 +29,14 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SRC = os.path.join(ROOT, "www")
 BUILD = os.path.join(ROOT, "build.py")
 
-#: The one page tools/build_publications.py writes, from www/data/publications.bib.
-#: It sits in a subfolder of www/ like every other source, so the layout is named
-#: here once instead of in each test. Nothing else is generated: the news and the
-#: pages that list patents, awards, projects and theses are hand-written.
-PUBLICATIONS_SRC = os.path.join(SRC, "profile", "publications.jemdoc")
+#: What tools/build_publications.py writes, from www/data/publications.bib: the
+#: Publications section of the home page, not a page of its own. jemdoc cannot
+#: include one file in another, so build.py splices this fragment in where the home
+#: page writes %%PUBLICATIONS%%. Nothing else is generated: the news and the pages
+#: that list patents, awards, projects and theses are hand-written.
+PUBLICATIONS_SRC = os.path.join(SRC, "data", "publications.jemdoc")
 GENERATED_SOURCES = (
-    ("www/profile/publications.jemdoc", PUBLICATIONS_SRC),
+    ("www/data/publications.jemdoc", PUBLICATIONS_SRC),
 )
 
 #: jemdoc emits a few obsolete-but-harmless attributes; html5lib reports them
@@ -216,16 +217,19 @@ def test_non_ascii_text_survives_the_build_unchanged(site):
     """A character in a source page must come out of the build as itself, not
     as a code-page lookalike.
 
-    The Home page is checked beside the generated one. A source written entirely
-    in ASCII is skipped rather than failed: there is nothing in it to compare,
-    and what the test is for is non-ASCII text that IS there surviving the build.
-    At least one source has to carry some, or it is checking nothing at all.
+    Both sources checked here are read on the home page: the publication list is a
+    section of it now, not a page of its own. A source written entirely in ASCII is
+    skipped rather than failed: there is nothing in it to compare, and what the
+    test is for is non-ASCII text that IS there surviving the build. At least one
+    source has to carry some, or it is checking nothing at all.
     """
-    sources = list(GENERATED_SOURCES) + [
-        ("www/home/index.jemdoc", os.path.join(SRC, "home", "index.jemdoc")),
+    sources = [
+        ("www/data/publications.jemdoc", PUBLICATIONS_SRC, "index.html"),
+        ("www/home/index.jemdoc", os.path.join(SRC, "home", "index.jemdoc"),
+         "index.html"),
     ]
     checked = 0
-    for label, path in sources:
+    for label, path, built_name in sources:
         with open(path, "r", encoding="utf-8") as handle:
             source = handle.read()
         expected = sorted({char for char in source if ord(char) > 127})
@@ -233,7 +237,7 @@ def test_non_ascii_text_survives_the_build_unchanged(site):
             continue
         checked += 1
 
-        built = text_of(site, os.path.basename(label).replace(".jemdoc", ".html"))
+        built = text_of(site, built_name)
         for char in expected:
             assert char in built, (
                 "%s: %r did not survive the build" % (label, char)
@@ -343,8 +347,8 @@ def test_the_lab_pages_are_pages_of_the_main_site(site):
     for name in ("lab.html", "members.html", "projects.html", "news.html"):
         links = [a.get("href") for a in soup_of(site, name).select("#layout-menu a")]
         assert links == main, "%s does not show the main site's menu" % name
-        assert "publications.html" in links, (
-            "a lab page cannot reach the publications"
+        assert "index.html" in links, (
+            "a lab page cannot reach the home page, where the publications are"
         )
     assert not os.path.isfile(os.path.join(SRC, "menu-lab.jemdoc")), (
         "the lab still has a sidebar of its own"
@@ -355,9 +359,11 @@ def test_the_blog_pages_use_the_blog_menu(site):
     """The blog has a sidebar of its own; the main menu has one entry for it."""
     links = [a.get("href") for a in soup_of(site, "linear-programming.html").select("#layout-menu a")]
     assert "index.html" in links, "the blog's first post has no Home entry"
-    assert "publications.html" not in links, (
-        "a blog post is inside the blog but shows the main site's menu"
-    )
+    for leaked in ("supervision.html", "members.html"):
+        assert leaked not in links, (
+            "a blog post is inside the blog but shows the main site's menu: %s"
+            % leaked
+        )
 
     main = [a.get("href") for a in soup_of(site, "index.html").select("#layout-menu a")]
     assert "linear-programming.html" in main, "the main menu no longer lists the blog"
@@ -367,8 +373,8 @@ def test_a_page_shows_the_sidebar_of_its_own_site(site, page_names):
 
     One section has a menu of its own -- the blog -- and every other page carries
     ``www/menu.jemdoc``, whatever folder its source sits in. The lab and the
-    course pages are ordinary pages of the main site now: a course reads like the
-    Interests page, not like a site of its own.
+    course pages are ordinary pages of the main site now: a course reads like any
+    other page of the main site, not like a site of its own.
     """
     main = [a.get("href") for a in soup_of(site, "index.html").select("#layout-menu a")]
     assert main, "the home page has no menu"
@@ -391,11 +397,11 @@ def test_every_page_shows_something(site, page_names):
     """Every page carries content, and it is the page's own, not an empty shell.
 
     Whether a page opens with a heading is the site owner's to decide: the blog
-    posts are titled by tools/latex_to_page.py, several pages are written without
-    a ``= Title`` line at all, and the Research Interests page is a bare list.
-    What no page may be is blank, so this holds on to content that is there and
-    is longer than a stray label. The blog posts take their title from
-    tools/latex_to_page.py, which writes it as the page's ``<h1>``.
+    posts are titled by tools/latex_to_page.py, and several pages are written
+    without a ``= Title`` line at all. What no page may be is blank, so this holds
+    on to content that is there and is longer than a stray label. The blog posts
+    take their title from tools/latex_to_page.py, which writes it as the page's
+    ``<h1>``.
     """
     for name in page_names:
         soup = soup_of(site, name)
@@ -528,7 +534,7 @@ def test_menu_contains_the_expected_entries(site):
     menu = soup.find(id="layout-menu")
     # jemdoc replaces spaces in menu labels with non-breaking spaces.
     labels = [a.get_text(strip=True).replace("\xa0", " ") for a in menu.find_all("a")]
-    for expected in ("Home", "Blog", "Interests", "Publications", "Supervision",
+    for expected in ("Home", "Supervision", "Blog",
                      "Lab", "Members", "Projects", "News",
                      "Algorithm Optimization", "Thesis"):
         assert expected in labels, "menu entry %r is missing" % expected
@@ -548,8 +554,8 @@ def test_menu_contains_the_expected_entries(site):
     # they must not be advertised any more. A long label must also not be wrapped
     # in {{braces}}, which is what used to push it onto a second row.
     for gone in ("Biography", "Faculty", "For Students", "Blogs",
-                 "Awards & Grants", "IT545", "Research Interests",
-                 "Awards", "Patents", "Gallery"):
+                 "Awards & Grants", "IT545", "Interests", "Research Interests",
+                 "Publications", "Awards", "Patents", "Gallery"):
         assert gone not in labels, "menu entry %r should be gone" % gone
 
     # Both courses are listed under Teaching, each one page of its own.
@@ -557,10 +563,12 @@ def test_menu_contains_the_expected_entries(site):
         "the Regression Analysis course is not in the menu"
     )
 
-    # The profile pages sit under the site name, above the Research heading, and
-    # the lab's pages under it: that is the order the owner asked for.
-    assert labels.index("Publications") < labels.index("Lab"), (
-        "the publications are not listed above the lab"
+    # The profile page sits under the site name, above the Research heading, and
+    # the lab's pages under it: that is the order the owner asked for. The
+    # publications are not an entry of their own any more -- they are a section of
+    # the home page -- so Supervision is what marks the boundary.
+    assert labels.index("Supervision") < labels.index("Lab"), (
+        "the profile pages are not listed above the lab"
     )
     assert headings.index("Phuong Vo") < headings.index("Research"), (
         "the group order changed"
@@ -599,7 +607,7 @@ def test_blog_has_a_sidebar_of_its_own_like_the_lab(site):
     assert links != main, "a blog post shows the main site's menu instead of its own"
     assert "index.html" in links, "the blog's sidebar has no Home to get back with"
     assert "linear-programming.html" in links, "the blog's own sidebar does not list the first post"
-    assert "publications.html" not in links, "the blog leaked the main site's menu"
+    assert "supervision.html" not in links, "the blog leaked the main site's menu"
 
 
 def test_the_current_menu_item_is_highlighted(site, page_names):
@@ -892,8 +900,47 @@ def test_home_page_is_the_profile_and_its_sections(site):
 # publications
 # --------------------------------------------------------------------------- #
 
+def publication_blocks(soup):
+    """What follows the ``Publications`` heading on the home page.
+
+    The list is a section of the home page now, not a page of its own, so every
+    test below has to read the part of the page between that heading and the next
+    one rather than the whole document.
+    """
+    heading = None
+    for node in soup.select("#layout-content > h1"):
+        if node.get_text(strip=True) == "Publications":
+            heading = node
+            break
+    assert heading is not None, "the home page has no Publications section"
+
+    blocks = []
+    for node in heading.find_next_siblings():
+        if node.name == "h1":
+            break
+        if node.name in ("h2", "ul"):
+            blocks.append(node)
+    return blocks
+
+
+def publication_headings(soup):
+    """The kinds of work, in page order."""
+    return [node.get_text(strip=True) for node in publication_blocks(soup)
+            if node.name == "h2"]
+
+
+def publication_lists(soup):
+    """The reference lists of the section, one <ul> per reference."""
+    return [node for node in publication_blocks(soup) if node.name == "ul"]
+
+
+def publication_entries(soup):
+    """Every reference in the section, as <li> elements."""
+    return [li for ul in publication_lists(soup) for li in ul.select("li")]
+
+
 def publication_sections(soup):
-    """The publications page as {heading: [entry, ...]}, in page order.
+    """The publications section as {heading: [entry, ...]}, in page order.
 
     tools/build_publications.py writes one <h2> per kind of work, and under each
     heading every reference is its own bullet with a blank line around it. jemdoc
@@ -902,7 +949,7 @@ def publication_sections(soup):
     """
     sections = {}
     heading = None
-    for node in soup.select("#layout-content > h2, #layout-content > ul"):
+    for node in publication_blocks(soup):
         if node.name == "h2":
             heading = node.get_text(strip=True)
             sections[heading] = []
@@ -920,8 +967,8 @@ def test_publications_are_one_section_per_kind_of_work(site):
     sections or in none. There are no year sub-headings under them any more: the
     entries run newest first inside a section instead.
     """
-    soup = soup_of(site, "publications.html")
-    headings = [h.get_text(strip=True) for h in soup.select("#layout-content > h2")]
+    soup = soup_of(site, "index.html")
+    headings = publication_headings(soup)
     assert headings == ["Journal Articles", "Conference Papers", "Book Chapters",
                         "National Journal Articles", "National Conference Papers"], (
         "the sections are not the five kinds of work, in order: %s" % headings
@@ -935,9 +982,12 @@ def test_publications_are_one_section_per_kind_of_work(site):
     journals = len(sections["Journal Articles"])
     assert journals > 10, "only %d journal articles" % journals
 
-    # Every entry is on the page once, in one section or another.
+    # One reference per block, and every reference in one section or another.
+    assert all(len(ul.select("li")) == 1 for ul in publication_lists(soup)), (
+        "a block holds more than one reference"
+    )
     total = sum(len(members) for members in sections.values())
-    assert total == len(soup.select("#layout-content li")), (
+    assert total == len(publication_entries(soup)), (
         "the sections do not add up to the list on the page"
     )
     assert total > 40, "only %d references" % total
@@ -949,7 +999,7 @@ def test_publications_run_newest_first_inside_a_section(site):
     year sub-headings that used to carry it were removed at the owner's request,
     and one bullet per reference is what is left.
     """
-    soup = soup_of(site, "publications.html")
+    soup = soup_of(site, "index.html")
     sections = publication_sections(soup)
     assert len(sections) == 5
 
@@ -975,8 +1025,8 @@ def test_every_reference_is_a_complete_citation(site):
     jemdoc prose is a trap besides -- its "/" pairs with the "/" of the italics
     that follow and quietly italicises the rest of the page.
     """
-    soup = soup_of(site, "publications.html")
-    entries = soup.select("#layout-content li")
+    soup = soup_of(site, "index.html")
+    entries = publication_entries(soup)
     assert len(entries) > 40, (
         "expected the BibTeX list, found only %d entries" % len(entries)
     )
@@ -1001,8 +1051,8 @@ def test_the_owner_is_the_only_name_set_in_bold(site):
     """Bold marks the site owner's own name in the author list, wherever it sits
     in it. A co-author whose surname is also Vo must not go bold with it.
     """
-    soup = soup_of(site, "publications.html")
-    bold = soup.select("#layout-content li b")
+    soup = soup_of(site, "index.html")
+    bold = [b for li in publication_entries(soup) for b in li.select("b")]
     assert len(bold) > 40, "only %d entries mark her name" % len(bold)
 
     wrong = [b.get_text(strip=True) for b in bold
@@ -1210,7 +1260,7 @@ def test_the_publications_page_is_what_the_bibtex_file_says():
 
     assert total > 40, "only %d entries in the source" % total
     assert module.normalized(committed) == module.normalized(page), (
-        "www/profile/publications.jemdoc is not what %s says: run "
+        "www/data/publications.jemdoc is not what %s says: run "
         "python tools/build_publications.py"
         % os.path.relpath(module.SOURCE, ROOT)
     )
@@ -1234,21 +1284,21 @@ def test_the_builder_runs_offline_and_says_whether_the_page_is_current():
     assert "up to date" in result.stdout
 
 
-def test_the_generated_page_does_not_talk_about_the_build(site):
-    """The Publications page carries the papers and nothing else: no sentence
+def test_the_generated_section_does_not_talk_about_the_build(site):
+    """The publications section carries the papers and nothing else: no sentence
     explaining which script writes the file.
 
-    The page used to open with one, and it had to avoid every "/" because jemdoc
-    reads /text/ as italics and silently swallowed the paths written into it.
-    Taking the sentence out removed that trap with it; the file header still says
-    who writes the file, where only the owner looks.
+    It used to open with one, and it had to avoid every "/" because jemdoc reads
+    /text/ as italics and silently swallowed the paths written into it. Taking the
+    sentence out removed that trap with it; the file header still says who writes
+    the file, where only the owner looks.
     """
-    for name in ("publications.html",):
-        text = soup_of(site, name).select_one("#layout-content").get_text(" ", strip=True)
-        for word in ("generated", "script", "build.py", "BibTeX file"):
-            assert word not in text, (
-                "%s tells the reader about the build: %r" % (name, word)
-            )
+    soup = soup_of(site, "index.html")
+    text = " ".join(node.get_text(" ", strip=True) for node in publication_blocks(soup))
+    for word in ("generated", "script", "build.py", "BibTeX file"):
+        assert word not in text, (
+            "the publications section tells the reader about the build: %r" % word
+        )
 
 
 def test_the_generated_sources_say_that_they_are_generated():

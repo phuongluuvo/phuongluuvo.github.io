@@ -5,7 +5,7 @@
 #   make clean      delete the generated .html files
 #   make test       run the test-suite
 #   make verify     rebuild into _site/ and then run the test-suite
-#   make publications   rebuild the Publications page from its BibTeX file, then build
+#   make publications   rebuild the publication list from its BibTeX file, then build
 #   make update         alias of "make publications"
 #
 # You do NOT need make: every target is a one-line command that you can also
@@ -43,9 +43,9 @@ verify:
 	$(PYTHON) build.py --out _site
 	$(PYTHON) -m pytest
 
-# Rebuild the Publications page from www/data/publications.bib and then rebuild
-# the site. Everything is local: the list is a file you edit, and nothing is
-# fetched. Commit the regenerated www/profile/publications.jemdoc.
+# Rebuild the publication list on the home page from www/data/publications.bib,
+# then rebuild the site. Everything is local: the list is a file you edit, and
+# nothing is fetched. Commit the regenerated www/data/publications.jemdoc.
 publications:
 	$(PYTHON) tools/build_publications.py
 	$(PYTHON) build.py
