@@ -16,15 +16,38 @@ Level: Graduate
 ~~~
 {}{raw}
 <ul>
-<li><a href="%%ALGORITHM-OPTIMIZATION%%/lec1.pdf" download>Lecture 1 &ndash; Linear Programming and ILP</a></li>
-<li><a href="%%ALGORITHM-OPTIMIZATION%%/lec2.pdf" download>Lecture 2 &ndash; Convex Sets and Convex Functions</a></li>
-<li><a href="%%ALGORITHM-OPTIMIZATION%%/lec3.pdf" download>Lecture 3 &ndash; Convex Problems</a></li>
-<li><a href="%%ALGORITHM-OPTIMIZATION%%/lec4.pdf" download>Lecture 4 &ndash; Regression</a></li>
-<li><a href="%%ALGORITHM-OPTIMIZATION%%/lec5.pdf" download>Lecture 5 &ndash; First-order Algorithms</a></li>
-<li><a href="%%ALGORITHM-OPTIMIZATION%%/lec6.pdf" download>Lecture 6 &ndash; Duality</a></li>
-<li><a href="%%ALGORITHM-OPTIMIZATION%%/lec7.pdf" download>Lecture 7 &ndash; Duality Decomposition</a></li>
-<li><a href="%%ALGORITHM-OPTIMIZATION%%/lec8.pdf" download>Lecture 8 &ndash; Robust Optimization</a></li>
-<li><a href="%%ALGORITHM-OPTIMIZATION%%/lec9.pdf" download>Lecture 9 &ndash; Distributed Learning</a></li>
-<li><a href="%%ALGORITHM-OPTIMIZATION%%/lec10.pdf" download>Lecture 10 &ndash; Second-order methods</a></li>
+<li><a href="%%ALGORITHM-OPTIMIZATION%%/Lecture 1 - Linear programming and ILP.pdf" download>Lecture 1 &ndash; Linear programming and ILP</a></li>
+<li><a href="%%ALGORITHM-OPTIMIZATION%%/Lecture 2 - Convex sets and convex functions.pdf" download>Lecture 2 &ndash; Convex sets and convex functions</a></li>
+<li><a href="%%ALGORITHM-OPTIMIZATION%%/Lecture 3 - Convex problems.pdf" download>Lecture 3 &ndash; Convex problems</a></li>
+<li><a href="%%ALGORITHM-OPTIMIZATION%%/Lecture 4.1_linear regression (revised).pdf" download>Lecture 4.1 &ndash; Linear regression</a></li>
+<li><a href="%%ALGORITHM-OPTIMIZATION%%/Lecture 4.2_logistic regression (revised).pdf" download>Lecture 4.2 &ndash; Logistic regression</a></li>
+<li><a href="%%ALGORITHM-OPTIMIZATION%%/Lecture 4.3_softmax regression (revised).pdf" download>Lecture 4.3 &ndash; Softmax regression</a></li>
+<li><a href="%%ALGORITHM-OPTIMIZATION%%/Lecture 5 - First-order algorithms (revised).pdf" download>Lecture 5 &ndash; First-order algorithms</a></li>
+<li><a href="%%ALGORITHM-OPTIMIZATION%%/Lecture 6 - Duality.pdf" download>Lecture 6 &ndash; Duality</a></li>
+<li><a href="%%ALGORITHM-OPTIMIZATION%%/Lecture 7 - Dual decomposition (revised).pdf" download>Lecture 7 &ndash; Dual decomposition</a></li>
+<li><a href="%%ALGORITHM-OPTIMIZATION%%/Lecture 8 - Adversarial Machine Learning_v4 (10092026).pdf" download>Lecture 8 &ndash; Adversarial machine learning</a></li>
+<li><a href="%%ALGORITHM-OPTIMIZATION%%/Lecture 9 - Second-order algorithms.pdf" download>Lecture 9 &ndash; Second-order algorithms</a></li>
+<li><a href="%%ALGORITHM-OPTIMIZATION%%/Lecture 10 - Momentum and Adaptive gradient methods.pdf" download>Lecture 10 &ndash; Momentum and adaptive gradient methods</a></li>
+</ul>
+~~~
+
+== Labs
+
+~~~
+{}{raw}
+<ul>
+<li><a href="%%ALGORITHM-OPTIMIZATION%%/Lab 1 - Gradient descent and stochastic gradient descent.pdf" download>Lab 1 &ndash; Gradient descent and stochastic gradient descent</a></li>
+<li><a href="%%ALGORITHM-OPTIMIZATION%%/Lab 2 - Subgradient, ProxGD.pdf" download>Lab 2 &ndash; Subgradient and proximal gradient descent</a></li>
+<li><a href="%%ALGORITHM-OPTIMIZATION%%/Lab 3 - Dual decomposition.pdf" download>Lab 3 &ndash; Dual decomposition</a></li>
+</ul>
+~~~
+
+== Practice
+
+~~~
+{}{raw}
+<ul>
+<li><a href="%%ALGORITHM-OPTIMIZATION%%/Question pool.pdf" download>Question pool</a></li>
+<li><a href="%%ALGORITHM-OPTIMIZATION%%/Primal - Dual algorithm.ipynb - Colab.pdf" download>Primal&ndash;dual algorithm (notebook export)</a></li>
 </ul>
 ~~~

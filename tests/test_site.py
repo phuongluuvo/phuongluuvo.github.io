@@ -278,10 +278,25 @@ def test_a_file_deleted_from_www_disappears_from_the_output(tmp_path):
 
     # And the other direction: a folder wiped from the output has to come back
     # from www/, which is what makes this a mirror and not a one-way dump.
+    # The file is looked up rather than named: the course folders are renamed as
+    # the lectures are revised, and a hard-coded name would quietly turn this
+    # into a test of the lecture titles.
+    catalogue = []
+    courses_dir = os.path.join(ROOT, "www", "pdf", "courses")
+    for folder in sorted(os.listdir(courses_dir)):
+        inside = os.path.join(courses_dir, folder)
+        if not os.path.isdir(inside):
+            continue
+        for name in sorted(os.listdir(inside)):
+            if name.lower().endswith(".pdf"):
+                catalogue.append(os.path.join("pdf", "courses", folder, name))
+    assert catalogue, "no course PDF under www/pdf/courses/ to restore"
+    wanted = catalogue[0]
+
     module.shutil.rmtree(out / "pdf")
     module.build(str(out))
-    assert (out / "pdf" / "courses" / "algorithm-optimization" / "lec1.pdf").is_file(), (
-        "the rebuild did not restore a folder that www/ still has"
+    assert (out / wanted).is_file(), (
+        "the rebuild did not restore %s" % wanted
     )
 
 
